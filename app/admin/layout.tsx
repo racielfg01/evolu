@@ -8,6 +8,7 @@ import { SiteHeader } from "@/components/admin-view/site-header";
 // import { SidebarStoreProvider } from "@/lib/providers/store-provider";
 import { getCurrentUser } from "@/lib/supabase/auth";
 import { redirect } from "next/navigation";
+import Providers from "@/lib/providers/Provider";
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -43,17 +44,20 @@ if (user && 'role' in user && 'sex' in user) {
 
   return (
     // <SidebarStoreProvider>
+    <Providers>
+
       <SidebarProvider>
         <AppSidebar
           variant="inset"
           //   onViewChange={setActiveView}
           //   activeView={activeView}
-        />
+          />
         <SidebarInset>
           <SiteHeader />
           <main className="flex-1 ">{children}</main>
         </SidebarInset>
       </SidebarProvider>
+          </Providers>
     // </SidebarStoreProvider>
   );
 }
