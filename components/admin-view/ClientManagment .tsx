@@ -1,0 +1,171 @@
+"use client";
+
+import type React from "react";
+
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Edit, Trash } from "lucide-react";
+
+import { ColumnDef as TanstackColumnDef } from "@tanstack/react-table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
+import {
+  useDeleteUser,
+  useUpdateUser,
+  useCreateUser,
+  useGetAllUsers,
+} from "@/lib/hooks/user.hooks";
+import { IconPlus } from "@tabler/icons-react";
+import DeleteConfirmationModal from "../comun/DeleteConfirmationModal";
+import { User } from "@prisma/client";
+import { Skeleton } from "../ui/skeleton";
+import GenericModal from "../comun/AddGenericModal";
+import { ReusableDataTable } from "../comun/ReusableDataTable";
+
+export function ClientManagment() {
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
+  // Crear un nuevo rol
+  const { mutate: createUser } = useCreateUser();
+
+  // Actualizar rol existente
+  const { mutate: updateUser } = useUpdateUser();
+  const handleUpdate = (data: Partial<{ name: string; id: string }>) => {
+    updateUser({ id: data.id as string, data });
+    setSelectedUser(null);
+  };
+
+  // Eliminar rol
+  const { mutate: deleteSex } = useDeleteUser();
+  const handleDelete = () => {
+    deleteSex(selectedUser?.id as string);
+    setIsDeleteModalOpen(false);
+  };
+
+  const handleClose = () => {
+    setIsAddModalOpen(false);
+    setSelectedUser(null);
+  };
+
+
+  // Obtener todos los Sexs
+  const { data: users, isLoading, error } = useGetAllUsers();
+
+  if (isLoading)
+    return (
+      <div className="flex flex-col justify-centerspace-y-3">
+        <Skeleton className="h-[250px] w-[500px] rounded-xl" />
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-[250px]" />
+          <Skeleton className="h-4 w-[200px]" />
+        </div>
+      </div>
+    );
+
+  if (error) return <div>Error: {error.message}</div>;
+
+  const rolColumns: TanstackColumnDef<User>[] = [
+    { id: "name", accessorKey: "name", header: "Nombre" },
+    {
+      id: "actions",
+      accessorKey: "actions",
+      header: "Acciones",
+      cell: ({ row }) => {
+        const User = row.original as User;
+        return (
+          <TooltipProvider>
+            <div className="flex space-x-2 gap-4">
+              <Tooltip>
+                <TooltipTrigger
+                  onClick={() => {
+                    setSelectedUser(User);
+                    setIsAddModalOpen(true);
+                  }}
+                >
+                  <Edit className="h-4 w-4" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Editar</p>
+                </TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger
+                  onClick={() => {
+                    setSelectedUser(User);
+                    setIsDeleteModalOpen(true);
+                  }}
+                >
+                  <Trash className="h-4 w-4" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Eliminar</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          </TooltipProvider>
+        );
+      },
+    },
+  ];
+
+  return (
+    <div className="flex flex-col gap-2 py-4 md:gap-4 md:py-6">
+      <div className="flex justify-between mx-8">
+        <div className="flex flex-col">
+          <h2 className="text-md font-bold">Usuarios</h2>
+          <p className="text-muted-foreground text-sm">Gestiona todos los usuarios</p>
+        </div>
+      </div>
+      <ReusableDataTable<User>
+        data={users as User[]}
+        columns={rolColumns}
+        onDataChange={() => {}}
+        renderSubComponent={(row) => (
+          <div>Detalles para {row.original.name}</div>
+        )}
+        toolbar={
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsAddModalOpen(true)}
+          >
+            <IconPlus />
+            <span className="hidden lg:inline">Agregar usuario</span>
+          </Button>
+        }
+      />
+
+      {isAddModalOpen && (
+        <GenericModal<User>
+          isOpen={isAddModalOpen}
+          onClose={handleClose}
+          selectedItem={selectedUser}
+          onSubmit={(data) => createUser(data)}
+          onSubmitEdit={(data) => handleUpdate(data)}
+          title="Usuario"
+          description="un Usero del sistema"
+          label="Nombre del Usuario"
+          placeholder="Ej: Femenino"
+        />
+      )}
+      {isDeleteModalOpen && selectedUser && (
+        <DeleteConfirmationModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => {
+            setSelectedUser(null);
+            setIsDeleteModalOpen(false);
+          }}
+          onConfirm={() => handleDelete()}
+          workerName={`el rol ${selectedUser.name}`}
+        />
+      )}
+    </div>
+  );
+}
