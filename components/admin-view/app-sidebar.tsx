@@ -125,6 +125,7 @@ import {
 } from "@/components/ui/sidebar"
 import { useSidebarStore } from "@/stores/sidebar-store"
 import avatar1 from "@/assest/avatars/avatar1.jpeg"
+import Link from "next/link"
 
 const data = {
   user: {
@@ -186,6 +187,7 @@ export function AppSidebar({...props}) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
+            
             <SidebarMenuButton
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
@@ -193,10 +195,13 @@ export function AppSidebar({...props}) {
             >
               <div className="cursor-pointer">
                 <Menu className="!size-5" />
+                <Link href={"/"}>
                 {!isCollapsed && (
                   <span className="text-base font-semibold">Evolu</span>
                 )}
+                </Link>
               </div>
+              
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
