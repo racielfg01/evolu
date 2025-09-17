@@ -279,7 +279,7 @@ import { Skeleton } from "../ui/skeleton";
 import { ReusableDataTable } from "../comun/ReusableDataTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { AddServiceModal, UploadedImage } from "../comun/AddServiceModal";
-import {  ServiceWithRelations } from "@/lib/actions/services.actions";
+import { ServiceWithRelations } from "@/lib/actions/services.actions";
 import { useQueryClient } from "@tanstack/react-query";
 import { AvailabilityConfigurator } from "../booking/availability-configurator";
 import { BusinessConfiguration } from "@/lib/actions/config.actions";
@@ -368,25 +368,23 @@ const defaultBusinessConfig: BusinessConfiguration = {
   minBookingNotice: 24, // Reservar con 24 horas de anticipación
 };
 
-export interface ServiceForm{
-   
-    id: string;
-    name: string;
-    description: string;
-    cuid: string;
-    duration: number;
-    createdAt: Date;
-    updatedAt: Date;
-    isActive: boolean;
-    detailedDescription: string;
-    price: number;
-    benefits: string[];
-    preparation: string[];
-    category_id: string;
+export interface ServiceForm {
+  id: string;
+  name: string;
+  description: string;
+  cuid: string;
+  duration: number;
+  createdAt: Date;
+  updatedAt: Date;
+  isActive: boolean;
+  detailedDescription: string;
+  price: number;
+  benefits: string[];
+  preparation: string[];
+  category_id: string;
 
-    images?: UploadedImage[];
-    imagesToDelete?: string[];
-
+  images?: UploadedImage[];
+  imagesToDelete?: string[];
 }
 
 export function ServiceManagment() {
@@ -509,7 +507,7 @@ export function ServiceManagment() {
 
   return (
     <>
-      <div className="flex flex-1 flex-col">
+      {/* <div className="flex flex-1 flex-col">
         <div className="@container/main flex flex-1 flex-col gap-2 mx-4 my-4">
           <div className="flex flex-col mx-8">
             <h2 className="text-xl font-bold">Servicios</h2>
@@ -521,8 +519,7 @@ export function ServiceManagment() {
           <Tabs defaultValue="servicios" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="servicios">Servicios</TabsTrigger>
-              <TabsTrigger value="time_slot">Configuración de horarios</TabsTrigger>
-              {/* <TabsTrigger value="day_schedules">Fechas de Agendar</TabsTrigger> */}
+              <TabsTrigger value="time_slot">Horarios</TabsTrigger>
             </TabsList>
             <TabsContent value="servicios" className="space-y-6">
               <div className="flex flex-1 flex-col">
@@ -590,7 +587,130 @@ export function ServiceManagment() {
 
           </Tabs>
         </div>
+      </div> */}
+
+      <div className="flex  flex-col">
+        <div className="@container/main flex flex-1 flex-col gap-2 mx-1 md:mx-4 my-4">
+          {/* <div className="flex flex-col mx-8">
+            <h2 className="text-xl font-bold">Configuración</h2>
+            <p className="text-muted-foreground text-md">
+              Gestiona servicios, citas y visualiza estadísticas
+            </p>
+          </div> */}
+
+          <Tabs defaultValue="servicios" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="servicios" className="text-xs sm:text-sm">
+                Servicios
+              </TabsTrigger>
+              <TabsTrigger value="time_slot" className="text-xs sm:text-sm">
+                Horarios
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="servicios" className="space-y-6">
+              <div className="flex flex-col ">
+              
+                    {/* Header with Add Button */}
+                    <div className="flex justify-between  gap-2 px-4 lg:px-8 my-4">
+                      <div className="flex flex-col">
+                        <h2 className="text-md font-bold">Mis servicios</h2>
+                        <p className="text-muted-foreground text-sm">
+                          Gestiona tus servicios
+                        </p>
+                      </div>
+
+                      {/* Add Service Button - Responsive */}
+                      <div>
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setIsAddModalOpen(true)}
+                        className="mt-2 sm:mt-0"
+                        >
+                        <IconPlus className="h-4 w-4" />
+                        <span className="ml-1 hidden sm:inline">
+                          Agregar Servicio
+                        </span>
+                        <span className="ml-1 sm:hidden">Agregar</span>
+                      </Button>
+                        </div>
+                    </div>
+
+                    {/* Data Table */}
+                    <div className="overflow-x-auto">
+                      <ReusableDataTable<ServiceWithRelations>
+                        data={services || []}
+                        columns={rolColumns}
+                        renderSubComponent={(row) => (
+                          <div className="p-3 text-sm bg-muted/50 rounded-md">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                              <div>
+                                <strong>Descripción:</strong>
+                                <p className="truncate">
+                                  {row.original.description}
+                                </p>
+                              </div>
+                              <div>
+                                <strong>Precio:</strong>
+                                <p>${row.original.price}</p>
+                              </div>
+                              <div>
+                                <strong>Duración:</strong>
+                                <p>{row.original.duration} minutos</p>
+                              </div>
+                              <div>
+                                <strong>Estado:</strong>
+                                <p>
+                                  {row.original.isActive
+                                    ? "Activo"
+                                    : "Inactivo"}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        toolbar={null} // Moved the button outside for better responsive layout
+                      />
+                    </div>
+                
+              </div>
+            </TabsContent>
+            <TabsContent value="time_slot" className="space-y-4">
+              <div className="p-2 sm:p-4">
+                <AvailabilityConfigurator
+                  onConfigChange={setBusinessConfig}
+                  initialConfig={businessConfig}
+                />
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
       </div>
+
+      {/* Modals */}
+      {isAddModalOpen && (
+        <AddServiceModal
+          isOpen={isAddModalOpen}
+          onClose={handleClose}
+          service={selectedService}
+          onSubmitEdit={(data) => handleUpdate(data)}
+          onSubmit={() => handleCreate()}
+        />
+      )}
+      {isDeleteModalOpen && selectedService && (
+        <DeleteConfirmationModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => {
+            setSelectedService(null);
+            setIsDeleteModalOpen(false);
+          }}
+          onConfirm={() => handleDelete()}
+          workerName={`el servicio ${selectedService.name}`}
+        />
+      )}
+
+      <div className="flex flex-1 flex-col"></div>
     </>
   );
 }
