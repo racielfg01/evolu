@@ -109,7 +109,8 @@ import {
   // Folder,
   Users,
   Settings as SettingsIcon,
-  Menu
+  Menu,
+  Home
 } from "lucide-react"
 
 import { NavMain } from "@/components/admin-view/nav-main"
@@ -135,6 +136,11 @@ const data = {
   },
   navMain: [
     {
+      title: "Inicio",
+      url: "/",
+      icon: Home,
+      id: "home"
+    }, {
       title: "Panel de Control",
       url: "/admin",
       icon: LayoutDashboard,
@@ -204,6 +210,8 @@ export function AppSidebar({...props}) {
               
             </SidebarMenuButton>
           </SidebarMenuItem>
+       
+
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
