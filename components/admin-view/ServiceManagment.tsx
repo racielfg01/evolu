@@ -608,10 +608,10 @@ export function ServiceManagment() {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="servicios" className="space-y-6">
-              <div className="flex flex-col ">
+              <div className="flex flex-col  ">
               
                     {/* Header with Add Button */}
-                    <div className="flex justify-between  gap-2 px-4 lg:px-8 my-4">
+                    <div className="flex justify-around lg:justify-between gap-4 mx-4 lg:mx-6 mb-4 ">
                       <div className="flex flex-col">
                         <h2 className="text-md font-bold">Mis servicios</h2>
                         <p className="text-muted-foreground text-sm">
@@ -670,10 +670,9 @@ export function ServiceManagment() {
                             </div>
                           </div>
                         )}
-                        toolbar={null} // Moved the button outside for better responsive layout
+                        // toolbar={null} // Moved the button outside for better responsive layout
                       />
                     </div>
-                
               </div>
             </TabsContent>
             <TabsContent value="time_slot" className="space-y-4">
