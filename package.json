@@ -9,7 +9,6 @@
     "build-full": "npx prisma migrate deploy || [ \"$DATABASE_URL\" = \"prisma+postgres://accelerate.prisma-data.net/?api_key=API_KEY\" ] && next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "npx prisma generate --no-engine",
     "generate:prisma": "node scripts/generate-prisma.js",
     "seed": "ts-node prisma/seed.ts"
   },
