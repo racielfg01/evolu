@@ -311,7 +311,7 @@ export function DateTimeSelection() {
         <p className="text-muted-foreground">Elige tu fecha y hora preferida para la cita</p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -319,13 +319,16 @@ export function DateTimeSelection() {
               Seleccionar Fecha
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent >
             <Calendar
+            
+            
               mode="single"
               selected={state.selectedDate || undefined}
               onSelect={handleDateSelect}
               disabled={isDateDisabled}
-              className="rounded-md border"
+              className="rounded-md border w-full"
+          
             />
             <div className="mt-4 text-sm text-muted-foreground">
               <p>• Citas disponibles de Lunes a Viernes</p>
@@ -373,11 +376,11 @@ export function DateTimeSelection() {
                       size="sm"
                       disabled={!slot.available}
                       onClick={() => handleTimeSelect(slot.time)}
-                      className="text-xs h-10"
+                      className={`text-xs text-black h-10 ${state.selectedTime === slot.time ?' bg-sage-300 hover:bg-sage-400':" bg-sage-100 hover:bg-sage-200"}`}
                     >
                       {slot.time}
                     </Button>
-                  ))}
+                  ))}   
                 </div>
                 <div className="text-xs text-muted-foreground">
                   {availableSlots.filter(slot => slot.available).length} horarios disponibles de {availableSlots.length}
@@ -391,6 +394,8 @@ export function DateTimeSelection() {
           </CardContent>
         </Card>
       </div>
+
+      
 
       {state.selectedDate && state.selectedTime && state.selectedStartDateTime && state.selectedEndDateTime && (
         <Card className="bg-muted/50">
