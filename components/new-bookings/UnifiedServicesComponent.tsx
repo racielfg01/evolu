@@ -446,7 +446,7 @@ export function UnifiedServicesComponent({
 
       {/* Resumen de servicios seleccionados (solo en modo selección) */}
       {mode === "selection" && state.selectedServices.length > 0 && (
-        <Card className="bg-muted/50">
+        <Card className="">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
