@@ -148,7 +148,9 @@ export function UserInformation() {
         <Button variant="outline" onClick={handleBack}>
           Volver a Fecha y Hora
         </Button>
-        <Button onClick={handleNext}>Revisar Reserva</Button>
+        <Button onClick={handleNext}
+         className="bg-sage-600 hover:bg-sage-700"
+        >Revisar Reserva</Button>
       </div>
     </div>
   )

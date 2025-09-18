@@ -278,7 +278,9 @@ const handleConfirmBooking = async () => {
         <Button variant="outline" onClick={handleBack} disabled={state.isLoading}>
           Volver a Detalles
         </Button>
-        <Button onClick={handleConfirmBooking} disabled={state.isLoading} size="lg">
+        <Button onClick={handleConfirmBooking} disabled={state.isLoading} size="lg"
+         className="bg-sage-600 hover:bg-sage-700"
+        >
           {state.isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
