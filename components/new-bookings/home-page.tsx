@@ -8,11 +8,10 @@ import Testimonials from "@/components/Testimonials"
 import Footer from "@/components/Footer"
 
 interface HomePageProps {
-  onBookNow: () => void
   onViewServices: () => void
 }
 
-export function HomePage({ onBookNow, onViewServices }: HomePageProps) {
+export function HomePage({ onViewServices }: HomePageProps) {
   // const featuredServices = mockServices.filter((s) => s.isActive).slice(0, 3)
 
   return (
@@ -20,7 +19,7 @@ export function HomePage({ onBookNow, onViewServices }: HomePageProps) {
  
       <Hero onViewServices={onViewServices} />
  
-      <Services onBookNow={ onBookNow} onViewServices={onViewServices}/>
+      <Services  onViewServices={onViewServices}/>
       <Booking/>
       <About/>
       

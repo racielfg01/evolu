@@ -5,11 +5,19 @@ import img1 from "@/assest/INjLRUqf.png";
 import { Button } from "./ui/button";
 import { Sparkles } from "lucide-react";
 // import { Calendar, Sparkles } from "lucide-react";
+// import { Tangerine } from 'next/font/google'
+// import { cn } from "@/lib/utils";
 
 interface HeroProps {
   // onBookNow: () => void;
   onViewServices: () => void;
 }
+ 
+// const geist = Tangerine({
+//   weight: '700',
+//   subsets: ['latin'],
+// })
+
 
 export default function Hero({  onViewServices }: HeroProps) {
   return (
@@ -38,9 +46,9 @@ export default function Hero({  onViewServices }: HeroProps) {
              Centro de Bienestar Integral Holístico
         
             </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            {/* Experimenta la belleza y el bienestar en su máxima expresión. Nuestros tratamientos profesionales te
-            ayudarán a lucir y sentirte increíble. */}
+          {/* <p className={cn(geist.className,"text-2xl lg:text-5xl  max-w-2xl mx-auto")}> */}
+          <p className={"text-xl lg:text-lg  max-w-2xl mx-auto text-muted-foreground"}>
+        
             El lugar donde siempre querrás regresar, porque siempre regresas donde fuiste feliz.
           </p>
         </div>

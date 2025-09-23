@@ -6,24 +6,25 @@ import { Badge } from "@/components/ui/badge";
 import { Clock } from "lucide-react";
 import { mockServices } from "@/lib/mock-data";
 import Image from "next/image";
-import { useEnhancedBooking } from "./new-bookings/enhanced-booking-context";
-import { useRouter } from "next/navigation";
+// import { useEnhancedBooking } from "./new-bookings/enhanced-booking-context";
+// import { useRouter } from "next/navigation";
 
 interface ServicesProps {
-  onBookNow: () => void;
+  // onBookNow: () => void;
   onViewServices: () => void;
 }
 
-export default function Services({ onBookNow,  onViewServices}: ServicesProps) {
-    const {push} =useRouter()
-  const { state } = useEnhancedBooking();
-  const handleOnBook =()=>{
-   if (!state.userInfo.id) {
-      push("/login");
-    } else {
-      onBookNow()
-    }
-  }
+export default function Services({  onViewServices}: ServicesProps) {
+  //   const {push} =useRouter()
+  // const { state } = useEnhancedBooking();
+
+  // const handleOnBook =()=>{
+  //  if (!state.userInfo.id) {
+  //     push("/login");
+  //   } else {
+  //     onBookNow()
+  //   }
+  // }
 
   const featuredServices = mockServices.filter((s) => s.isActive).slice(0, 4);
   return (
@@ -34,11 +35,10 @@ export default function Services({ onBookNow,  onViewServices}: ServicesProps) {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-sage-900 mb-4">
-              Nuestros Servicios
+              Los más Pedidos
             </h2>
             <p className="text-sage-700 max-w-2xl mx-auto">
-              Adaptamos nuestros servicios para satisfacer tus necesidades y
-              preferencias individuales.
+        ¿No sabes por donde empezar?. Entonces prueba los más pedidos de Evolu
             </p>
           </div>
           <div className="grid gap-6 md:grid-cols-4">
@@ -65,7 +65,7 @@ export default function Services({ onBookNow,  onViewServices}: ServicesProps) {
 
                   <div className="text-sm text-muted-foreground h-[72px]">
                     <p className="line-clamp-3 mb-2">{service.description}</p>
-                    {service.description.length > 120 && (
+                    {service.description.length > 50 && (
                       <Link
                         href="#"
                         className="text-sage-600 hover:text-sage-700 text-xs font-medium"
@@ -92,12 +92,12 @@ export default function Services({ onBookNow,  onViewServices}: ServicesProps) {
                     </span>
                   </div>
 
-                  <Button
+                  {/* <Button
                     className="w-full bg-sage-600 hover:bg-sage-700 text-white px-6 py-3 rounded-md transition-colors font-medium"
                     onClick={handleOnBook}
                   >
                     Reservar Ahora
-                  </Button>
+                  </Button> */}
                 </CardContent>
               </Card>
             ))}

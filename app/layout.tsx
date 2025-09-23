@@ -6,10 +6,13 @@ import Providers from "../lib/providers/Provider";
 
 import { Toaster } from "@/components/ui/sonner"
 
+
+
 export const metadata = {
   title: "Superblog",
   description: "A blog app using Next.js and Prisma",
 };
+
 
 export default function RootLayout({
   children,

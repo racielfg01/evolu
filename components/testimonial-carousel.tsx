@@ -4,13 +4,13 @@ import { useState, useEffect, useCallback } from "react"
 import Image from "next/image"
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react"
 import avatar1 from "@/assest/avatars/avatar1.jpeg";
-import avatar2 from "@/assest/avatars/avatar2.png";
-import avatar3 from "@/assest/avatars/avatar3.jpeg";
+import avatar2 from "@/assest/avatars/av3.jpg";
+import avatar4 from "@/assest/avatars/cere.jpeg";
 
 const testimonials = [
   {
     id: 1,
-    name: "Julia Robinson",
+    name: "Julio Robinson",
     role: "Cliente Regular",
     image: avatar1,
     quote:
@@ -18,7 +18,7 @@ const testimonials = [
   },
   {
     id: 2,
-    name: "Michael Chen",
+    name: "Daniela Fernandez",
     role: "Visitante por Primera Vez",
     image:avatar2,
     quote:
@@ -26,10 +26,10 @@ const testimonials = [
   },
   {
     id: 3,
-    name: "Sarah Williams",
+    name: "Cerelda Coromidas",
     role: "Miembro Mensual",
     // image: "/placeholder.svg?height=80&width=80",
-    image: avatar3,
+    image: avatar4,
     quote:
       "He sido miembro durante más de un año, y la calidad del servicio nunca ha disminuido. Los faciales son excepcionales, y siempre salgo sintiéndome renovada y radiante. Este spa se ha convertido en mi ritual esencial de cuidado personal.",
   },

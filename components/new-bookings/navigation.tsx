@@ -14,9 +14,6 @@ import {
   User,
   Settings,
   LogOut,
-  // Home,
-  Sparkles,
-  // Leaf,
 } from "lucide-react";
 import { useEnhancedBooking } from "./enhanced-booking-context";
 import Link from "next/link";
@@ -77,7 +74,6 @@ export function Navigation({ currentView, onViewChange,isAdmin }: NavigationProp
                 onClick={() => onViewChange("services")}
                 className={`flex items-center space-x-2  text-md  ${currentView === "services" ? "bg-sage-600 hover:bg-sage-700 text-white" : "text-sage-700 hover:text-sage-900 font-medium"} `}
               >
-                <Sparkles className="h-4 w-4" />
                 <span>Servicios</span>
               </Button>
 

@@ -62,15 +62,7 @@ export function BookingContent({ user }: { user: UserAppMetadata | null }) {
     switch (state.currentStep) {
       case 1:
         return (
-          // <EnhancedServiceSelection
-          //  services={services}
-          //     isLoadingService={isLoadingService}
-          //     errorServices={errorServices}
-          //     categories={categories}
-          //     isLoadingCategories={isLoadingCategories}
-          //     errorCategories={errorCategories}
-
-          // />
+  
           <UnifiedServicesComponent
             mode="selection"
             services={services}
@@ -105,14 +97,7 @@ export function BookingContent({ user }: { user: UserAppMetadata | null }) {
             showFilters={true}
             showSearch={true}
           />
-        // <EnhancedServiceSelection
-        //   services={services}
-        //   isLoadingService={isLoadingService}
-        //   errorServices={errorServices}
-        //   categories={categories}
-        //   isLoadingCategories={isLoadingCategories}
-        //   errorCategories={errorCategories}
-        // />;
+    
     }
   };
 
@@ -121,36 +106,24 @@ export function BookingContent({ user }: { user: UserAppMetadata | null }) {
       case "home":
         return (
           <HomePage
-            onBookNow={() => setCurrentView("booking")}
             onViewServices={() => setCurrentView("services")}
           />
         );
       case "home-about":
         return (
           <HomePage
-            onBookNow={() => setCurrentView("booking")}
             onViewServices={() => setCurrentView("services")}
           />
         );
       case "home-reviews":
         return (
           <HomePage
-            onBookNow={() => setCurrentView("booking")}
             onViewServices={() => setCurrentView("services")}
           />
         );
       case "services":
         return (
-          // <ServicesCatalog
-          //   onServiceSelect={handleServiceSelect}
-          //   onBookNow={() => setCurrentView("booking")}
-          //   services={services}
-          //   isLoadingService={isLoadingService}
-          //   errorServices={errorServices}
-          //   categories={categories}
-          //   isLoadingCategories={isLoadingCategories}
-          //   errorCategories={errorCategories}
-          // />
+          
           <UnifiedServicesComponent
             mode="catalog"
             onServiceSelect={handleServiceSelect}
@@ -182,7 +155,6 @@ export function BookingContent({ user }: { user: UserAppMetadata | null }) {
       default:
         return (
           <HomePage
-            onBookNow={() => setCurrentView("booking")}
             onViewServices={() => setCurrentView("services")}
           />
         );

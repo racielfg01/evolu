@@ -1,158 +1,123 @@
-import type { Service, Booking, UserInfo, AdminStats, SystemConfig } from "./types"
+import type {
+  Service,
+  Booking,
+  UserInfo,
+  AdminStats,
+  SystemConfig,
+} from "./types";
 
-import img1 from '@/assest/Massage-Therapy.jpg'
-import img2 from '@/assest/Desertika_Faciales_HidratacionProfunda.jpg'
-import img3 from '@/assest/tratamientos-corporales.webp'
-import img4 from '@/assest/podologia.jpg'
-
-
+// import img1 from "@/assest/Massage-Therapy.jpg";
+// import img2 from "@/assest/Desertika_Faciales_HidratacionProfunda.jpg";
+// import img3 from "@/assest/tratamientos-corporales.webp";
+import img4 from "@/assest/podologia.jpg";
+import img5 from "@/assest/depilacion_axila.jpeg";
+import img6 from "@/assest/masaje_relajante.jpeg";
+import img7 from "@/assest/quiro_masaje.jpeg";
 
 export const mockServices: Service[] = [
   {
     id: "1",
-    name: "Facial Clásico",
-    description: "Limpieza profunda facial con extracción y tratamiento hidratante",
+    name: "Depilación de Axilas",
+    description:
+      "Piel suave y fresca con técnica profesional que respeta tu sensibilidad",
     detailedDescription:
-      "Nuestro facial clásico es un tratamiento completo que incluye limpieza profunda, exfoliación suave, extracción de impurezas y aplicación de mascarilla hidratante. Perfecto para todo tipo de piel.",
-    duration: 60,
-    price: 85,
-    // image: img2"/placeholder.svg?height=300&width=400",
-    image: img2,
+      "Servicio de depilación con cera hipoalergénica en la zona axilar, incluye pre-limpieza con solución antiséptica, aplicación de cera a temperatura controlada y tratamiento post-depilatorio con gel calmante. Realizado en cabina privada con todas las medidas de higiene.",
+    duration: 15,
+    price: 600,
+    image: img5,
     benefits: [
-      "Limpieza profunda de poros",
-      "Eliminación de células muertas",
-      "Hidratación intensa",
-      "Mejora la textura de la piel",
+      "Piel suave por más tiempo semanas",
+      "Reducción progresiva del vello",
+      "Menor irritación vs. rasurada",
+      "Mayor eficacia de antitranspirantes",
     ],
     preparation: [
-      "No usar productos exfoliantes 24h antes",
-      "Llegar sin maquillaje",
-      "Informar sobre alergias o sensibilidades",
+      "Vello de mínimo 5mm de longitud o el largo de u. Granito de arroz",
+      " Se prefiere evitar exposición solar antes y después",
+      "No aplicar cremas ni desodorante el día del servicio",
     ],
-    category: "Faciales",
+    category: "Depilación",
     isActive: true,
   },
   {
     id: "2",
-    name: "Podología",
-    description: "Consiente tus manos y pies con nuestros meticulosos servicios de cuidado de uñas. Elige entre una variedad de colores y acabados para completar tu look.",
+    name: "Depilación Brasileña",
+    description: "Eliminación total de vello en zona íntima.",
     detailedDescription:
-      "Tratamiento especializado para pieles secas y deshidratadas. Incluye limpieza suave, aplicación de suero hidratante y mascarilla nutritiva con ácido hialurónico.",
-    duration: 75,
-    price: 95,
+      "Depilación completa del área vulvar (labios mayores y menores), perineal y anal. Realizado con cera hipoalergénica especial para zonas sensibles y técnica profesional que garantiza máxima higiene y comodidad en cabina privada.",
+    duration: 30,
+    price: 1800,
     image: img4,
-    benefits: ["Hidratación profunda", "Restaura la barrera cutánea", "Reduce la sequedad", "Aporta luminosidad"],
-    preparation: ["Suspender retinoides 48h antes", "Mantener la piel hidratada", "Evitar exposición solar intensa"],
-    category: "Faciales",
+    benefits: [
+      "Piel suave por 4-5 semanas",
+      "Higiene optimizada",
+      "Diseño personalizado (total o con línea)",
+      "Reducción progresiva del vello",
+      "Comodidad en ropa interior y deportiva",
+    ],
+    preparation: [
+      "Vello de mínimo 5mm de longitud",
+      "Evitar exposición solar 12h antes y después",
+      "No aplicar cremas el día del servicio",
+      "Recomendable exfoliar suavemente la zona 24h antes",
+    ],
+    category: "Depilación Íntima",
     isActive: true,
   },
   {
     id: "3",
-    name: "Terapia de Masajes",
-    description: "Disfruta del poder curativo del tacto con nuestra terapia de masajes personalizada. Nuestros terapeutas experimentados adaptan cada sesión para abordar tus necesidades específicas.",
-    detailedDescription:
-      "Tratamiento anti-edad con tecnología avanzada que combina péptidos, vitamina C y colágeno para reducir signos de envejecimiento y mejorar la firmeza de la piel.",
-    duration: 90,
-    price: 120,
-    image: img1,
-    benefits: [
-      "Reduce líneas de expresión",
-      "Mejora la firmeza",
-      "Estimula la producción de colágeno",
-      "Unifica el tono de piel",
-    ],
-    preparation: [
-      "Consulta previa recomendada",
-      "No usar ácidos 72h antes",
-      "Protección solar obligatoria post-tratamiento",
-    ],
-    category: "Faciales",
+      name: "Quiromasaje Relajante - Cuerpo Completo",
+  description: "Terapia manual que libera tensiones físicas y emocionales mediante movimientos armoniosos",
+  detailedDescription: 
+    "Masaje terapeútico de cuerpo completo que combina técnicas suaves de quieropraxia, amasamiento, deslizamientos y presiones controladas. Trabajamos espalda, cuello, hombros, brazos, piernas y pies con aceites esenciales personalizados según tus necesidades. Sesión diseñada para inducir estado de calma profunda mientras liberamos contracturas musculares.",
+  duration: 90,
+  price: 3500,
+  image: img7,
+  benefits: [
+    "Liberación de tensión muscular",
+    "Mejora de la circulación sanguínea",
+    "Reducción de estrés y ansiedad",
+    "Mejor calidad de sueño",
+    "Recarga de energía vital", 
+" Descompresión articular controlada" 
+  ],
+  preparation: [
+    "Ropa cómoda preferiblemente",
+    "Evitar comidas pesadas 2h antes",
+    "Informar sobre lesiones o condiciones médicas",
+    "Llegar 10min antes para sesión de aromaselección y momento infusión herbal",
+    "Mantener hidratación post-sesión"
+  ],
+  
+  category: "Masajes Terapéuticos",
     isActive: true,
   },
   {
     id: "4",
-    name: "Tratamientos Corporales",
-    description: "Mima tu cuerpo con una experiencia relajante y rejuvenecedora con nuestros envolturas, exfoliantes y otros tratamientos especiales.",
-    detailedDescription:
-      "Servicio de depilación y diseño de cejas utilizando la técnica del hilo. Incluye consulta de forma, depilación precisa y acabado con productos calmantes.",
-    duration: 30,
-    price: 35,
-    image: img3,
-    benefits: ["Precisión máxima", "Duración prolongada", "No irrita la piel", "Diseño personalizado"],
-    preparation: ["Dejar crecer el vello 2 semanas", "No usar cremas exfoliantes", "Informar sobre medicamentos"],
-    category: "Cejas y Pestañas",
+     name: "Masaje Relajante - Cuerpo Completo",
+  description: "Viaje sensorial que disuelve el estrés y reconecta cuerpo y mente",
+  detailedDescription: 
+    "Experiencia de relajación profunda que abarca espalda, cuello, hombros, brazos, piernas y pies. Combinamos técnicas suaves de amasamiento, deslizamientos largos y presiones rítmicas con aceites esenciales relajantes (lavanda, manzanilla). Cada movimiento está diseñado para liberar endorfinas y inducir un estado de calma profunda, en un ambiente con música terapéutica y aromas cuidadosamente seleccionados.",
+  duration: 60,
+  price: 2500,
+  image: img6,
+  benefits: [
+    "Reducción inmediata del cortisol (hormona del estrés)",
+    "Mejora de la calidad del sueño",
+    "Alivio de tensiones musculares",
+    "Estimulación del sistema linfático",
+    "Renovación energética integral"
+  ],
+  preparation: [
+    "Ropa cómoda preferiblemente",
+    "No ingerir alimentos pesados 2h antes",
+    "Comunicar preferencias de presión o zonas a trabajar",
+    "Llegar 10min antes para sesión de aromaselección y momento infusión herbal"
+  ],
+  category: "Masajes Relajantes",
     isActive: true,
-  },
-  {
-    id: "5",
-    name: "Extensiones de Pestañas",
-    description: "Set completo de extensiones individuales de pestañas premium",
-    detailedDescription:
-      "Aplicación de extensiones de pestañas individuales de alta calidad. Proceso que dura 2 horas para lograr pestañas más largas, voluminosas y curvadas de forma natural.",
-    duration: 120,
-    price: 150,
-    image:img1,
-    benefits: ["Pestañas más largas y voluminosas", "Aspecto natural", "Duración 4-6 semanas", "Resistente al agua"],
-    preparation: [
-      "Llegar sin maquillaje en los ojos",
-      "No usar rizador de pestañas 24h antes",
-      "Evitar cafeína antes del tratamiento",
-    ],
-    category: "Cejas y Pestañas",
-    isActive: true,
-  },
-  {
-    id: "6",
-    name: "Manicura",
-    description: "Cuidado completo de uñas con aplicación de esmalte",
-    detailedDescription:
-      "Servicio completo de manicura que incluye limado, cutícula, exfoliación de manos, masaje hidratante y aplicación de esmalte de larga duración.",
-    duration: 45,
-    price: 45,
-    image: img1,
-    benefits: [
-      "Uñas perfectamente cuidadas",
-      "Manos suaves e hidratadas",
-      "Esmalte de larga duración",
-      "Relajación y bienestar",
-    ],
-    preparation: ["Retirar esmalte anterior", "Hidratar las manos regularmente", "No cortar cutículas en casa"],
-    category: "Uñas",
-    isActive: true,
-  },
-  {
-    id: "7",
-    name: "Pedicura",
-    description: "Tratamiento relajante de pies con cuidado de uñas y masaje",
-    detailedDescription:
-      "Tratamiento completo de pedicura con baño de pies, exfoliación, cuidado de cutículas, masaje relajante y aplicación de esmalte. Incluye tratamiento de callos y durezas.",
-    duration: 60,
-    price: 55,
-    image: img1,
-    benefits: ["Pies suaves y cuidados", "Eliminación de durezas", "Relajación profunda", "Uñas perfectas"],
-    preparation: ["Lavar bien los pies", "No usar cremas muy grasas", "Informar sobre problemas en los pies"],
-    category: "Uñas",
-    isActive: true,
-  },
-  {
-    id: "8",
-    name: "Masaje de Tejido Profundo",
-    description: "Masaje terapéutico para tensión muscular y nudos",
-    detailedDescription:
-      "Masaje terapéutico especializado en liberar tensión muscular profunda. Utiliza técnicas específicas para tratar nudos, contracturas y mejorar la circulación sanguínea.",
-    duration: 60,
-    price: 90,
-    image: img1,
-    benefits: ["Alivia tensión muscular", "Mejora la circulación", "Reduce el estrés", "Aumenta la flexibilidad"],
-    preparation: [
-      "Hidratarse bien antes del masaje",
-      "No comer comida pesada 2h antes",
-      "Informar sobre lesiones o dolores",
-    ],
-    category: "Masajes",
-    isActive: true,
-  },
-]
+  }
+];
 
 export const mockUser: UserInfo = {
   id: "user-1",
@@ -161,7 +126,7 @@ export const mockUser: UserInfo = {
   phone: "+34 666 123 456",
   notes: "",
   avatar: "/placeholder.svg?height=100&width=100",
-}
+};
 
 export const mockBookings: Booking[] = [
   {
@@ -201,7 +166,7 @@ export const mockBookings: Booking[] = [
     totalDuration: 105,
     createdAt: new Date(2024, 11, 1),
   },
-]
+];
 
 export const mockAdminStats: AdminStats = {
   totalBookings: 156,
@@ -226,7 +191,7 @@ export const mockAdminStats: AdminStats = {
     { status: "Pendientes", count: 12 },
     { status: "Canceladas", count: 3 },
   ],
-}
+};
 
 export const mockSystemConfig: SystemConfig = {
   interServiceBuffer: {
@@ -282,4 +247,4 @@ export const mockSystemConfig: SystemConfig = {
       order: 4,
     },
   ],
-}
+};

@@ -25,6 +25,14 @@ import Image from "next/image";
 import { ServiceWithRelations } from "@/lib/actions/services.actions";
 import { useEnhancedBooking } from "@/components/new-bookings/enhanced-booking-context";
 import { useRouter } from "next/navigation";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "../ui/carousel";
 
 interface UnifiedServicesComponentProps {
   mode: "catalog" | "selection";
@@ -52,8 +60,8 @@ export function UnifiedServicesComponent({
   categories,
   isLoadingCategories,
   errorCategories,
-  title,
-  description,
+  // title,
+  // description,
   showFilters = true,
   showSearch = true,
 }: UnifiedServicesComponentProps) {
@@ -62,10 +70,19 @@ export function UnifiedServicesComponent({
   const [selectedCategory, setSelectedCategory] = useState({
     id: "todos",
     name: "Todos",
-  });
+  }); 
+   const [usdValue, setUsdValue] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const [detailService, setDetailService] =
     useState<ServiceWithRelations | null>(null);
+
+
+    useEffect(() => {
+     setUsdValue(420)
+     
+    }, [])
+    
+    
 
   // Efectos para calcular duración y precio total (solo en modo selección)
   useEffect(() => {
@@ -166,7 +183,7 @@ export function UnifiedServicesComponent({
   if (detailService) {
     return (
       <div className="space-y-6">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 mt-10">
           <Button
             variant="outline"
             size="sm"
@@ -176,18 +193,34 @@ export function UnifiedServicesComponent({
             <ArrowLeft className="h-4 w-4" />
             {mode === "selection" ? "Volver" : "Volver al Catálogo"}
           </Button>
-          <h2 className="text-2xl font-bold">{detailService.name}</h2>
         </div>
-
+{/* 
         <div className="grid gap-6 lg:grid-cols-2">
           <div className="space-y-4">
-            <Image
-              src={detailService.images?.[0]?.url || "/placeholder.svg"}
-              alt={detailService.name}
-              width={400}
-              height={256}
-              className="w-full h-64 object-cover rounded-lg"
-            />
+            <Carousel className="w-full max-w-xs">
+              <CarouselContent>
+                {detailService.images.map((_, index) => (
+                  <CarouselItem key={index}>
+                    <div className="p-1">
+                      <Image
+                        src={
+                          detailService.images?.[index]?.url ||
+                          "/placeholder.svg"
+                        }
+                        alt={detailService.name}
+                        width={400}
+                        height={256}
+                        className="w-full h-64 object-cover rounded-lg"
+                      />
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious />
+              <CarouselNext />
+            </Carousel>
+
+            <h2 className="text-2xl font-bold">{detailService.name}</h2>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <Clock className="h-4 w-4 text-muted-foreground" />
@@ -265,7 +298,157 @@ export function UnifiedServicesComponent({
                 : "Reservar Este Servicio"}
             </Button>
           </div>
+        </div> */}
+
+        <div className="grid gap-6 lg:grid-cols-2">
+  {/* Columna izquierda - Imágenes e información básica */}
+  <div className="space-y-4">
+    {/* Carousel de imágenes */}
+    {detailService.images && detailService.images.length > 0 ? (
+      <Carousel className="w-full">
+        <CarouselContent>
+          {detailService.images.map((image, index) => (
+            <CarouselItem key={image.id || index}>
+              <div className="p-1">
+                <Image
+                  src={image.url || "/placeholder.svg"}
+                  alt={`${detailService.name} - Imagen ${index + 1}`}
+                  width={400}
+                  height={256}
+                  className="w-full h-48 sm:h-64 object-cover rounded-lg"
+                />
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        
+        {/* Mostrar controles solo si hay múltiples imágenes */}
+        {detailService.images.length > 1 && (
+          <>
+            <CarouselPrevious className="left-2 h-8 w-8 sm:h-10 sm:w-10" />
+            <CarouselNext className="right-2 h-8 w-8 sm:h-10 sm:w-10" />
+          </>
+        )}
+        
+        {/* Indicadores de posición */}
+        {detailService.images.length > 1 && (
+          <div className="flex justify-center gap-1 mt-2">
+            {detailService.images.map((_, index) => (
+              <div
+                key={index}
+                className="w-1.5 h-1.5 rounded-full bg-muted-foreground/30"
+              />
+            ))}
+          </div>
+        )}
+      </Carousel>
+    ) : (
+      // Placeholder cuando no hay imágenes
+      <div className="w-full h-48 sm:h-64 bg-muted rounded-lg flex items-center justify-center">
+        <Image
+          src="/placeholder.svg"
+          alt="Sin imágenes"
+          width={200}
+          height={150}
+          className="opacity-50"
+        />
+      </div>
+    )}
+
+    {/* Información del servicio */}
+    <div className="space-y-3">
+      <h2 className="text-xl sm:text-2xl font-bold leading-tight">
+        {detailService.name}
+      </h2>
+      
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-2 text-sm sm:text-base">
+          <Clock className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+          <span>{detailService.duration} min</span>
         </div>
+        <div className="flex items-center gap-2 text-sm sm:text-base">
+          <DollarSign className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+          <span className="font-semibold">{detailService.price} USD</span>
+        </div> 
+         <div className="flex items-center gap-2 text-sm sm:text-base">
+          <DollarSign className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+          <span className="font-semibold">{detailService.price * usdValue} cup</span>
+        </div>
+        <Badge 
+          variant="secondary" 
+          className="text-xs sm:text-sm w-fit"
+        >
+          {categories.find((c) => c.id === detailService.category_id)?.name || 
+           detailService.category_id}
+        </Badge>
+      </div>
+    </div>
+  </div>
+
+  {/* Columna derecha - Detalles y acción */}
+  <div className="space-y-4 sm:space-y-6">
+    {/* Descripción */}
+    <div>
+      <h3 className="text-lg font-semibold mb-2 sm:mb-3">Descripción</h3>
+      <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
+        {detailService.detailedDescription || detailService.description}
+      </p>
+    </div>
+
+    {/* Beneficios */}
+    {detailService.benefits && detailService.benefits.length > 0 && (
+      <div>
+        <h3 className="text-lg font-semibold mb-2 sm:mb-3">Beneficios</h3>
+        <ul className="space-y-2">
+          {detailService.benefits.map((benefit, index) => (
+            <li key={index} className="flex items-start gap-2">
+              <Check className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+              <span className="text-sm sm:text-base">{benefit}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+
+    {/* Preparación */}
+    {detailService.preparation && detailService.preparation.length > 0 && (
+      <div>
+        <h3 className="text-lg font-semibold mb-2 sm:mb-3">Preparación</h3>
+        <ul className="space-y-2">
+          {detailService.preparation.map((prep, index) => (
+            <li key={index} className="flex items-start gap-2">
+              <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0" />
+              <span className="text-sm sm:text-base text-muted-foreground">
+                {prep}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+
+    {/* Botón de acción */}
+    <Button
+      onClick={() => {
+        handleServiceAction(detailService);
+        setDetailService(null);
+      }}
+      className={`w-full text-sm sm:text-base py-3 sm:py-4 ${
+        mode === "selection" &&
+        state.selectedServices.some((s) => s.id === detailService.id)
+          ? "bg-red-500 hover:bg-red-600"
+          : "bg-sage-600 hover:bg-sage-700"
+      } text-white rounded-md transition-colors font-medium`}
+      size="lg"
+    >
+      {mode === "selection"
+        ? state.selectedServices.some((s) => s.id === detailService.id)
+          ? "Quitar del Carrito"
+          : "Agregar al Carrito"
+        : "Reservar Este Servicio"}
+    </Button>
+  </div>
+</div>
       </div>
     );
   }
@@ -273,14 +456,14 @@ export function UnifiedServicesComponent({
   // Vista principal de lista de servicios
   return (
     <div className="space-y-6 mt-10">
-      {(title || description) && (
+      {/* {(title || description) && (
         <div className="text-center">
           {title && <h2 className="text-2xl font-bold mb-2">{title}</h2>}
           {description && (
             <p className="text-muted-foreground">{description}</p>
           )}
         </div>
-      )}
+      )} */}
 
       {/* Búsqueda y Filtros */}
       {(showSearch || showFilters) && (
@@ -297,49 +480,56 @@ export function UnifiedServicesComponent({
             </div>
           )}
 
-          {showFilters && (
-            <div className="flex flex-wrap gap-2 justify-center">
-              <Button
-                className={
-                  selectedCategory.name === "Todos"
-                    ? "bg-sage-600 hover:bg-sage-700 text-white px-5 py-2 rounded-md transition-colors"
-                    : "bg-white hover:bg-slate-50 text-black px-5 py-2 rounded-md transition-colors"
-                }
-                key="todos"
-                variant={
-                  selectedCategory.name === "Todos" ? "default" : "outline"
-                }
-                size="sm"
-                onClick={() =>
-                  setSelectedCategory({ id: "todos", name: "Todos" })
-                }
-              >
-                Todos
-              </Button>
-              {categories.map((category) => (
-                <Button
-                  key={category.id}
-                  className={
-                    selectedCategory.id === category.id
-                      ? "bg-sage-600 hover:bg-sage-700 text-white px-5 py-2 rounded-md transition-colors"
-                      : "bg-white hover:bg-slate-50 text-black px-5 py-2 rounded-md transition-colors"
-                  }
-                  variant={
-                    selectedCategory.id === category.id ? "default" : "outline"
-                  }
-                  size="sm"
-                  onClick={() => setSelectedCategory(category)}
-                >
-                  {category.name}
-                </Button>
-              ))}
+          <ScrollArea className="w-full whitespace-nowrap">
+            <div className="flex space-x-2 p-1">
+              {showFilters && (
+                <>
+                  <Button
+                    className={
+                      selectedCategory.name === "Todos"
+                        ? "bg-sage-600 hover:bg-sage-700 text-white px-5 py-2 rounded-md transition-colors flex-shrink-0"
+                        : "bg-white hover:bg-slate-50 text-black px-5 py-2 rounded-md transition-colors flex-shrink-0"
+                    }
+                    key="todos"
+                    variant={
+                      selectedCategory.name === "Todos" ? "default" : "outline"
+                    }
+                    size="sm"
+                    onClick={() =>
+                      setSelectedCategory({ id: "todos", name: "Todos" })
+                    }
+                  >
+                    Todos
+                  </Button>
+                  {categories.map((category) => (
+                    <Button
+                      key={category.id}
+                      className={
+                        selectedCategory.id === category.id
+                          ? "bg-sage-600 hover:bg-sage-700 text-white px-5 py-2 rounded-md transition-colors flex-shrink-0"
+                          : "bg-white hover:bg-slate-50 text-black px-5 py-2 rounded-md transition-colors flex-shrink-0"
+                      }
+                      variant={
+                        selectedCategory.id === category.id
+                          ? "default"
+                          : "outline"
+                      }
+                      size="sm"
+                      onClick={() => setSelectedCategory(category)}
+                    >
+                      {category.name}
+                    </Button>
+                  ))}
+                </>
+              )}
             </div>
-          )}
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
         </div>
       )}
 
       {/* Grid de Servicios */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-2 lg:gap-4 grid-cols-2 lg:grid-cols-3">
         {filteredServices.map((service) => {
           const isSelected =
             mode === "selection"
@@ -351,63 +541,87 @@ export function UnifiedServicesComponent({
               key={service.id}
               className={`transition-all hover:shadow-md ${
                 isSelected ? "ring-2 ring-primary bg-primary/5" : ""
-              }`}
+              } w-full max-w-sm mx-auto`} // Added responsive width constraints
             >
               <div className="relative">
                 <Image
                   src={service.images?.[0]?.url || "/placeholder.svg"}
                   alt={service.name}
-                  width={300}
-                  height={192}
-                  className="w-full h-48 object-cover rounded-t-lg"
+                  width={280} // Reduced for mobile
+                  height={160} // Reduced height for mobile
+                  className="w-full h-40 sm:h-48 object-cover rounded-t-lg" // Responsive height
                 />
                 {isSelected && (
                   <div className="absolute top-2 right-2 bg-primary text-primary-foreground rounded-full p-1">
-                    <Check className="h-4 w-4" />
+                    <Check className="h-3 w-3 sm:h-4 sm:w-4" />{" "}
+                    {/* Responsive icon size */}
                   </div>
                 )}
-                <Badge className="absolute top-2 left-2" variant="secondary">
+                <Badge
+                  className="absolute top-2 left-2 text-xs"
+                  variant="secondary"
+                >
+                  {" "}
+                  {/* Smaller text */}
                   {categories.find((c) => c.id === service.category_id)?.name ||
                     service.category_id}
                 </Badge>
               </div>
 
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg">{service.name}</CardTitle>
-                <CardDescription className="text-sm line-clamp-2">
+              <CardHeader className="pb-2 px-4 sm:px-6">
+                {" "}
+                {/* Reduced padding for mobile */}
+                <CardTitle className="text-base sm:text-lg leading-tight">
+                  {" "}
+                  {/* Responsive text */}
+                  {service.name}
+                </CardTitle>
+                <CardDescription className="text-xs sm:text-sm line-clamp-2 mt-1">
+                  {" "}
+                  {/* Smaller text */}
                   {service.description}
                 </CardDescription>
               </CardHeader>
 
-              <CardContent className="pt-0 space-y-3">
+              <CardContent className="pt-0 space-y-3 px-4 sm:px-6 pb-4">
+                {" "}
+                {/* Adjusted padding */}
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
+                    {" "}
+                    {/* Reduced gap */}
                     <div className="flex items-center gap-1">
-                      <Clock className="h-4 w-4" />
+                      <Clock className="h-3 w-3 sm:h-4 sm:w-4" />{" "}
+                      {/* Responsive icons */}
                       <span>{service.duration} min</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <DollarSign className="h-4 w-4" />
-                      <span>${service.price}</span>
+                      <DollarSign className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <span>{service.price} USD</span>
                     </div>
+                     <div className="flex items-center gap-2 text-sm sm:text-base">
+          <DollarSign className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+          <span className="font-semibold">{service.price * usdValue} cup</span>
+        </div>
                   </div>
                 </div>
-
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
+                  {" "}
+                  {/* Stack vertically on mobile */}
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => setDetailService(service)}
-                    className="flex-1"
+                    className="flex-1 text-xs sm:text-sm py-1.5" // Smaller padding and text
                   >
-                    <Eye className="h-4 w-4 mr-1" />
+                    <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                     Ver Detalles
                   </Button>
                   <Button
                     variant={isSelected ? "destructive" : "default"}
                     size="sm"
                     onClick={() => handleServiceAction(service)}
-                    className={`flex px-5 py-2 rounded-md transition-colors ${
+                    className={`text-xs sm:text-sm py-1.5 ${
                       isSelected
                         ? "bg-red-500 hover:bg-red-400"
                         : "bg-sage-600 hover:bg-sage-500"
@@ -464,7 +678,8 @@ export function UnifiedServicesComponent({
                   Duración Total: {state.totalDuration} min
                 </div>
                 <div className="text-lg font-semibold">
-                  Total: ${state.totalPrice}
+                        <DollarSign className="h-3 w-3 sm:h-4 sm:w-4" />
+                  Total: {state.totalPrice} USD
                 </div>
               </div>
             </div>
