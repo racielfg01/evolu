@@ -480,7 +480,7 @@ export function UnifiedServicesComponent({
                 <div className="flex items-center justify-between">
               <div className="flex flex-wrap gap-1.5 text-xs sm:text-sm">
                   {/* Precio CUP (destacado) */}
-  <div className="flex items-center gap-1 bg-sage-400 text-white px-2 py-1.5 rounded-lg">
+  <div className="flex items-center gap-1 bg-gray-400 text-white px-2 py-1.5 rounded-lg">
     <DollarSign className="h-3 w-3 flex-shrink-0" />
     <span className="font-semibold">{(service.price * usdValue).toLocaleString()} CUP</span>
   </div>
