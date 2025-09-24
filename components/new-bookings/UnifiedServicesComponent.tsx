@@ -77,7 +77,7 @@ export function UnifiedServicesComponent({
     useState<ServiceWithRelations | null>(null);
 
   useEffect(() => {
-    setUsdValue(420);
+    setUsdValue(430);
   }, []);
 
   // Efectos para calcular duración y precio total (solo en modo selección)
@@ -573,7 +573,7 @@ export function UnifiedServicesComponent({
                   Duración Total: {state.totalDuration} min
                 </div>
                 <div className="flex text-sm font-semibold">
-                  Total: $ {state.totalPrice} USD - ${state.totalPrice*420} cup
+                  Total: $ {state.totalPrice} USD - ${state.totalPrice*usdValue} cup
                 </div>
               </div>
             </div>
