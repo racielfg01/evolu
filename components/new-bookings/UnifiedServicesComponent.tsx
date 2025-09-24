@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
+  CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -60,8 +61,7 @@ export function UnifiedServicesComponent({
   categories,
   isLoadingCategories,
   errorCategories,
-  // title,
-  // description,
+
   showFilters = true,
   showSearch = true,
 }: UnifiedServicesComponentProps) {
@@ -190,111 +190,7 @@ export function UnifiedServicesComponent({
             {mode === "selection" ? "Volver" : "Volver al Catálogo"}
           </Button>
         </div>
-        {/* 
-        <div className="grid gap-6 lg:grid-cols-2">
-          <div className="space-y-4">
-            <Carousel className="w-full max-w-xs">
-              <CarouselContent>
-                {detailService.images.map((_, index) => (
-                  <CarouselItem key={index}>
-                    <div className="p-1">
-                      <Image
-                        src={
-                          detailService.images?.[index]?.url ||
-                          "/placeholder.svg"
-                        }
-                        alt={detailService.name}
-                        width={400}
-                        height={256}
-                        className="w-full h-64 object-cover rounded-lg"
-                      />
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
-            </Carousel>
-
-            <h2 className="text-2xl font-bold">{detailService.name}</h2>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-muted-foreground" />
-                <span>{detailService.duration} min</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
-                <span className="text-lg font-semibold">
-                  ${detailService.price}
-                </span>
-              </div>
-              <Badge variant="secondary">
-                {categories.find((c) => c.id === detailService.category_id)
-                  ?.name || detailService.category_id}
-              </Badge>
-            </div>
-          </div>
-
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold mb-2">Descripción</h3>
-              <p className="text-muted-foreground">
-                {detailService.detailedDescription || detailService.description}
-              </p>
-            </div>
-
-            {detailService.benefits && detailService.benefits.length > 0 && (
-              <div>
-                <h3 className="text-lg font-semibold mb-2">Beneficios</h3>
-                <ul className="space-y-1">
-                  {detailService.benefits.map((benefit, index) => (
-                    <li key={index} className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-600" />
-                      <span className="text-sm">{benefit}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {detailService.preparation &&
-              detailService.preparation.length > 0 && (
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">Preparación</h3>
-                  <ul className="space-y-1">
-                    {detailService.preparation.map((prep, index) => (
-                      <li key={index} className="flex items-start gap-2">
-                        <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0" />
-                        <span className="text-sm text-muted-foreground">
-                          {prep}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-            <Button
-              onClick={() => {
-                handleServiceAction(detailService);
-                setDetailService(null);
-              }}
-              className={`w-full ${
-                mode === "selection" &&
-                state.selectedServices.some((s) => s.id === detailService.id)
-                  ? "bg-red-500 hover:bg-red-600"
-                  : "bg-sage-600 hover:bg-sage-700"
-              } text-white px-5 py-2 rounded-md transition-colors`}
-              size="lg"
-            >
-              {mode === "selection"
-                ? state.selectedServices.some((s) => s.id === detailService.id)
-                  ? "Quitar del Carrito"
-                  : "Agregar al Carrito"
-                : "Reservar Este Servicio"}
-            </Button>
-          </div>
-        </div> */}
+       
 
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Columna izquierda - Imágenes e información básica */}
@@ -357,7 +253,7 @@ export function UnifiedServicesComponent({
                 {detailService.name}
               </h2>
 
-              <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+              <div className="flex sm:items-center gap-3 sm:gap-4">
                 <div className="flex items-center gap-2 text-sm sm:text-base">
                   <Clock className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                   <span>{detailService.duration} min</span>
@@ -374,11 +270,11 @@ export function UnifiedServicesComponent({
                     {detailService.price * usdValue} cup
                   </span>
                 </div>
+              </div>
                 <Badge variant="secondary" className="text-xs sm:text-sm w-fit">
                   {categories.find((c) => c.id === detailService.category_id)
                     ?.name || detailService.category_id}
                 </Badge>
-              </div>
             </div>
           </div>
 
@@ -459,15 +355,8 @@ export function UnifiedServicesComponent({
 
   // Vista principal de lista de servicios
   return (
-    <div className="space-y-6 mt-10">
-      {/* {(title || description) && (
-        <div className="text-center">
-          {title && <h2 className="text-2xl font-bold mb-2">{title}</h2>}
-          {description && (
-            <p className="text-muted-foreground">{description}</p>
-          )}
-        </div>
-      )} */}
+    <div className="relative space-y-6 mt-10">
+
 
       {/* Búsqueda y Filtros */}
       {(showSearch || showFilters) && (
@@ -666,7 +555,7 @@ export function UnifiedServicesComponent({
 
       {/* Resumen de servicios seleccionados (solo en modo selección) */}
       {mode === "selection" && state.selectedServices.length > 0 && (
-        <Card className="">
+        <Card className=" bottom-0 z-10 fixed">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -680,20 +569,17 @@ export function UnifiedServicesComponent({
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-sm text-muted-foreground">
+                <div className="text-xs text-muted-foreground">
                   Duración Total: {state.totalDuration} min
                 </div>
-                <div className="text-lg font-semibold">
-                  <DollarSign className="h-3 w-3 sm:h-4 sm:w-4" />
-                  Total: {state.totalPrice} USD
+                <div className="flex text-sm font-semibold">
+                  Total: $ {state.totalPrice} USD - ${state.totalPrice*420} cup
                 </div>
               </div>
             </div>
           </CardContent>
-        </Card>
-      )}
-
-      {/* Botón de acción (solo en modo selección) */}
+          <CardFooter>
+            {/* Botón de acción (solo en modo selección) */}
       {mode === "selection" && (
         <div className="flex justify-end">
           <Button
@@ -706,6 +592,11 @@ export function UnifiedServicesComponent({
           </Button>
         </div>
       )}
+          </CardFooter>
+        </Card>
+      )}
+
+      
     </div>
   );
 }

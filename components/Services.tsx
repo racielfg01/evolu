@@ -6,8 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Clock } from "lucide-react";
 import { mockServices } from "@/lib/mock-data";
 import Image from "next/image";
-// import { useEnhancedBooking } from "./new-bookings/enhanced-booking-context";
-// import { useRouter } from "next/navigation";
 
 interface ServicesProps {
   // onBookNow: () => void;
@@ -15,16 +13,7 @@ interface ServicesProps {
 }
 
 export default function Services({  onViewServices}: ServicesProps) {
-  //   const {push} =useRouter()
-  // const { state } = useEnhancedBooking();
 
-  // const handleOnBook =()=>{
-  //  if (!state.userInfo.id) {
-  //     push("/login");
-  //   } else {
-  //     onBookNow()
-  //   }
-  // }
 
   const featuredServices = mockServices.filter((s) => s.isActive).slice(0, 4);
   return (
@@ -68,12 +57,9 @@ export default function Services({  onViewServices}: ServicesProps) {
                     {service.description.length > 50 && (
                       <Link
                         href="#"
+                        onClick={onViewServices}
                         className="text-sage-600 hover:text-sage-700 text-xs font-medium"
-                        // onClick={(e) => {
-                        //   e.preventDefault();
-                        //   // Aquí puedes agregar lógica para expandir la descripción
-                        //   // o redirigir a una página de detalles
-                        // }}
+                    
                       >
                         Leer más
                       </Link>
@@ -87,9 +73,9 @@ export default function Services({  onViewServices}: ServicesProps) {
                       <Clock className="h-4 w-4" />
                       <span>{service.duration} min</span>
                     </div>
-                    <span className="text-lg font-semibold">
+                    {/* <span className="text-lg font-semibold">
                       ${service.price}
-                    </span>
+                    </span> */}
                   </div>
 
                   {/* <Button

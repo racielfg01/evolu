@@ -3,10 +3,10 @@
 import { useState, useEffect, useRef } from "react"
 
 const stats = [
-  { id: 1, label: "Years of Excellence", value: 10 },
-  { id: 2, label: "Master Staff Members", value: 28 },
-  { id: 3, label: "Award Winning Treatments", value: 4 },
-  { id: 4, label: "Happy Customers", value: 2000, suffix: "+" },
+  { id: 1, label: "Servicios de Excelencia", value: 50,suffix: "+"  },
+  { id: 2, label: "Equipo de Profecionales", value: 4 },
+  { id: 3, label: "Productos extrellas", value: 5 },
+  { id: 4, label: "Clientes Felices", value: 500, suffix: "+" },
 ]
 
 export default function StatsCounter() {
