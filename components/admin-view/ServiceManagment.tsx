@@ -317,41 +317,45 @@ const defaultBusinessConfig: BusinessConfiguration = {
     "1": {
       available: true,
       hours: {
-        morning: { start: "09:00", end: "13:00" },
-        afternoon: { start: "15:00", end: "18:00" },
+        morning: { start: "09:00", end: "12:00" },
+        afternoon: { start: "13:00", end: "17:00" },
       },
     }, // Lunes
     "2": {
       available: true,
       hours: {
-        morning: { start: "09:00", end: "13:00" },
-        afternoon: { start: "15:00", end: "18:00" },
+         morning: { start: "09:00", end: "12:00" },
+        afternoon: { start: "13:00", end: "17:00" },
       },
     }, // Martes
     "3": {
       available: true,
       hours: {
-        morning: { start: "09:00", end: "13:00" },
-        afternoon: { start: "15:00", end: "18:00" },
+            morning: { start: "09:00", end: "12:00" },
+        afternoon: { start: "13:00", end: "17:00" },
       },
     }, // Miércoles
     "4": {
       available: true,
       hours: {
-        morning: { start: "09:00", end: "13:00" },
-        afternoon: { start: "15:00", end: "18:00" },
+         morning: { start: "09:00", end: "12:00" },
+        afternoon: { start: "13:00", end: "17:00" },
       },
     }, // Jueves
     "5": {
       available: true,
       hours: {
-        morning: { start: "09:00", end: "13:00" },
-        afternoon: { start: "15:00", end: "18:00" },
+           morning: { start: "09:00", end: "12:00" },
+        afternoon: { start: "13:00", end: "17:00" },
       },
     }, // Viernes
     "6": {
       available: true,
-      hours: { morning: { start: "10:00", end: "14:00" }, afternoon: null },
+      // hours: { morning: { start: "10:00", end: "14:00" }, afternoon: null },
+        hours: {
+           morning: { start: "09:00", end: "12:00" },
+        afternoon: { start: "13:00", end: "17:00" },
+      },
     }, // Sábado (solo mañana)
     "0": { available: false, hours: { morning: null, afternoon: null } }, // Domingo
   },
