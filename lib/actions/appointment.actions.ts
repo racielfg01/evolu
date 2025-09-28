@@ -267,7 +267,7 @@ export const fetchAllAppointments = async (): Promise<FullAppointment[]> => {
         }
       },
       orderBy: {
-        date: 'desc'
+        createdAt: 'desc'
       }
     });
   } catch (error) {

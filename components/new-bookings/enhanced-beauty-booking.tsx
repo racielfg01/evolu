@@ -23,6 +23,7 @@ import { useGetAllCategorys } from "@/lib/hooks/category.hooks";
 import { UnifiedServicesComponent } from "./UnifiedServicesComponent";
 import { ServiceWithRelations } from "@/lib/actions/services.actions";
 import {  useRouter } from "next/navigation";
+import { getBusinessConfig } from "@/lib/actions/config.actions";
 // import { useUserAppointments } from "@/lib/hooks/appointment.hooks";
 
 export function BookingContent({ user }: { user: UserAppMetadata | null }) {
@@ -189,6 +190,25 @@ export function BookingContent({ user }: { user: UserAppMetadata | null }) {
     }
   }, [dispatch, user, state.userInfo.id, push]);
 
+    //Cargar configuración al iniciar
+    useEffect(() => {
+        const loadConfig = async () => {
+      try {
+        const savedConfig = await getBusinessConfig();
+        if (savedConfig) {
+           dispatch({ type: "SET_BUSINESS_CONFIG", payload: savedConfig });
+        }
+      } catch (error) {
+        console.error('Error loading config:', error);
+      } finally {
+      }
+    };
+  
+      loadConfig();
+    }, [dispatch]);
+
+  
+
   return (
     <div className="min-h-screen ">
       <Navigation currentView={currentView} onViewChange={handleViewChange} isAdmin={isAdmin} />
@@ -199,19 +219,11 @@ export function BookingContent({ user }: { user: UserAppMetadata | null }) {
         {currentView === "booking" ? (
           <div className="space-y-8 mt-10">
             <div className="text-center">
-              {/* <h1 className="text-3xl font-bold mb-2">
-                Reserva tu Cita de Belleza
-              </h1>
-              <p className="text-muted-foreground">
-                Experimenta servicios de belleza premium con nuestros
-                profesionales expertos
-              </p> */}
+          
             </div>
-            {/* <Card>
-              <CardContent className="p-6 md:p-8"> */}
+     
             {renderCurrentStep()}
-            {/* </CardContent>
-            </Card> */}
+          
           </div>
         ) : (
           renderCurrentView()
@@ -221,10 +233,4 @@ export function BookingContent({ user }: { user: UserAppMetadata | null }) {
   );
 }
 
-// export default function EnhancedBeautyBooking() {
-//   return (
-//     <EnhancedBookingProvider>
-//       <BookingContent />
-//     </EnhancedBookingProvider>
-//   );
-// }
+

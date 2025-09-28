@@ -28,17 +28,7 @@ export async function getAvailableSlots(
   totalDuration: number
 ){
   try {
-    // console.log("date", date);
-    // console.log("totalDuration", totalDuration);
-    // // 1. Obtener horarios laborales para el día de la semana
-    // const dayOfWeek = date.getDay();
-    // console.log("dayOfWeek", dayOfWeek);
-    // const workingHours = await prisma.workingHours.findUnique({
-    //   where: { dayOfWeek },
-    // });
-    //  console.log("workingHours", workingHours);
 
-    // if (!workingHours || !workingHours.isActive) return [];
 
      const businessConfig = await getBusinessConfig();
     if (!businessConfig) return [];
@@ -129,58 +119,6 @@ export async function getAvailableSlots(
   }
 }
 
-// function generateTimeSlots(
-//   startTime: string,
-//   endTime: string,
-//   duration: number,
-//   existingAppointments: AppointmentWithServices[],
-//   breakTimes?: BreakTime[],
-//   baseDate: Date,
-//   minBookingNotice: number
-// ): TimeSlot[] {
-//   const slots: TimeSlot[] = [];
-//   const [startHour, startMinute] = startTime.split(":").map(Number);
-//   const [endHour, endMinute] = endTime.split(":").map(Number);
-
-//   // Crear fecha base para el día específico
-//   const baseStartTime = new Date(baseDate);
-//   baseStartTime.setHours(startHour, startMinute, 0, 0);
-
-//   const baseEndTime = new Date(baseDate);
-//   baseEndTime.setHours(endHour, endMinute, 0, 0);
-
-//   let currentTime = new Date(baseStartTime);
-
-//   while (currentTime < baseEndTime) {
-//     const slotEnd = new Date(currentTime.getTime() + duration * 60000);
-
-//     // Si el slot termina después del horario laboral, saltar
-//     if (slotEnd > baseEndTime) {
-//       currentTime = new Date(currentTime.getTime() + 15 * 60000);
-//       continue;
-//     }
-
-//     // Verificar si el slot está disponible
-//     const isAvailable = isSlotAvailable(
-//       currentTime,
-//       slotEnd,
-//       existingAppointments,
-//       breakTimes
-//     );
-
-//     slots.push({
-//       time: formatTime(currentTime),
-//       available: isAvailable,
-//       startDateTime: new Date(currentTime),
-//       endDateTime: new Date(slotEnd),
-//     });
-
-//     // Avanzar en intervalos de 15 minutos
-//     currentTime = new Date(currentTime.getTime() + 15 * 60000);
-//   }
-
-//   return slots;
-// }
 
 function generateTimeSlots(
   workingHours: BusinessHours,

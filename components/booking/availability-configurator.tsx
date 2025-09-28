@@ -581,7 +581,7 @@
 
 "use client";
 
-import { useCallback,  useState } from "react";
+import { useCallback,  useEffect,  useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -733,30 +733,33 @@ export function AvailabilityConfigurator({
     message: string;
   } | null>(null);
 
-  // Cargar configuración al iniciar
-  // useEffect(() => {
-  //     const loadConfig = async () => {
-  //   try {
-  //     setIsLoading(true);
-  //     const savedConfig = await getBusinessConfig();
-  //     if (savedConfig) {
-  //       setConfig(savedConfig);
-  //       onConfigChange?.(savedConfig);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error loading config:', error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
 
-  //   loadConfig();
-  // }, [onConfigChange]);
+
+  
+
+  //Cargar configuración al iniciar
+  useEffect(() => {
+      const loadConfig = async () => {
+    try {
+      const savedConfig = await getBusinessConfig();
+      if (savedConfig) {
+        setConfig(savedConfig);
+        onConfigChange?.(savedConfig);
+      }
+    } catch (error) {
+      console.error('Error loading config:', error);
+    } finally {
+    }
+  };
+
+    loadConfig();
+  }, [onConfigChange]);
 
   const loadConfig = useCallback(async () => {
     try {
       setIsLoading(true);
       const savedConfig = await getBusinessConfig();
+      console.log('savedConfig',savedConfig)
       if (savedConfig) {
         setConfig(savedConfig);
         onConfigChange?.(savedConfig);

@@ -190,7 +190,6 @@ export function UnifiedServicesComponent({
             {mode === "selection" ? "Volver" : "Volver al Catálogo"}
           </Button>
         </div>
-       
 
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Columna izquierda - Imágenes e información básica */}
@@ -271,10 +270,10 @@ export function UnifiedServicesComponent({
                   </span>
                 </div>
               </div>
-                <Badge variant="secondary" className="text-xs sm:text-sm w-fit">
-                  {categories.find((c) => c.id === detailService.category_id)
-                    ?.name || detailService.category_id}
-                </Badge>
+              <Badge variant="secondary" className="text-xs sm:text-sm w-fit">
+                {categories.find((c) => c.id === detailService.category_id)
+                  ?.name || detailService.category_id}
+              </Badge>
             </div>
           </div>
 
@@ -356,8 +355,6 @@ export function UnifiedServicesComponent({
   // Vista principal de lista de servicios
   return (
     <div className="relative space-y-6 mt-10">
-
-
       {/* Búsqueda y Filtros */}
       {(showSearch || showFilters) && (
         <div className="space-y-4">
@@ -478,27 +475,27 @@ export function UnifiedServicesComponent({
 
               <CardContent className="pt-0 space-y-3 px-4 sm:px-6 pb-4">
                 <div className="flex items-center justify-between">
-              <div className="flex flex-wrap gap-1.5 text-xs sm:text-sm">
-                  {/* Precio CUP (destacado) */}
-  <div className="flex items-center gap-1 bg-gray-400 text-white px-2 py-1.5 rounded-lg">
-    <DollarSign className="h-3 w-3 flex-shrink-0" />
-    <span className="font-semibold">{(service.price * usdValue).toLocaleString()} CUP</span>
-  </div>
- 
+                  <div className="flex flex-wrap gap-1.5 text-xs sm:text-sm">
+                    {/* Precio CUP (destacado) */}
+                    <div className="flex items-center gap-1 bg-gray-400 text-white px-2 py-1.5 rounded-lg">
+                      <DollarSign className="h-3 w-3 flex-shrink-0" />
+                      <span className="font-semibold">
+                        {(service.price * usdValue).toLocaleString()} CUP
+                      </span>
+                    </div>
 
-  {/* Precio USD */}
-  <div className="flex items-center gap-1 bg-muted/40 px-1 py-1.5 rounded-lg">
-    <DollarSign className="h-3 w-3 flex-shrink-0" />
-    <span>{service.price} USD</span>
-  </div>
+                    {/* Precio USD */}
+                    <div className="flex items-center gap-1 bg-muted/40 px-1 py-1.5 rounded-lg">
+                      <DollarSign className="h-3 w-3 flex-shrink-0" />
+                      <span>{service.price} USD</span>
+                    </div>
 
-
-   {/* Duración */}
-  <div className="hidden md:flex items-center gap-1 bg-muted/40 px-2 py-1.5 rounded-lg">
-    <Clock className="h-3 w-3 flex-shrink-0" />
-    <span>{service.duration} min</span>
-  </div>
-</div>
+                    {/* Duración */}
+                    <div className="hidden md:flex items-center gap-1 bg-muted/40 px-2 py-1.5 rounded-lg">
+                      <Clock className="h-3 w-3 flex-shrink-0" />
+                      <span>{service.duration} min</span>
+                    </div>
+                  </div>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-2">
                   {" "}
@@ -573,30 +570,29 @@ export function UnifiedServicesComponent({
                   Duración Total: {state.totalDuration} min
                 </div>
                 <div className="flex text-sm font-semibold">
-                  Total: $ {state.totalPrice} USD - ${state.totalPrice*usdValue} cup
+                  Total: $ {state.totalPrice} USD - $
+                  {state.totalPrice * usdValue} cup
                 </div>
               </div>
             </div>
           </CardContent>
           <CardFooter>
             {/* Botón de acción (solo en modo selección) */}
-      {mode === "selection" && (
-        <div className="flex justify-end">
-          <Button
-            className="bg-sage-600 hover:bg-sage-500 text-white px-5 py-2 rounded-md transition-colors"
-            onClick={handleNext}
-            disabled={state.selectedServices.length === 0}
-            size="lg"
-          >
-            Continuar a Fecha y Hora
-          </Button>
-        </div>
-      )}
+            {mode === "selection" && (
+              <div className="flex justify-end">
+                <Button
+                  className="bg-sage-600 hover:bg-sage-500 text-white px-5 py-2 rounded-md transition-colors"
+                  onClick={handleNext}
+                  disabled={state.selectedServices.length === 0}
+                  size="lg"
+                >
+                  Continuar a Fecha y Hora
+                </Button>
+              </div>
+            )}
           </CardFooter>
         </Card>
       )}
-
-      
     </div>
   );
 }

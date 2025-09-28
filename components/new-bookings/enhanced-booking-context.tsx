@@ -7,6 +7,7 @@ import type {  UserInfo } from "@/lib/types";
 import { ServiceWithRelations } from "@/lib/actions/services.actions";
 import { WorkingHours } from "@prisma/client";
 import { FullAppointment } from "@/lib/actions/appointment.actions";
+import { BusinessConfiguration } from "@/lib/actions/config.actions";
 
 // type BookingAction =
 //   | { type: "SET_STEP"; payload: number }
@@ -192,6 +193,7 @@ interface EnhancedBookingState {
   error: string | null;
   availableSlots: TimeSlot[];
   workingHours: WorkingHours[];
+  businessConfig: BusinessConfiguration;
   userBookings: FullAppointment[];
 }
 
@@ -212,6 +214,7 @@ type EnhancedBookingAction =
   | { type: "SET_LOADING"; payload: boolean }
   | { type: "SET_ERROR"; payload: string | null }
   | { type: "SET_WORKING_HOURS"; payload: WorkingHours[] }
+  | { type: "SET_BUSINESS_CONFIG"; payload: BusinessConfiguration }
   | { type: "SET_USER_BOOKINGS"; payload: FullAppointment[] }
   | { type: "SET_AVAILABLE_SLOTS"; payload: TimeSlot[] }
   | { type: "RESET_BOOKING" };
@@ -303,6 +306,12 @@ function enhancedBookingReducer(
         workingHours: action.payload,
       };
 
+    case "SET_BUSINESS_CONFIG":
+      return {
+        ...state,
+        businessConfig: action.payload,
+      };
+
     case "SET_AVAILABLE_SLOTS":
       return {
         ...state,
@@ -359,6 +368,11 @@ const initialState: EnhancedBookingState = {
   error: null,
   availableSlots: [],
   workingHours: [],
+  businessConfig: {
+    weekAvailability: {},
+    specificDateOverrides: [],
+    minBookingNotice: 0
+  },
   userBookings:[]
 };
 
