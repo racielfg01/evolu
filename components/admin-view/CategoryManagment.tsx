@@ -17,7 +17,7 @@ import {
   useDeleteCategory,
   useUpdateCategory,
   useCreateCategory,
-  useGetAllCategorys,
+  useGetAllCategories,
 } from "@/lib/hooks/category.hooks";
 import { IconPlus } from "@tabler/icons-react";
 import DeleteConfirmationModal from "../comun/DeleteConfirmationModal";
@@ -55,7 +55,7 @@ export function CategoryManagment() {
   };
 
   // Obtener todos los Categorys
-  const { data: Categorys, isLoading, error } = useGetAllCategorys();
+  const { data: Categorys, isLoading, error } = useGetAllCategories();
 
   if (isLoading)
     return (

@@ -663,7 +663,7 @@ import { Switch } from "@radix-ui/react-switch";
 import { Button } from "../ui/button";
 import ImageUploader from "@/components/ImageUploader";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { useGetAllCategorys } from "@/lib/hooks/category.hooks";
+import { useGetAllCategories } from "@/lib/hooks/category.hooks";
 import { addService, editService } from "@/lib/actions/services.actions";
 import { uploadImages } from "@/lib/supabase/storage";
 
@@ -754,7 +754,7 @@ export function AddServiceModal({
         }
   );
   
-  const { data: categories } = useGetAllCategorys();
+  const { data: categories } = useGetAllCategories();
 
   // Resetear estado cuando se abre/cierra el modal o cambia el servicio
   useEffect(() => {
