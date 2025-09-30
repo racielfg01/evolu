@@ -42,9 +42,9 @@ interface UnifiedServicesComponentProps {
   services: ServiceWithRelations[];
   isLoadingService: boolean;
   errorServices: Error | null;
-  categories: { name: string; id: string }[];
-  isLoadingCategories: boolean;
-  errorCategories: Error | null;
+  categories: { name: string; id: string }[]|null;
+  isLoadingCategories?: boolean;
+  errorCategories?: Error | null;
   title?: string;
   description?: string;
   showFilters?: boolean;
@@ -148,12 +148,26 @@ export function UnifiedServicesComponent({
     );
 
   // Mostrar estados de carga
-  if (isLoadingService || isLoadingCategories) {
+  if (isLoadingService ) {
     return (
       <div className="flex justify-center items-center py-12">
         <div className="text-center">
+          
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p>Cargando servicios...</p>
+        </div>
+      </div>
+    );
+  }
+    console.log('services',services,isLoadingService)
+    console.log('categories',categories,isLoadingCategories,)
+  if ( isLoadingCategories ) {
+    return (
+      <div className="flex justify-center items-center py-12">
+        <div className="text-center">
+          
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p>Cargando categorias...</p>
         </div>
       </div>
     );
@@ -271,7 +285,7 @@ export function UnifiedServicesComponent({
                 </div>
               </div>
               <Badge variant="secondary" className="text-xs sm:text-sm w-fit">
-                {categories.find((c) => c.id === detailService.category_id)
+                {categories?.find((c) => c.id === detailService.category_id)
                   ?.name || detailService.category_id}
               </Badge>
             </div>
@@ -352,6 +366,7 @@ export function UnifiedServicesComponent({
     );
   }
 
+
   // Vista principal de lista de servicios
   return (
     <div className="relative space-y-6 mt-10">
@@ -391,7 +406,7 @@ export function UnifiedServicesComponent({
                   >
                     Todos
                   </Button>
-                  {categories.map((category) => (
+                  {categories?.map((category) => (
                     <Button
                       key={category.id}
                       className={
@@ -452,8 +467,7 @@ export function UnifiedServicesComponent({
                   variant="secondary"
                 >
                   {" "}
-                  {/* Smaller text */}
-                  {categories.find((c) => c.id === service.category_id)?.name ||
+                  {categories?.find((c) => c.id === service.category_id)?.name ||
                     service.category_id}
                 </Badge>
               </div>

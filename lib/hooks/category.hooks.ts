@@ -1,29 +1,28 @@
-// lib/hooks/category.hooks.ts
+"use client"
 import {
   useQuery,
   useMutation,
   useQueryClient,
-  queryOptions
+  // queryOptions
 } from '@tanstack/react-query';
 import {
-  fetchAllCategories,
+
   createCategory,
   updateCategory,
-  deleteCategory
+  deleteCategory,
+  fetchAllCategories
 } from '@/lib/actions/category.actions';
 import { toast } from 'sonner';
 
-export const getAllCategorys = queryOptions({
-    queryKey: ['categories'],
-    queryFn: fetchAllCategories
-  }) 
+
+
+export const useGetAllCategories = () => {
+
+
   
-
-
-export const useGetAllCategorys = () => {
   return useQuery({
     queryKey: ['categories'],
-    queryFn: fetchAllCategories
+    queryFn:fetchAllCategories
   });
 };
 

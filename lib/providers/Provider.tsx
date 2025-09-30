@@ -8,13 +8,13 @@ import  TanstackProvider  from "./tanstack-provider";
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     // <SessionProvider>
+          <TanstackProvider>
       <EnhancedBookingProvider>
         <BookingProvider>
-          <TanstackProvider>
             {children}
-            </TanstackProvider>
         </BookingProvider>
       </EnhancedBookingProvider>
+            </TanstackProvider>
     // </SessionProvider>
   );
 }

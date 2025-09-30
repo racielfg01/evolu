@@ -220,10 +220,10 @@ export async function signUp(formData: FormData) {
     throw new Error("Please enter a valid email address");
   }
 
-  const { data:newUser, error } = await supabase.auth.signUp({
+  const { data: newUser, error } = await supabase.auth.signUp({
     email: data.email.trim(),
     password: data.password,
-    phone:data.phone,
+    phone: data.phone,
   });
 
   if (error) {
@@ -231,21 +231,19 @@ export async function signUp(formData: FormData) {
 
     return { error: error?.message };
   }
-const role = await prisma.role.findUnique({
-  where:{name:'USER'}
-})
-
-
+  const role = await prisma.role.findUnique({
+    where: { name: "USER" },
+  });
 
   await prisma.user.create({
     data: {
-      cuid:newUser.user?.id as string,
+      cuid: newUser.user?.id as string,
       email: data.email,
       name: data.name as string,
       sex_id: data.sex_id as string,
       role_id: role?.id as string,
-      password:data.email,
-      image:data.name as string
+      password: data.email,
+      image: data.name as string,
     },
   });
 
@@ -268,9 +266,6 @@ export async function signOut() {
   redirect("/login");
 }
 
-
-
-
 // const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function resetPassword(email: string) {
@@ -278,7 +273,9 @@ export async function resetPassword(email: string) {
 
   try {
     // 1. Enviar magic link para reset de contraseña
-    const {  error } = await (await supabase).auth.resetPasswordForEmail(email, {
+    const { error } = await (
+      await supabase
+    ).auth.resetPasswordForEmail(email, {
       redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/update-password`,
     });
 
@@ -312,25 +309,25 @@ export async function resetPassword(email: string) {
     //               <div class="logo">Evolu</div>
     //               <h2 style="margin:0; color:white;">Restablecer tu contraseña</h2>
     //           </div>
-              
+
     //           <div class="content">
     //               <p>¡Hola!</p>
-                  
+
     //               <p>Hemos recibido una solicitud para restablecer la contraseña de tu cuenta en Evolu.</p>
-                  
+
     //               <p>Para crear una nueva contraseña, haz clic en el siguiente botón:</p>
-                  
+
     //               <p style="text-align: center;">
     //                   <a href="${process.env.NEXT_PUBLIC_SITE_URL}/auth/update-password#access_token=$TOKEN&refresh_token=$REFRESH_TOKEN&expires_in=3600&token_type=bearer&type=recovery" class="button">Restablecer contraseña</a>
     //               </p>
-                  
+
     //               <p><small>Este enlace expirará en 1 hora y solo puede usarse una vez.</small></p>
-                  
+
     //               <p>Si no has solicitado este cambio, por favor ignora este mensaje.</p>
-                  
+
     //               <p>Con cariño,<br>El equipo de Evolu</p>
     //           </div>
-              
+
     //           <div class="footer">
     //               <p>© ${new Date().getFullYear()} Evolu - Depilación y Masajes Relajantes</p>
     //               <p>Diseñado para tu bienestar</p>
@@ -349,7 +346,9 @@ export async function resetPassword(email: string) {
     return { success: true };
   } catch (error) {
     console.error("Unexpected error in resetPassword:", error);
-    return { error: "Ocurrió un error inesperado. Por favor intenta nuevamente." };
+    return {
+      error: "Ocurrió un error inesperado. Por favor intenta nuevamente.",
+    };
   }
 }
 
@@ -379,27 +378,27 @@ export async function updatePassword(newPassword: string, token?: string) {
   try {
     // Si hay token, usamos el método de recuperación
     if (token) {
-      const {  error } = await (await supabase).auth.updateUser(
-        { password: newPassword },
-       
-      );
+      const { error } = await (
+        await supabase
+      ).auth.updateUser({ password: newPassword });
 
       if (error) throw error;
       return { success: true };
     }
-    
+
     // Si no hay token, intentamos con la sesión actual
-    const {  error } = await (await supabase).auth.updateUser({
-      password: newPassword
+    const { error } = await (
+      await supabase
+    ).auth.updateUser({
+      password: newPassword,
     });
 
     if (error) throw error;
     return { success: true };
-
   } catch (error) {
     console.error("Error updating password:", error);
-    return { 
-      error: error || "Ocurrió un error al actualizar la contraseña." 
+    return {
+      error: error || "Ocurrió un error al actualizar la contraseña.",
     };
   }
 }
@@ -409,28 +408,24 @@ export async function getCurrentUser() {
   const supabase = await createClient();
 
   try {
-    
     const {
       data: { user },
     } = await supabase.auth.getUser();
-  
-    const id =user?.id?user?.id:""
-  
-    const userdata= await prisma.user.findFirst({
-      where:{cuid:id},
-    include: {
-        role: true, 
-        sex: true      
-      }
-    }
-    )
-    
-  
+
+    const id = user?.id ? user?.id : "";
+
+    const userdata = await prisma.user.findFirst({
+      where: { cuid: id },
+      include: {
+        role: true,
+        sex: true,
+      },
+    });
+
     return userdata;
   } catch (error) {
-     console.error("Error fetching current user:", error);
-    return null
-    
+    console.error("Error fetching current user:", error);
+    return null;
   }
 }
 

@@ -22,6 +22,7 @@ export const useGetAllServices = () => {
   return useQuery({
     queryKey: ['services'],
     queryFn: fetchAllServices,
+    
   });
 };
 

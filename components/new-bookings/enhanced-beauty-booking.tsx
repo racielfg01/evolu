@@ -19,14 +19,15 @@ import { Confirmation } from "@/components/new-bookings/confirmation";
 import { UserAppMetadata } from "@supabase/supabase-js";
 import type { UserInfo } from "@/lib/types";
 import { useGetAllServices } from "@/lib/hooks/service.hooks";
-import { useGetAllCategorys } from "@/lib/hooks/category.hooks";
+// import { useGetAllCategories } from "@/lib/hooks/category.hooks";
 import { UnifiedServicesComponent } from "./UnifiedServicesComponent";
 import { ServiceWithRelations } from "@/lib/actions/services.actions";
 import {  useRouter } from "next/navigation";
 import { getBusinessConfig } from "@/lib/actions/config.actions";
+import { Category } from "@prisma/client";
 // import { useUserAppointments } from "@/lib/hooks/appointment.hooks";
 
-export function BookingContent({ user }: { user: UserAppMetadata | null }) {
+export function BookingContent({ user,categories }: { user: UserAppMetadata | null,categories:Category[]|null }) {
 
   
   const { state, dispatch } = useEnhancedBooking();
@@ -40,11 +41,14 @@ export function BookingContent({ user }: { user: UserAppMetadata | null }) {
     error: errorServices,
   } = useGetAllServices();
 
-  const {
-    data: categories = [],
-    isLoading: isLoadingCategories,
-    error: errorCategories,
-  } = useGetAllCategorys();
+  
+
+  // const {
+  //   data: categories = [],
+  //   isLoading: isLoadingCategories,
+  //   error: errorCategories,
+  // } = useGetAllCategories();
+
 
   const [currentView, setCurrentView] = useState("home");
 
@@ -70,8 +74,8 @@ export function BookingContent({ user }: { user: UserAppMetadata | null }) {
             isLoadingService={isLoadingService}
             errorServices={errorServices}
             categories={categories}
-            isLoadingCategories={isLoadingCategories}
-            errorCategories={errorCategories}
+            // isLoadingCategories={isLoadingCategories}
+            // errorCategories={errorCategories}
             title="Selecciona Tus Servicios"
             description="Elige uno o más servicios de belleza para tu cita"
             showFilters={true}
@@ -91,8 +95,8 @@ export function BookingContent({ user }: { user: UserAppMetadata | null }) {
             isLoadingService={isLoadingService}
             errorServices={errorServices}
             categories={categories}
-            isLoadingCategories={isLoadingCategories}
-            errorCategories={errorCategories}
+            // isLoadingCategories={isLoadingCategories}
+            // errorCategories={errorCategories}
             title="Selecciona Tus Servicios"
             description="Elige uno o más servicios de belleza para tu cita"
             showFilters={true}
@@ -101,6 +105,8 @@ export function BookingContent({ user }: { user: UserAppMetadata | null }) {
     
     }
   };
+
+ 
 
   const renderCurrentView = () => {
     switch (currentView) {
@@ -133,8 +139,8 @@ export function BookingContent({ user }: { user: UserAppMetadata | null }) {
             isLoadingService={isLoadingService}
             errorServices={errorServices}
             categories={categories}
-            isLoadingCategories={isLoadingCategories}
-            errorCategories={errorCategories}
+            // isLoadingCategories={isLoadingCategories}
+            // errorCategories={errorCategories}
             title="Nuestros Servicios"
             description="Descubre nuestra amplia gama de servicios de belleza y bienestar"
             showFilters={true}
