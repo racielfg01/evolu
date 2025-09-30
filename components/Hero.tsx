@@ -88,6 +88,7 @@ export default function Hero({  onViewServices }: HeroProps) {
               alt="Woman in spa robe relaxing"
               className="relative z-10 mx-auto "
               style={{ clipPath: "circle(50% at 50% 50%)" }}
+              priority
             />
           </div>
         </div>

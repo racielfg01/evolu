@@ -428,7 +428,8 @@ export async function getCurrentUser() {
   
     return userdata;
   } catch (error) {
-    return { error, message:"No se ha podido conectar con el servidor"}
+     console.error("Error fetching current user:", error);
+    return null
     
   }
 }

@@ -15,6 +15,7 @@ const About = () => {
                     height={500}
                     alt="Tratamiento de spa"
                     className="rounded-lg shadow-lg"
+                    priority
                   />
                 </div>
                 <div className="space-y-6">

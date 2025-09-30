@@ -185,7 +185,6 @@ export function BookingContent({ user }: { user: UserAppMetadata | null }) {
           }
         : null;
 
-      // console.log('booking currentUser', currentUser);
       dispatch({ type: "SET_USER_INFO", payload: currentUser });
     }
   }, [dispatch, user, state.userInfo.id, push]);
@@ -232,5 +231,4 @@ export function BookingContent({ user }: { user: UserAppMetadata | null }) {
     </div>
   );
 }
-
 

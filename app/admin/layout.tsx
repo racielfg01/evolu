@@ -22,23 +22,23 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-const user =await getCurrentUser()
+
+const currentUser =await getCurrentUser()
+
+  // Determinar si el usuario tiene permisos
+  const hasUserRole = currentUser?.role?.name != "USER";
 
 
-if (user && 'role' in user && 'sex' in user) {
-  // console.log(user.role.name);   
-  // console.log(user.sex.name);    
-  
-  if (!user || user?.role?.name=="USER") {
-    redirect("/");
-  }
+  // Logs condicionales para desarrollo
+  if (process.env.NODE_ENV === 'development') {
+    if (!currentUser || !hasUserRole) {
+      console.log("Usuario no autenticado o");
+
+      redirect('/')
+    
       
-} else if (user && 'error' in user) {
-  console.error('Error:', user.message);
-} else {
-  console.log('Usuario no encontrado');
-}
-
+    }
+  }
 
   
 
