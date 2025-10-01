@@ -30,7 +30,7 @@ const currentUser =await getCurrentUser()
 
 
   // Logs condicionales para desarrollo
-  if (process.env.NODE_ENV === 'development') {
+  // if (process.env.NODE_ENV === 'development') {
     if (!currentUser || !hasUserRole) {
       console.log("Usuario no autenticado o");
 
@@ -38,7 +38,7 @@ const currentUser =await getCurrentUser()
     
       
     }
-  }
+  // }
 
   
 
