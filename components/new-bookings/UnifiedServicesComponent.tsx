@@ -159,8 +159,8 @@ export function UnifiedServicesComponent({
       </div>
     );
   }
-    console.log('services',services,isLoadingService)
-    console.log('categories',categories,isLoadingCategories,)
+    // console.log('services',services,isLoadingService)
+    // console.log('categories',categories,isLoadingCategories,)
   if ( isLoadingCategories ) {
     return (
       <div className="flex justify-center items-center py-12">

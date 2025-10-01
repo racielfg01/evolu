@@ -8,7 +8,8 @@ import { Badge } from "@/components/ui/badge"
 import { CalendarIcon, Clock, Loader2 } from "lucide-react"
 import { useEnhancedBooking } from "./enhanced-booking-context"
 import { useAvailableSlots } from "@/hooks/use-availability"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import { getDayAvailablePeriods } from "@/lib/actions/availability.actions"
 
 export function DateTimeSelection() {
   const { state, dispatch } = useEnhancedBooking();
@@ -18,6 +19,33 @@ export function DateTimeSelection() {
     state.selectedDate
   );
 
+  const canProceed = state.selectedDate && 
+  state.selectedTime && 
+  state.selectedStartDateTime && 
+  state.selectedEndDateTime &&
+  availableSlots &&
+  availableSlots.length > 0;
+
+    // Nuevo estado para los periodos disponibles
+  const [availablePeriods, setAvailablePeriods] = useState<string>('');
+
+  // Efecto para cargar los periodos disponibles cuando se selecciona una fecha
+  useEffect(() => {
+    if (state.selectedDate) {
+      const loadAvailablePeriods = async () => {
+        try {
+          const periods = await getDayAvailablePeriods(state.selectedDate!);
+          setAvailablePeriods(periods);
+        } catch (error) {
+          console.log(error)
+          setAvailablePeriods('Error al cargar horarios');
+        }
+      };
+      loadAvailablePeriods();
+    } else {
+      setAvailablePeriods('');
+    }
+  }, [state.selectedDate]);
 
 
   const handleDateSelect = (date: Date | undefined) => {
@@ -113,6 +141,13 @@ export function DateTimeSelection() {
       <div className="text-center">
         <h2 className="text-2xl font-bold mb-2">Seleccionar Fecha y Hora</h2>
         <p className="text-muted-foreground">Elige tu fecha y hora preferida para la cita</p>
+
+  {/* Mostrar periodos disponibles cuando hay una fecha seleccionada */}
+        {/* {state.selectedDate && availablePeriods && (
+          <div className="mt-2 text-sm bg-blue-50 text-blue-700 p-2 rounded-md">
+            <strong>Horarios disponibles:</strong> {availablePeriods}
+          </div>
+        )} */}
       </div>
 
       <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
@@ -135,11 +170,19 @@ export function DateTimeSelection() {
             <div className="mt-4 text-sm text-muted-foreground">
               <p>• Citas disponibles de Lunes a Viernes</p>
               <p>• Citas de fin de semana próximamente</p>
+
+
+                {/* Mostrar periodos aquí también si quieres */}
+              {/* {state.selectedDate && (
+                <p className="mt-2 text-green-600 font-medium">
+                  📅 {availablePeriods}
+                </p>
+              )} */}
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        {/* <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Clock className="h-5 w-5" />
@@ -194,13 +237,159 @@ export function DateTimeSelection() {
               </div>
             )}
           </CardContent>
-        </Card>
+        </Card> */}
+         <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Clock className="h-5 w-5" />
+            Seleccionar Hora
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {!state.selectedDate ? (
+            <div className="text-center py-8 text-muted-foreground">
+              Por favor selecciona una fecha primero
+            </div>
+          ) : state.selectedServices.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              Primero selecciona al menos un servicio
+            </div>
+          ) : isLoading ? (
+            <div className="text-center py-8">
+              <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2" />
+              <p className="text-sm text-muted-foreground">Buscando horarios disponibles...</p>
+
+                {/* Mostrar periodos durante loading */}
+                {availablePeriods && (
+                  <p className="text-xs text-blue-600 mt-2">
+                    Periodos: {availablePeriods}
+                  </p>
+                )}
+            </div>
+          ) : error ? (
+            <div className="text-center py-8">
+              <div className="text-destructive mb-2">
+                <p className="font-semibold">No hay disponibilidad</p>
+                <p className="text-sm mt-1">{error.message}</p>
+              </div>
+              <div className="text-xs text-muted-foreground mt-4">
+                <p>• Intenta seleccionar otra fecha</p>
+                <p>• Considera dividir los servicios en múltiples citas</p>
+                <p>• Contacta con nosotros para opciones especiales</p>
+              </div>
+               {/* MOSTRAR PERIODOS DISPONIBLES EN EL ERROR */}
+                <div className="text-xs text-muted-foreground mt-4 space-y-2">
+                  <div className="bg-gray-50 p-3 rounded-md">
+                    <strong className="text-gray-700">Horarios del día:</strong>
+                    <p className="text-green-600 mt-1">{availablePeriods}</p>
+                  </div>
+                  <p>• Intenta seleccionar otra fecha</p>
+                  <p>• Considera dividir los servicios en múltiples citas</p>
+                  <p>• Contacta con nosotros para opciones especiales</p>
+                </div>
+            </div>
+          ) : availableSlots && availableSlots.length > 0 ? (
+            // <div className="space-y-4">
+            //   <div className="text-sm text-muted-foreground">
+            //     Duración total: {getTotalDuration()} minutos
+            //     <br />
+            //     <span className="text-green-600">
+            //       ✅ Horarios disponibles: {availableSlots.filter(slot => slot.available).length}
+            //     </span>
+            //   </div>
+            //   <div className="grid grid-cols-3 gap-2 max-h-60 overflow-y-auto">
+            //     {availableSlots.map((slot) => (
+            //       <Button
+            //         key={slot.time}
+            //         variant={state.selectedTime === slot.time ? "default" : "outline"}
+            //         size="sm"
+            //         disabled={!slot.available}
+            //         onClick={() => handleTimeSelect(slot.time)}
+            //         className={`text-xs h-10 ${
+            //           state.selectedTime === slot.time 
+            //             ? 'bg-sage-300 hover:bg-sage-400 text-black' 
+            //             : slot.available 
+            //               ? 'bg-sage-100 hover:bg-sage-200 text-black'
+            //               : 'bg-gray-100 text-gray-400'
+            //         }`}
+            //       >
+            //         {slot.time}
+            //         {!slot.available && (
+            //           <span className="text-xs text-gray-500 ml-1">⛔</span>
+            //         )}
+            //       </Button>
+            //     ))}   
+            //   </div>
+            //   <div className="text-xs text-muted-foreground">
+            //     {availableSlots.filter(slot => slot.available).length} horarios disponibles de {availableSlots.length}
+            //   </div>
+            // </div>
+            <div className="space-y-4">
+                <div className="text-sm text-muted-foreground">
+                  Duración total: {getTotalDuration()} minutos
+                  <br />
+                  <span className="text-green-600">
+                    ✅ {availableSlots.filter(slot => slot.available).length} horarios disponibles
+                  </span>
+                  <br />
+                  <span className="text-blue-600 text-xs">
+                    📅 {availablePeriods}
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-2 max-h-60 overflow-y-auto">
+                  {availableSlots.map((slot) => (
+                    <Button
+                      key={slot.time}
+                      variant={state.selectedTime === slot.time ? "default" : "outline"}
+                      size="sm"
+                      disabled={!slot.available}
+                      onClick={() => handleTimeSelect(slot.time)}
+                      className={`text-xs h-10 ${
+                        state.selectedTime === slot.time 
+                          ? 'bg-sage-300 hover:bg-sage-400 text-black' 
+                          : slot.available 
+                            ? 'bg-sage-100 hover:bg-sage-200 text-black'
+                            : 'bg-gray-100 text-gray-400'
+                      }`}
+                    >
+                      {slot.time}
+                      {!slot.available && (
+                        <span className="text-xs text-gray-500 ml-1">⛔</span>
+                      )}
+                    </Button>
+                  ))}   
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {availableSlots.filter(slot => slot.available).length} horarios disponibles de {availableSlots.length}
+                </div>
+              </div>
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground mb-2">No hay horarios disponibles para esta fecha</p>
+              <div className="text-xs text-muted-foreground space-y-1">
+                {/* <p>• La duración de {getTotalDuration()} minutos no cabe en los horarios disponibles</p>
+                <p>• Intenta seleccionar otra fecha o reducir los servicios</p> */}
+                 {/* MOSTRAR PERIODOS CUANDO NO HAY SLOTS */}
+                <div className="text-xs text-muted-foreground space-y-2 mt-3">
+                  <div className="bg-yellow-50 p-3 rounded-md">
+                    <strong className="text-yellow-700">Horarios configurados:</strong>
+                    <p className="text-yellow-600 mt-1">{availablePeriods}</p>
+                  </div>
+                  <p>• La duración de {getTotalDuration()} minutos no cabe en los horarios disponibles</p>
+                  <p>• Intenta seleccionar otra fecha o reducir los servicios</p>
+                </div>
+
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
       </div>
 
       
 
       {state.selectedDate && state.selectedTime && state.selectedStartDateTime && state.selectedEndDateTime && (
-        <Card className="bg-muted/50">
+        <Card className="">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -238,8 +427,9 @@ export function DateTimeSelection() {
           Volver a Servicios
         </Button>
         <Button 
+         disabled={!canProceed}
           onClick={handleNext} 
-          disabled={!state.selectedDate || !state.selectedTime || !state.selectedStartDateTime || !state.selectedEndDateTime}
+          // disabled={!state.selectedDate || !state.selectedTime || !state.selectedStartDateTime || !state.selectedEndDateTime}
           className="bg-sage-600 hover:bg-sage-700"
         >
           Continuar a Detalles
