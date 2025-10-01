@@ -434,7 +434,7 @@ export function UnifiedServicesComponent({
       )}
 
       {/* Grid de Servicios */}
-      <div className="grid gap-2 lg:gap-4 grid-cols-2 lg:grid-cols-3">
+      <div className={`grid gap-2 lg:gap-4 grid-cols-2 lg:grid-cols-3 ${mode ==="selection"?"pb-44":""}`}>
         {filteredServices?.map((service) => {
           const isSelected =
             mode === "selection"
