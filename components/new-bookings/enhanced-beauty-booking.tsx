@@ -18,7 +18,7 @@ import { UserInformation } from "@/components/new-bookings/user-information";
 import { Confirmation } from "@/components/new-bookings/confirmation";
 import { UserAppMetadata } from "@supabase/supabase-js";
 import type { UserInfo } from "@/lib/types";
-import { useGetAllServices } from "@/lib/hooks/service.hooks";
+// import { useGetAllServices } from "@/lib/hooks/service.hooks";
 // import { useGetAllCategories } from "@/lib/hooks/category.hooks";
 import { UnifiedServicesComponent } from "./UnifiedServicesComponent";
 import { ServiceWithRelations } from "@/lib/actions/services.actions";
@@ -27,7 +27,14 @@ import { getBusinessConfig } from "@/lib/actions/config.actions";
 import { Category } from "@prisma/client";
 // import { useUserAppointments } from "@/lib/hooks/appointment.hooks";
 
-export function BookingContent({ user,categories }: { user: UserAppMetadata | null,categories:Category[]|null }) {
+interface BookingContentProps{
+   user: UserAppMetadata | null,
+   categories:Category[]|null ,
+  services:ServiceWithRelations[]|null
+}
+
+
+export function BookingContent({ user,categories,services }:BookingContentProps) {
 
   
   const { state, dispatch } = useEnhancedBooking();
@@ -35,11 +42,11 @@ export function BookingContent({ user,categories }: { user: UserAppMetadata | nu
   const [isAdmin, setIsAdmin] = useState(false)
   
 
-  const {
-    data: services = [],
-    isLoading: isLoadingService,
-    error: errorServices,
-  } = useGetAllServices();
+  // const {
+  //   data: services = [],
+  //   isLoading: isLoadingService,
+  //   error: errorServices,
+  // } = useGetAllServices();
 
   
 
@@ -71,8 +78,8 @@ export function BookingContent({ user,categories }: { user: UserAppMetadata | nu
           <UnifiedServicesComponent
             mode="selection"
             services={services}
-            isLoadingService={isLoadingService}
-            errorServices={errorServices}
+            // isLoadingService={isLoadingService}
+            // errorServices={errorServices}
             categories={categories}
             // isLoadingCategories={isLoadingCategories}
             // errorCategories={errorCategories}
@@ -92,8 +99,8 @@ export function BookingContent({ user,categories }: { user: UserAppMetadata | nu
           <UnifiedServicesComponent
             mode="selection"
             services={services}
-            isLoadingService={isLoadingService}
-            errorServices={errorServices}
+            // isLoadingService={isLoadingService}
+            // errorServices={errorServices}
             categories={categories}
             // isLoadingCategories={isLoadingCategories}
             // errorCategories={errorCategories}
@@ -136,8 +143,8 @@ export function BookingContent({ user,categories }: { user: UserAppMetadata | nu
             onServiceSelect={handleServiceSelect}
             onBookNow={() => setCurrentView("booking")}
             services={services}
-            isLoadingService={isLoadingService}
-            errorServices={errorServices}
+            // isLoadingService={isLoadingService}
+            // errorServices={errorServices}
             categories={categories}
             // isLoadingCategories={isLoadingCategories}
             // errorCategories={errorCategories}

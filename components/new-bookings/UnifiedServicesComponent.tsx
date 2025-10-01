@@ -39,9 +39,9 @@ interface UnifiedServicesComponentProps {
   mode: "catalog" | "selection";
   onServiceSelect?: (service: ServiceWithRelations) => void;
   onBookNow?: () => void;
-  services: ServiceWithRelations[];
-  isLoadingService: boolean;
-  errorServices: Error | null;
+  services: ServiceWithRelations[]| null;
+  isLoadingService?: boolean;
+  errorServices?: Error | null;
   categories: { name: string; id: string }[]|null;
   isLoadingCategories?: boolean;
   errorCategories?: Error | null;
@@ -135,7 +135,7 @@ export function UnifiedServicesComponent({
 
   // Filtrar servicios
   const filteredServices = services
-    .filter((s) => s.isActive)
+    ?.filter((s) => s.isActive)
     .filter(
       (s) =>
         selectedCategory.name === "Todos" ||
@@ -435,7 +435,7 @@ export function UnifiedServicesComponent({
 
       {/* Grid de Servicios */}
       <div className="grid gap-2 lg:gap-4 grid-cols-2 lg:grid-cols-3">
-        {filteredServices.map((service) => {
+        {filteredServices?.map((service) => {
           const isSelected =
             mode === "selection"
               ? state.selectedServices.some((s) => s.id === service.id)
@@ -546,7 +546,7 @@ export function UnifiedServicesComponent({
         })}
       </div>
 
-      {filteredServices.length === 0 && (
+      {filteredServices?.length === 0 && (
         <div className="text-center py-8">
           <p className="text-muted-foreground">
             No se encontraron servicios que coincidan con tu búsqueda.

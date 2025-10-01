@@ -28,18 +28,10 @@ const currentUser =await getCurrentUser()
   // Determinar si el usuario tiene permisos
   const hasUserRole = currentUser?.role?.name != "USER";
 
-
-  // Logs condicionales para desarrollo
-  // if (process.env.NODE_ENV === 'development') {
     if (!currentUser || !hasUserRole) {
-      console.log("Usuario no autenticado o");
-
+      // console.log("Usuario no autenticado o");
       redirect('/')
-    
-      
     }
-  // }
-
   
 
   return (
