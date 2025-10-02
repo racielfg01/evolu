@@ -18,6 +18,21 @@ interface ConfirmationProps {
   onViewChange: (view: string) => void;
 }
 
+// Función para normalizar fechas a UTC manteniendo el día correcto
+function normalizeToUTC(date: Date): Date {
+  // Crear una nueva fecha con los mismos componentes pero en UTC
+  const utcDate = new Date(Date.UTC(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+    date.getHours(),
+    date.getMinutes(),
+    date.getSeconds()
+  ));
+  return utcDate;
+}
+
+
 
 export function Confirmation({onViewChange}:ConfirmationProps) {
   const { state, dispatch } = useEnhancedBooking()
@@ -49,8 +64,8 @@ const handleConfirmBooking = async () => {
 
     const data = {
         cuid: appointmentCuid,
-        date: startDateTime,
-        endDate: endDateTime,
+        date: normalizeToUTC(startDateTime),
+        endDate: normalizeToUTC(endDateTime),
         duration: totalDuration,
         total_price: state.selectedServices.reduce(
           (total, service) => total + service.price, 0
