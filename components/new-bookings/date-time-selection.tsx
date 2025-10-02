@@ -459,7 +459,8 @@ export function DateTimeSelection() {
     state.selectedDate
   );
 
-  console.log('availableSlots',availableSlots)
+  console.log('availableSlots',availableSlots, state.selectedServices, 
+    state.selectedDate)
 
   // CORRECCIÓN: Mejor validación de canProceed
   const isSlotSelected = state.selectedDate && state.selectedTime;

@@ -653,11 +653,19 @@ export async function getDayAvailablePeriods(date: Date): Promise<string> {
 
 export async function getAvailableSlots(date: Date, totalDuration: number) {
   try {
+  // Normalizar la fecha a inicio del día en UTC
+    const normalizedDate = new Date(Date.UTC(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate()
+    ));
+    
+
     const businessConfig = await getBusinessConfig();
     if (!businessConfig) return [];
 
-    const dayOfWeek = date.getDay();
-    const dateStr = date.toISOString().split("T")[0];
+    const dayOfWeek = normalizedDate.getDay();
+    const dateStr = normalizedDate.toISOString().split("T")[0];
 
     const specialDateConfig = businessConfig.specificDateOverrides.find(
       (d) => d.date === dateStr
