@@ -12,6 +12,7 @@ import { Calendar, Clock, User, Mail, Phone, CreditCard, Scissors } from "lucide
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { FullAppointment } from "@/lib/actions/appointment.actions";
+import { normalizeToLocal } from "./ApoimentsManagment";
 // import type { FullAppointment } from "@/lib/types"; // Asegúrate de importar el tipo correcto
 
 interface AppointmentDetailsModalProps {
@@ -45,18 +46,26 @@ const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = ({
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("es-CO", {
+    return new Intl.NumberFormat("es-CU", {
       style: "currency",
-      currency: "COP",
+      currency: "CUP",
     }).format(amount);
   };
 
   const formatDate = (date: Date) => {
+    
     return format(date, "EEEE, d 'de' MMMM 'de' yyyy", { locale: es });
   };
 
   const formatTime = (date: Date) => {
-    return format(date, "HH:mm", { locale: es });
+   const formatDate= normalizeToLocal(date).toLocaleTimeString('en-US', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: true
+                })
+              
+    // return format(formatDate, "HH:mm", { locale: es });
+    return formatDate
   };
 
   return (

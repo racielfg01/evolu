@@ -52,7 +52,7 @@
 
 //   if (error) return <div>Error: {error.message}</div>;
 
-  
+
 
 //   const appointmentColumns: TanstackColumnDef<FullAppointment>[] = [
 //   {
@@ -109,10 +109,10 @@
 //         CANCELLED: { text: "Cancelada", color: "bg-red-100 text-red-800" },
 //         NO_SHOW: { text: "No asistió", color: "bg-gray-100 text-gray-800" },
 //       };
-      
+
 //       const statusInfo = statusMap[row.original.status] || 
 //                        { text: row.original.status, color: "bg-gray-100 text-gray-800" };
-      
+
 //       return (
 //         <span className={`px-2 py-1 rounded-full text-xs ${statusInfo.color}`}>
 //           {statusInfo.text}
@@ -191,10 +191,10 @@
 //           isOpen={isAddModalOpen}
 //           onClose={handleClose}
 //           appointment={selectedAppointment}
-         
+
 //         />
 //       )}
-  
+
 //     </div>
 //     </div>
 //     </div>
@@ -202,7 +202,7 @@
 // }
 
 
- "use client";
+"use client";
 
 import { useState } from "react";
 import { ColumnDef as TanstackColumnDef } from "@tanstack/react-table";
@@ -223,17 +223,33 @@ import { File, Calendar, Clock, DollarSign } from "lucide-react";
 // import { useMediaQuery } from "@/lib/hooks/use-media-query";
 import { useIsMobile } from "@/hooks/use-mobile";
 
+  // Función para convertir UTC a fecha local manteniendo los mismos componentes
+export  function normalizeToLocal(date: Date): Date {
+    // Crear una nueva fecha con los mismos componentes UTC pero en zona horaria local
+    const localDate = new Date(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      date.getUTCDate(),
+      date.getUTCHours(),
+      date.getUTCMinutes(),
+      date.getUTCSeconds()
+    );
+    return localDate;
+  }
+
+
 export function ApoimentsManagment() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<FullAppointment | null>(null);
   // const isMobile = useMediaQuery("(max-width: 768px)");
 
-   const isMobile = useIsMobile()
+  const isMobile = useIsMobile()
 
   const handleClose = () => {
     setIsAddModalOpen(false);
     setSelectedAppointment(null);
   };
+
 
   // Obtener todas las citas
   const { data: appointments, isLoading, error } = useGetAllAppointments();
@@ -261,11 +277,11 @@ export function ApoimentsManagment() {
       NO_SHOW: { text: "No asistió", color: "bg-gray-100 text-gray-800" },
     };
 
-    const statusInfo = statusMap[appointment.status] || 
-                     { text: appointment.status, color: "bg-gray-100 text-gray-800" };
+    const statusInfo = statusMap[appointment.status] ||
+      { text: appointment.status, color: "bg-gray-100 text-gray-800" };
 
     return (
-      <div 
+      <div
         className="bg-white border rounded-lg p-4 mb-3 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
         onClick={() => {
           setSelectedAppointment(appointment);
@@ -295,16 +311,26 @@ export function ApoimentsManagment() {
         <div className="flex gap-3 mb-3 ">
           <div className="flex items-center gap-2">
             <Calendar className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm">
-              {new Date(appointment.date).toLocaleDateString()}
-            </span>
+            <div className="flex flex-col">
+
+              <span className="text-sm ">
+                {normalizeToLocal(appointment.date).toLocaleDateString()}
+              </span>
+              <span className="text-sm ">
+                {normalizeToLocal(appointment.date).toLocaleTimeString('en-US', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: true
+                })}
+              </span>
+            </div>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm">{appointment.duration} min</span>
           </div>
-          
+
           <div className="flex items-center gap-2 col-span-2">
             <DollarSign className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm font-medium">
@@ -312,7 +338,7 @@ export function ApoimentsManagment() {
             </span>
           </div>
 
-     
+
         </div>
 
         {/* Servicios */}
@@ -337,7 +363,7 @@ export function ApoimentsManagment() {
           </div>
         </div> */}
 
-             {/* Botón de acción */}
+        {/* Botón de acción */}
         <div className="flex justify-end">
           <button className="text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1">
             <File className="h-3 w-3" />
@@ -406,10 +432,10 @@ export function ApoimentsManagment() {
           CANCELLED: { text: "Cancelada", color: "bg-red-100 text-red-800" },
           NO_SHOW: { text: "No asistió", color: "bg-gray-100 text-gray-800" },
         };
-        
-        const statusInfo = statusMap[row.original.status] || 
-                         { text: row.original.status, color: "bg-gray-100 text-gray-800" };
-        
+
+        const statusInfo = statusMap[row.original.status] ||
+          { text: row.original.status, color: "bg-gray-100 text-gray-800" };
+
         return (
           <span className={`px-2 py-1 rounded-full text-xs ${statusInfo.color}`}>
             {statusInfo.text}
@@ -476,9 +502,9 @@ export function ApoimentsManagment() {
           {isMobile ? (
             <div className="space-y-3">
               {appointments?.map((appointment) => (
-                <AppointmentCard 
-                  key={appointment.id} 
-                  appointment={appointment} 
+                <AppointmentCard
+                  key={appointment.id}
+                  appointment={appointment}
                 />
               ))}
               {(!appointments || appointments.length === 0) && (
@@ -492,7 +518,7 @@ export function ApoimentsManagment() {
             <ReusableDataTable<FullAppointment>
               data={appointments as FullAppointment[]}
               columns={appointmentColumns}
-              onDataChange={() => {}}
+              onDataChange={() => { }}
               renderSubComponent={(row) => (
                 <div>Detalles para {row.original.user.name}</div>
               )}
