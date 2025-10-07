@@ -18,7 +18,7 @@ import {
   subWeeks,
   subMonths,
   isToday,
-  parseISO,
+  // parseISO,
   isSameMonth,
 } from "date-fns";
 import { es } from "date-fns/locale";
@@ -30,7 +30,7 @@ import {
   User,
   Phone,
   Mail,
-  MoreVertical,
+  // MoreVertical,
   Filter,
   Search,
 } from "lucide-react";
@@ -49,7 +49,7 @@ import { cn } from "@/lib/utils";
 import { FullAppointment } from "@/lib/actions/appointment.actions";
 import { AppointmentStatus } from "@prisma/client";
 import { normalizeToLocal } from "./ApoimentsManagment";
-import { AppointmentSearch, SearchResultsView } from "./SearchAppointments";
+import { AppointmentSearch } from "./SearchAppointments";
 
 export type ViewMode = "day" | "week" | "month" | "agenda" | "search";
 
@@ -530,7 +530,7 @@ function DayView({
 // Week View Component - Mejorado para móvil
 function WeekView({
   dates,
-  appointments,
+  // appointments,
   getAppointmentsForDate,
   onAppointmentClick,
   getStatusColor,
@@ -596,7 +596,15 @@ function WeekView({
     return layout;
   };
 
-  const processGroup = (group: FullAppointment[], layout: any[]) => {
+  interface LayoytProps{
+    appointment: FullAppointment;
+    top: number;
+    height: number;
+    left: number;
+    width: number;
+}
+
+  const processGroup = (group: FullAppointment[], layout: LayoytProps[]) => {
     const columns: FullAppointment[][] = [];
 
     group.forEach((apt) => {
@@ -830,12 +838,12 @@ function WeekView({
 // Month View Component - Mejorado para móvil
 function MonthView({
   currentDate,
-  dates,
-  appointments,
+  // dates,
+  // appointments,
   getAppointmentsForDate,
   onAppointmentClick,
   getStatusColor,
-  getStatusLabel,
+  // getStatusLabel,
 }: {
   currentDate: Date;
   dates: Date[];

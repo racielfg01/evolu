@@ -1,104 +1,3 @@
-// "use client"
-
-// import * as React from "react"
-// import {
-//   LayoutDashboard,
-//   List,
-//   BarChart3,
-//   Folder,
-//   Users,
-//   Settings as SettingsIcon,
-//   Menu
-// } from "lucide-react"
-
-// import { NavMain } from "@/components/admin-view/nav-main"
-// import { NavUser } from "@/components/admin-view/nav-user"
-// import {
-//   Sidebar,
-//   SidebarContent,
-//   SidebarFooter,
-//   SidebarHeader,
-//   SidebarMenu,
-//   SidebarMenuButton,
-//   SidebarMenuItem,
-// } from "@/components/ui/sidebar"
-
-// const data = {
-//   user: {
-//     name: "shadcn",
-//     email: "m@example.com",
-//     avatar: "/avatars/shadcn.jpg",
-//   },
-//   navMain: [
-//     {
-//       title: "Panel de Control",
-//       url: "#",
-//       icon: LayoutDashboard,
-//     },
-//     {
-//       title: "Citas",
-//       url: "#",
-//       icon: List,
-//     },
-//     {
-//       title: "Servicios",
-//       url: "#",
-//       icon: BarChart3,
-//     },
-
-//     {
-//       title: "Clientes",
-//       url: "#",
-//       icon: Users,
-//     },  {
-//       title: "Configuración",
-//       url: "#",
-//       icon: SettingsIcon,
-//     },
-//   ]
-// }
-
-// type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
-//   activeView: string;
-//   onViewChange: (view: string) => void;
-// };
-
-// // export function AppSidebar({ activeView, onViewChange, ...props }: AppSidebarProps) {
-// export function AppSidebar({...props}) {
-
-
-//   return (
-//     <Sidebar collapsible="offcanvas" {...props}>
-//       <SidebarHeader>
-//         <SidebarMenu>
-//           <SidebarMenuItem>
-//             <SidebarMenuButton
-//               asChild
-//               className="data-[slot=sidebar-menu-button]:!p-1.5"
-//             >
-//               <a href="#">
-//                 <Menu className="!size-5" />
-//                 <span className="text-base font-semibold">Evolu</span>
-//               </a>
-//             </SidebarMenuButton>
-//           </SidebarMenuItem>
-//         </SidebarMenu>
-//       </SidebarHeader>
-//       <SidebarContent>
-//         <NavMain
-//           items={data.navMain}
-//           // activeView={activeView}
-//           // onViewChange={onViewChange}
-//         />
-//         {/* <NavDocuments items={data.documents} /> */}
-//         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
-//       </SidebarContent>
-//       <SidebarFooter>
-//         <NavUser user={data.user} />
-//       </SidebarFooter>
-//     </Sidebar>
-//   )
-// }
 'use client'
 
 import * as React from "react"
@@ -222,7 +121,7 @@ export function AppSidebar({...props}) {
         />
       </SidebarContent>
       <SidebarFooter>
-        {/* <NavUser  /> */}
+        <NavUser  />
       </SidebarFooter>
     </Sidebar>
   )

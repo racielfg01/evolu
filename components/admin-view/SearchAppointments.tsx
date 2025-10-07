@@ -125,9 +125,7 @@ export function SearchResultsView({
       {/* Lista de resultados */}
       <div className="space-y-3">
         {filteredAndSortedAppointments.map((apt) => {
-          const normalizedStart = normalizeToLocal(apt.date);
-          const normalizedEnd = normalizeToLocal(apt.endDate);
-          
+       
           return (
             <Card 
               key={apt.id}

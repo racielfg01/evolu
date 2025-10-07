@@ -9,7 +9,7 @@ import { FullAppointment } from "@/lib/actions/appointment.actions";
 
 import AppointmentDetailsModal from "./AppointmentDetailsModal";
 
-import { useIsMobile } from "@/hooks/use-mobile";
+// import { useIsMobile } from "@/hooks/use-mobile";
 import { AppointmentCalendar } from "./AppointmentCalendar";
 
 // Función para convertir UTC a fecha local manteniendo los mismos componentes
@@ -28,7 +28,7 @@ export function normalizeToLocal(date: Date): Date {
 export function ApoimentsManagment() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<FullAppointment | null>(null);
-  const isMobile = useIsMobile();
+  // const isMobile = useIsMobile();
 
   const handleClose = () => {
     setIsAddModalOpen(false);
