@@ -19,6 +19,7 @@ import {
   ArrowLeft,
   Check,
   Eye,
+  ChevronRight,
   //   Calendar,
   //   User,
 } from "lucide-react";
@@ -566,46 +567,124 @@ export function UnifiedServicesComponent({
 
       {/* Resumen de servicios seleccionados (solo en modo selección) */}
       {mode === "selection" && state.selectedServices.length > 0 && (
-        <Card className=" bottom-0 z-10 fixed">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-semibold">Servicios Seleccionados</h3>
-                <div className="flex gap-2 mt-2 flex-wrap">
-                  {state.selectedServices.map((service) => (
-                    <Badge key={service.id} variant="secondary">
-                      {service.name}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="text-xs text-muted-foreground">
-                  Duración Total: {state.totalDuration} min
-                </div>
-                <div className="flex text-sm font-semibold">
-                  Total: $ {state.totalPrice} USD - $
-                  {state.totalPrice * usdValue} cup
-                </div>
-              </div>
-            </div>
-          </CardContent>
-          <CardFooter>
-            {/* Botón de acción (solo en modo selección) */}
-            {mode === "selection" && (
-              <div className="flex justify-end">
-                <Button
-                  className="bg-sage-600 hover:bg-sage-500 text-white px-5 py-2 rounded-md transition-colors"
-                  onClick={handleNext}
-                  disabled={state.selectedServices.length === 0}
-                  size="lg"
-                >
-                  Continuar a Fecha y Hora
-                </Button>
-              </div>
-            )}
-          </CardFooter>
-        </Card>
+        // <Card className=" bottom-0 z-10 fixed">
+        //   <CardContent className="p-4">
+        //     <div className="flex items-center justify-between">
+        //       <div>
+        //         <h3 className="font-semibold">Servicios Seleccionados</h3>
+        //         <div className="flex gap-2 mt-2 flex-wrap">
+        //           <span>Servicios: {state.selectedServices.length}</span>
+        //           {/* {state.selectedServices.map((service) => (
+        //             <Badge key={service.id} variant="secondary">
+        //               {service.name}
+        //             </Badge>
+        //           ))} */}
+        //         </div>
+        //       </div>
+        //       <div className="text-right">
+        //         <div className="text-xs text-muted-foreground">
+        //           Duración Total: {state.totalDuration} min
+        //         </div>
+        //         <div className="flex text-sm font-semibold">
+        //           Total: $ {state.totalPrice} USD - $
+        //           {state.totalPrice * usdValue} cup
+        //         </div>
+        //       </div>
+        //     </div>
+        //   </CardContent>
+        //   <CardFooter>
+        //     {/* Botón de acción (solo en modo selección) */}
+        //     {mode === "selection" && (
+        //       <div className="flex justify-end">
+        //         <Button
+        //           className="bg-sage-600 hover:bg-sage-500 text-white px-5 py-2 rounded-md transition-colors"
+        //           onClick={handleNext}
+        //           disabled={state.selectedServices.length === 0}
+        //           size="lg"
+        //         >
+        //           Continuar a Fecha y Hora
+        //         </Button>
+        //       </div>
+        //     )}
+        //   </CardFooter>
+        // </Card>
+        <Card className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t shadow-lg">
+  <CardContent className="p-4">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1">
+      {/* Información de servicios */}
+      <div className="flex justify-between flex-1 min-w-0 w-full ">
+        <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-1">
+            <h3 className="font-semibold text-sm sm:text-base">Servicios </h3>
+          </div>
+          <Badge variant="secondary" className="ml-5">
+            {state.selectedServices.length}
+          </Badge>
+
+          
+
+
+        </div>
+        
+     {/* Duración total */}
+        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+          <Clock className="h-3 w-3" />
+          <span>{state.totalDuration} min total</span>
+        </div>
+      </div>
+         {/* Precios */}
+        <div className="flex justify-between gap-2">
+          <div className="">
+            <span className="text-sm font-semibold">
+              Total: ${state.totalPrice} USD
+            </span>
+           
+          </div>
+           <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+              ${(state.totalPrice * usdValue).toLocaleString()} CUP
+            </Badge>
+        </div>
+          <p className="text-xs text-muted-foreground mt-1">
+            Tipo de cambio: 1 USD = {usdValue} CUP
+          </p>
+
+       
+      {/* Resumen de precios y duración */}
+      <div className="flex flex-col items-end gap-2 sm:gap-3 min-w-[140px]">
+        
+     
+      </div>
+    </div>
+  </CardContent>
+
+  {/* Footer con botón de acción */}
+  {mode === "selection" && (
+    <CardFooter className="bg-muted/30 p-4 border-t">
+      <div className="flex flex-col sm:flex-row items-center justify-between w-full gap-3">
+        {/* Información adicional en móvil */}
+        {/* <div className="sm:hidden flex items-center justify-between w-full text-xs text-muted-foreground">
+          <span>{state.selectedServices.length} servicios</span>
+          <span>{state.totalDuration} min</span>
+          <span>${state.totalPrice} USD</span>
+        </div> */}
+
+        {/* Botón de acción */}
+        <Button
+          className="w-full sm:w-auto bg-sage-600 hover:bg-sage-500 text-white px-6 py-3 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 min-h-[48px] font-semibold"
+          onClick={handleNext}
+          disabled={state.selectedServices.length === 0}
+          size="lg"
+        >
+            <span className="flex items-center gap-2">
+              {/* <Calendar className="h-4 w-4" /> */}
+              Continuar a Fecha y Hora
+              <ChevronRight className="h-4 w-4" />
+            </span>
+        </Button>
+      </div>
+    </CardFooter>
+  )}
+</Card>
       )}
     </div>
   );
