@@ -222,7 +222,7 @@ export function AppSidebar({...props}) {
         />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser  />
+        {/* <NavUser  /> */}
       </SidebarFooter>
     </Sidebar>
   )
