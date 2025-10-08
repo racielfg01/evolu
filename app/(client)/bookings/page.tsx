@@ -5,7 +5,7 @@ import { getCurrentUser } from "@/lib/supabase/auth";
 
 export default async function Home() {
 const user =await getCurrentUser()
-console.log({user})
+// console.log({user})
 
 
 
