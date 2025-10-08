@@ -201,6 +201,7 @@ export type FullAppointment = Appointment & {
 
 interface AppointmentData {
     cuid: string;
+    note: string;
     date: Date;
     endDate: Date;
     duration: number;

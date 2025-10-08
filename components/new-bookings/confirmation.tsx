@@ -61,12 +61,13 @@ const handleConfirmBooking = async () => {
     
     // Generar CUID único para la cita
     const appointmentCuid = uuidv4();
-
+console.log("note",state.userInfo.notes)
     const data = {
         cuid: appointmentCuid,
         date: normalizeToUTC(startDateTime),
         endDate: normalizeToUTC(endDateTime),
         duration: totalDuration,
+        note:state.userInfo.notes||"",
         total_price: state.selectedServices.reduce(
           (total, service) => total + service.price, 0
         ),

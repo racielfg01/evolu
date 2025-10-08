@@ -8,11 +8,12 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
-import { Calendar, Clock, User, Mail, Phone, CreditCard, Scissors } from "lucide-react";
+import { Calendar, Clock, User, Mail, Phone, CreditCard, Scissors, NotebookPen } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { FullAppointment } from "@/lib/actions/appointment.actions";
 import { normalizeToLocal } from "./ApoimentsManagment";
+import { IconListDetails } from "@tabler/icons-react";
 // import type { FullAppointment } from "@/lib/types"; // Asegúrate de importar el tipo correcto
 
 interface AppointmentDetailsModalProps {
@@ -139,6 +140,17 @@ const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = ({
                   </p>
                 </div>
               )}
+
+                {appointment.note && (
+             <div>
+                  <p className="flex items-center gap-1">
+                    <NotebookPen className="h-4 w-4" />
+                    {appointment.note}
+                  </p>
+                </div>
+              )}
+
+             
             </div>
           </div>
 
