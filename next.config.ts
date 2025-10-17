@@ -15,7 +15,8 @@ protocol: "https",
 hostname: "supabase.com",
 port: "",
 pathname: "/**"
-}]
+}],
+unoptimized: true
 },
 async headers() {
     return [
