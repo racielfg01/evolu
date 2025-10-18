@@ -13,8 +13,6 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { FullAppointment } from "@/lib/actions/appointment.actions";
 import { normalizeToLocal } from "./ApoimentsManagment";
-import { IconListDetails } from "@tabler/icons-react";
-// import type { FullAppointment } from "@/lib/types"; // Asegúrate de importar el tipo correcto
 
 interface AppointmentDetailsModalProps {
   isOpen: boolean;
