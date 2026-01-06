@@ -185,22 +185,21 @@ export async function login(formData: FormData) {
 
   const { error } = await supabase.auth.signInWithPassword({
     email: data.email.trim(),
-    password: data.password,
+    password: data.password.trim(),
   });
 
+  console.log({error})
+
   if (error) {
-    console.error("SignIp error:", error.message);
+    console.log("SignIn error:", error.message);
     if (error.message == "Email not confirmed") {
-      revalidatePath("/", "layout");
-      redirect("/");
+
     }
-    // Return error message instead of redirecting
+ 
     return { error: error.message };
-    // redirect('/error')
+
   }
 
-  revalidatePath("/", "layout");
-  redirect("/");
 }
 
 export async function signUp(formData: FormData) {
@@ -244,6 +243,7 @@ export async function signUp(formData: FormData) {
       role_id: role?.id as string,
       password: data.email,
       image: data.name as string,
+      phone: data.phone as string,
     },
   });
 
@@ -283,66 +283,6 @@ export async function resetPassword(email: string) {
       console.error("Error resetting password:", error.message);
       return { error: error.message };
     }
-
-    // 2. Enviar email personalizado (opcional, ya que Supabase envía uno por defecto)
-    // const { data: emailData, error: emailError } = await resend.emails.send({
-    //   from: "Evolu <no-reply@evolu.com>",
-    //   to: email,
-    //   subject: "Restablece tu contraseña en Evolu",
-    //   html: `
-    //   <!DOCTYPE html>
-    //   <html>
-    //   <head>
-    //       <style>
-    //           body { font-family: 'Arial', sans-serif; background-color: #f4f7f4; color: #1a211a; line-height: 1.6; margin: 0; padding: 0; }
-    //           .container { max-width: 600px; margin: 20px auto; padding: 20px; background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
-    //           .header { background-color: #6B8E6B; padding: 20px; border-radius: 8px 8px 0 0; text-align: center; color: white; }
-    //           .content { padding: 25px; }
-    //           .button { display: inline-block; padding: 12px 24px; background-color: #527152; color: white !important; text-decoration: none; border-radius: 30px; font-weight: bold; margin: 20px 0; text-align: center; }
-    //           .footer { text-align: center; font-size: 12px; color: #86a986; margin-top: 30px; padding-top: 15px; border-top: 1px solid #e6ede6; }
-    //           .logo { font-size: 24px; font-weight: bold; color: white; margin-bottom: 10px; }
-    //       </style>
-    //   </head>
-    //   <body>
-    //       <div class="container">
-    //           <div class="header">
-    //               <div class="logo">Evolu</div>
-    //               <h2 style="margin:0; color:white;">Restablecer tu contraseña</h2>
-    //           </div>
-
-    //           <div class="content">
-    //               <p>¡Hola!</p>
-
-    //               <p>Hemos recibido una solicitud para restablecer la contraseña de tu cuenta en Evolu.</p>
-
-    //               <p>Para crear una nueva contraseña, haz clic en el siguiente botón:</p>
-
-    //               <p style="text-align: center;">
-    //                   <a href="${process.env.NEXT_PUBLIC_SITE_URL}/auth/update-password#access_token=$TOKEN&refresh_token=$REFRESH_TOKEN&expires_in=3600&token_type=bearer&type=recovery" class="button">Restablecer contraseña</a>
-    //               </p>
-
-    //               <p><small>Este enlace expirará en 1 hora y solo puede usarse una vez.</small></p>
-
-    //               <p>Si no has solicitado este cambio, por favor ignora este mensaje.</p>
-
-    //               <p>Con cariño,<br>El equipo de Evolu</p>
-    //           </div>
-
-    //           <div class="footer">
-    //               <p>© ${new Date().getFullYear()} Evolu - Depilación y Masajes Relajantes</p>
-    //               <p>Diseñado para tu bienestar</p>
-    //           </div>
-    //       </div>
-    //   </body>
-    //   </html>
-    //   `,
-    // });
-
-    // if (emailError) {
-    //   console.error("Error sending custom email:", emailError);
-    //   // No retornes error aquí porque Supabase ya envió el email básico
-    // }
-
     return { success: true };
   } catch (error) {
     console.error("Unexpected error in resetPassword:", error);
