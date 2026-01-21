@@ -242,13 +242,20 @@ import { useState } from "react"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { FieldValues, useForm } from "react-hook-form"
 import { toast } from "sonner"
-import { resetPassword } from "@/lib/supabase/auth"
+import {  resetPassword } from "@/lib/supabase/auth"
 import { useRouter } from "next/navigation"
+
+
+
+
+
 
 export default function FormularioLogin({
   handleLogin,
 }: {
-  handleLogin: (formData: FormData) => Promise<{ error?: string } | void>
+  handleLogin: (formData: FormData) => Promise<{
+    error?: string | undefined;
+} | null>
 }) {
   const [isVisible, setIsVisible] = useState(false)
   const [isForgetPasswd, setIsForgetPasswd] = useState(false)
@@ -284,30 +291,88 @@ export default function FormularioLogin({
     }
   }
 
+
+ 
+
   const handleFormSubmit = async (formData: FormData) => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      const result = await handleLogin(formData)
+      const result = await handleLogin(formData);
       
-      // Si hay un error, lo mostramos
-      if (result?.error) {
+      // TypeScript ahora sabe que result puede ser:
+      // 1. { error?: string } | null | void
+      // 2. undefined (porque puede ser void)
+      
+      if (result && 'error' in result && result.error) {
         toast.error("Error de inicio de sesión", { 
           description: result.error 
-        })
+        });
       } else {
+        console.log("no hay error");
         // Si no hay error, redirigimos manualmente
-        router.push("/")
-        router.refresh() // Para actualizar el estado de autenticación
+        router.push("/");
+        router.refresh();
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
       toast.error("Error", { 
         description: "Ha ocurrido un error inesperado"
-      })
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
+
+// const handleFormSubmit = async (formData: FormData) => {
+//   setIsLoading(true);
+//   try {
+//     const result = await handleLogin(formData);
+    
+//     if (result && result.error) {
+//       toast.error("Error de inicio de sesión", { 
+//         description: result.error 
+//       });
+//     } else {
+//       // Si no hay error, redirigimos desde el cliente
+//       toast.success("¡Inicio de sesión exitoso!");
+//       router.push("/");
+//       router.refresh();
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     toast.error("Error", { 
+//       description: "Ha ocurrido un error inesperado"
+//     });
+//   } finally {
+//     setIsLoading(false);
+//   }
+// }
+
+  // const handleFormSubmit = async (formData: FormData) => {
+  //   setIsLoading(true)
+  //   try {
+  //     const result = await handleLogin(formData)
+      
+  //     // Si hay un error, lo mostramos
+  //     if (result!=null) {
+  //       toast.error("Error de inicio de sesión", { 
+  //         description: result.error 
+  //       })
+  //     } else {
+  //       console.log("no hay error")
+  //       // Si no hay error, redirigimos manualmente
+  //       router.push("/")
+  //       router.refresh() // Para actualizar el estado de autenticación
+  //     }
+  //   } catch (error) {
+  //     console.error(error)
+  //     toast.error("Error", { 
+  //       description: "Ha ocurrido un error inesperado"
+  //     })
+  //   } finally {
+  //     setIsLoading(false)
+  //   }
+  // }
 
   return (
     <div className={cn("flex flex-col gap-6")}>

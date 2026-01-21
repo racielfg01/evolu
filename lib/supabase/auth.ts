@@ -173,11 +173,44 @@ import prisma from "../prisma";
 // import { Resend } from "resend";
 // import { type NextRequest, NextResponse } from "next/server";
 
-export async function login(formData: FormData) {
+// export async function login(formData: FormData) {
+//   const supabase = await createClient();
+
+//   // type-casting here for convenience
+//   // in practice, you should validate your inputs
+//   const data = {
+//     email: formData.get("email") as string,
+//     password: formData.get("password") as string,
+//   };
+
+//   const { error } = await supabase.auth.signInWithPassword({
+//     email: data.email.trim(),
+//     password: data.password.trim(),
+//   });
+
+//   console.log({error})
+
+//   if (error) {
+//     console.log("SignIn error:", error.message);
+//     if (error.message == "Email not confirmed") {
+
+//       return { error: error.message };
+//     }
+//     return error;
+ 
+
+//   }
+
+//   revalidatePath("/");
+//   return null;
+
+//   // redirect('/')
+
+// }
+
+export async function login(formData: FormData): Promise<{ error?: string } | null> {
   const supabase = await createClient();
 
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
   const data = {
     email: formData.get("email") as string,
     password: formData.get("password") as string,
@@ -188,20 +221,20 @@ export async function login(formData: FormData) {
     password: data.password.trim(),
   });
 
-  console.log({error})
-
   if (error) {
     console.log("SignIn error:", error.message);
-    if (error.message == "Email not confirmed") {
-
-    }
- 
-    return { error: error.message };
-
+    
+    // Siempre retornamos un objeto con propiedad 'error'
+    return { 
+      error: error.message === "Email not confirmed" 
+        ? "Por favor confirma tu email antes de iniciar sesión" 
+        : "Credenciales incorrectas. Verifica tu email y contraseña"
+    };
   }
 
   revalidatePath("/");
-
+  // Retornamos null para indicar éxito
+  return null;
 }
 
 export async function signUp(formData: FormData) {
