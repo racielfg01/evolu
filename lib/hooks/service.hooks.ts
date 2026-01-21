@@ -7,6 +7,7 @@ import {
 } from '@tanstack/react-query';
 import {
   fetchAllServices,
+  fetchAllServicesActive,
   fetchServiceById,
   fetchServiceByCategory,
   addService,
@@ -18,6 +19,13 @@ import {
 } from '@/lib/actions/services.actions';
 import { toast } from 'sonner';
 
+export const useGetAllServicesActive = () => {
+  return useQuery({
+    queryKey: ['services'],
+    queryFn: fetchAllServicesActive,
+    
+  });
+};
 export const useGetAllServices = () => {
   return useQuery({
     queryKey: ['services'],

@@ -89,7 +89,7 @@ export type ServiceWithRelations = {
 //   return service
 // }
 
-export const fetchAllServices = async (): Promise<ServiceWithRelations[]> => {
+export const fetchAllServicesActive = async (): Promise<ServiceWithRelations[]> => {
   try {
     const services = await prisma.service.findMany({
       include: {
@@ -113,6 +113,35 @@ export const fetchAllServices = async (): Promise<ServiceWithRelations[]> => {
       where: {
         isActive: true, // Opcional: filtrar solo servicios activos
       },
+    });
+    console.log(" fetching services:");
+    return services;
+  } catch (error) {
+    console.error("Error fetching services:", error);
+    throw new Error("Failed to fetch services");
+  }
+};
+export const fetchAllServices = async (): Promise<ServiceWithRelations[]> => {
+  try {
+    const services = await prisma.service.findMany({
+      include: {
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        images: {
+          select: {
+            id: true,
+            url: true, // Solo la URL y quizás otros campos necesarios
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      }
     });
     console.log(" fetching services:");
     return services;
