@@ -73,7 +73,7 @@ export default async function LoginPage() {
     
     try {
       const result = await login(formData);
-      
+      console.log(result,"re")
       if (result?.error) {
         // Devolvemos el error para que el cliente lo maneje
         return { error: result.error };

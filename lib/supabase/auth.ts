@@ -200,6 +200,8 @@ export async function login(formData: FormData) {
 
   }
 
+  revalidatePath("/");
+
 }
 
 export async function signUp(formData: FormData) {
