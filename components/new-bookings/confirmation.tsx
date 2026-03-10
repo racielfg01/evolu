@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from "uuid";
 // import prisma from "@/lib/prisma"
 import { useEnhancedBooking } from "./enhanced-booking-context"
 import { createAppointment } from "@/lib/actions/appointment.actions"
+import { calculateEndDateTime, calculateTotalDuration } from "@/lib/utils/booking-utils"
 
 
 interface ConfirmationProps {
@@ -37,6 +38,9 @@ function normalizeToUTC(date: Date): Date {
 export function Confirmation({onViewChange}:ConfirmationProps) {
   const { state, dispatch } = useEnhancedBooking()
   const [isConfirmed, setIsConfirmed] = useState(false)
+
+
+   const totalDuration = calculateTotalDuration(state.selectedServices);
   
 const handleConfirmBooking = async () => {
   
@@ -53,11 +57,13 @@ const handleConfirmBooking = async () => {
     const [hours, minutes] = state.selectedTime.split(":").map(Number);
     startDateTime.setHours(hours, minutes, 0, 0);
     
-    const totalDuration = state.selectedServices.reduce(
-      (total, service) => total + service.duration, 0
-    );
+    // const totalDuration = state.selectedServices.reduce(
+    //   (total, service) => total + service.duration, 0
+    // );
     
-    const endDateTime = new Date(startDateTime.getTime() + totalDuration * 60000);
+    // const endDateTime = new Date(startDateTime.getTime() + totalDuration * 60000);
+
+          const endDateTime = calculateEndDateTime(startDateTime, state.selectedServices);
     
     // Generar CUID único para la cita
     const appointmentCuid = uuidv4();

@@ -4,15 +4,23 @@ import { Calendar } from "@/components/ui/calendar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { CalendarIcon, Clock, Loader2 } from "lucide-react"
+import { CalendarIcon, Clock, Info, Loader2 } from "lucide-react"
 import { useEnhancedBooking } from "./enhanced-booking-context"
 import { useAvailableSlots } from "@/hooks/use-availability"
 import { useEffect, useState } from "react"
 import { getDayAvailablePeriods } from "@/lib/actions/availability.actions"
 import { es } from "date-fns/locale" 
+import { BUFFER_TIME, calculateTotalDuration } from "@/lib/utils/booking-utils"
 
 export function DateTimeSelection() {
   const { state, dispatch } = useEnhancedBooking();
+
+  const totalDuration = calculateTotalDuration(state.selectedServices);
+  const servicesDuration = state.selectedServices.reduce(
+    (total, service) => total + service.duration, 
+    0
+  );
+
   
   const { data: availableSlots, isLoading, error } = useAvailableSlots(
     state.selectedServices, 
@@ -59,9 +67,9 @@ export function DateTimeSelection() {
     }
   };
 
-  const handleTimeSelect = (time: string) => {
-    dispatch({ type: "SET_TIME", payload: time });
-  };
+  // const handleTimeSelect = (time: string) => {
+  //   dispatch({ type: "SET_TIME", payload: time });
+  // };
 
   const handleNext = () => {
     if (canProceed) {
@@ -73,9 +81,28 @@ export function DateTimeSelection() {
     dispatch({ type: "SET_STEP", payload: 1 });
   };
 
-  const getTotalDuration = () => {
-    return state.selectedServices.reduce((total, service) => total + service.duration, 0);
+  // const getTotalDuration = () => {
+  //   return state.selectedServices.reduce((total, service) => total + service.duration, 0);
+  // };
+
+    const getTotalDuration = () => totalDuration;
+
+
+  const handleTimeSelect = (time: string) => {
+    dispatch({ type: "SET_TIME", payload: time });
+    
+    if (state.selectedDate) {
+      const startDateTime = new Date(state.selectedDate);
+      const [hours, minutes] = time.split(":").map(Number);
+      startDateTime.setHours(hours, minutes, 0, 0);
+      
+      const endDateTime = new Date(startDateTime.getTime() + totalDuration * 60000);
+      
+      dispatch({ type: "SET_START_DATE_TIME", payload: startDateTime });
+      dispatch({ type: "SET_END_DATE_TIME", payload: endDateTime });
+    }
   };
+
 
   const isDateDisabled = (date: Date) => {
     const today = new Date();
@@ -203,12 +230,24 @@ export function DateTimeSelection() {
               </div>
             ) : availableSlots && availableSlots.length > 0 ? (
               <div className="space-y-4">
-                <div className="text-sm text-muted-foreground">
+                {/* <div className="text-sm text-muted-foreground">
                   Duración total: {getTotalDuration()} minutos
                   <br />
                   <span className="text-green-600">
                     ✅ {availableSlots.filter(slot => slot.available).length} horarios disponibles
                   </span>
+                </div> */}
+                
+                <div className="text-sm text-muted-foreground bg-blue-50 p-3 rounded-md">
+                  <div className="flex items-start gap-2">
+                    <Info className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="font-medium text-blue-700">Desglose de tiempo:</p>
+                      <p>Servicios: {servicesDuration} minutos</p>
+                      <p>Tiempo de preparación: {BUFFER_TIME} minutos</p>
+                      <p className="font-semibold mt-1">Total: {totalDuration} minutos</p>
+                    </div>
+                  </div>
                 </div>
                 <div className="grid grid-cols-3 gap-2 max-h-60 overflow-y-auto">
                   {availableSlots.map((slot) => (

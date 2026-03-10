@@ -35,6 +35,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "../ui/carousel";
+import { calculateTotalDuration } from "@/lib/utils/booking-utils";
 
 interface UnifiedServicesComponentProps {
   mode: "catalog" | "selection";
@@ -84,11 +85,12 @@ export function UnifiedServicesComponent({
   // Efectos para calcular duración y precio total (solo en modo selección)
   useEffect(() => {
     if (mode === "selection") {
-      const totalDuration =
-        state.selectedServices.reduce(
-          (total, service) => total + service.duration,
-          0
-        ) + 20; // Añadir 20 minutos extra
+      // const totalDuration =
+      //   state.selectedServices.reduce(
+      //     (total, service) => total + service.duration,
+      //     0
+      //   ) + 20; // Añadir 20 minutos extra
+       const totalDuration = calculateTotalDuration(state.selectedServices);
 
       dispatch({ type: "SET_TOTAL_DURATION", payload: totalDuration });
     }
