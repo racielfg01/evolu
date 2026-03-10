@@ -1,3 +1,5 @@
+
+
 // "use client"
 // import { cn } from "@/lib/utils"
 // import { Button } from "@/components/ui/button"
@@ -15,17 +17,22 @@
 // import { Eye, EyeOff, Loader2 } from "lucide-react"
 // import { FieldValues, useForm } from "react-hook-form"
 // import { toast } from "sonner"
-// import { resetPassword } from "@/lib/supabase/auth"
+// import {  resetPassword } from "@/lib/supabase/auth"
+// import { useRouter } from "next/navigation"
+
 
 // export default function FormularioLogin({
 //   handleLogin,
 // }: {
-//   handleLogin: (formData: FormData) => Promise<void>
+//   handleLogin: (formData: FormData) => Promise<{
+//     error?: string | undefined;
+// } | null>
 // }) {
 //   const [isVisible, setIsVisible] = useState(false)
 //   const [isForgetPasswd, setIsForgetPasswd] = useState(false)
 //   const [isLoading, setIsLoading] = useState(false)
 //   const [isResetLoading, setIsResetLoading] = useState(false)
+//   const router = useRouter()
 
 //   const { register, handleSubmit } = useForm()
 
@@ -48,21 +55,95 @@
 //         setIsForgetPasswd(false)
 //       }
 //     } catch (error) {
+//       console.error(error)
 //       toast.error("Error", { description: "Ha ocurrido un error inesperado" })
 //     } finally {
 //       setIsResetLoading(false)
 //     }
 //   }
 
+
+ 
+
 //   const handleFormSubmit = async (formData: FormData) => {
-//     setIsLoading(true)
+//     setIsLoading(true);
 //     try {
+//       const result = await handleLogin(formData);
       
-//       await handleLogin(formData)
+//       // TypeScript ahora sabe que result puede ser:
+//       // 1. { error?: string } | null | void
+//       // 2. undefined (porque puede ser void)
+      
+//       if (result && 'error' in result && result.error) {
+//         toast.error("Error de inicio de sesión", { 
+//           description: result.error 
+//         });
+//       } else {
+//         console.log("no hay error");
+//         // Si no hay error, redirigimos manualmente
+//         router.push("/");
+//         router.refresh();
+//       }
+//     } catch (error) {
+//       console.error(error);
+//       toast.error("Error", { 
+//         description: "Ha ocurrido un error inesperado"
+//       });
 //     } finally {
-//       setIsLoading(false)
+//       setIsLoading(false);
 //     }
 //   }
+
+// // const handleFormSubmit = async (formData: FormData) => {
+// //   setIsLoading(true);
+// //   try {
+// //     const result = await handleLogin(formData);
+    
+// //     if (result && result.error) {
+// //       toast.error("Error de inicio de sesión", { 
+// //         description: result.error 
+// //       });
+// //     } else {
+// //       // Si no hay error, redirigimos desde el cliente
+// //       toast.success("¡Inicio de sesión exitoso!");
+// //       router.push("/");
+// //       router.refresh();
+// //     }
+// //   } catch (error) {
+// //     console.error(error);
+// //     toast.error("Error", { 
+// //       description: "Ha ocurrido un error inesperado"
+// //     });
+// //   } finally {
+// //     setIsLoading(false);
+// //   }
+// // }
+
+//   // const handleFormSubmit = async (formData: FormData) => {
+//   //   setIsLoading(true)
+//   //   try {
+//   //     const result = await handleLogin(formData)
+      
+//   //     // Si hay un error, lo mostramos
+//   //     if (result!=null) {
+//   //       toast.error("Error de inicio de sesión", { 
+//   //         description: result.error 
+//   //       })
+//   //     } else {
+//   //       console.log("no hay error")
+//   //       // Si no hay error, redirigimos manualmente
+//   //       router.push("/")
+//   //       router.refresh() // Para actualizar el estado de autenticación
+//   //     }
+//   //   } catch (error) {
+//   //     console.error(error)
+//   //     toast.error("Error", { 
+//   //       description: "Ha ocurrido un error inesperado"
+//   //     })
+//   //   } finally {
+//   //     setIsLoading(false)
+//   //   }
+//   // }
 
 //   return (
 //     <div className={cn("flex flex-col gap-6")}>
@@ -224,7 +305,6 @@
 //   )
 // }
 
-
 "use client"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -242,13 +322,8 @@ import { useState } from "react"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { FieldValues, useForm } from "react-hook-form"
 import { toast } from "sonner"
-import {  resetPassword } from "@/lib/supabase/auth"
+import { resetPassword } from "@/lib/supabase/auth"
 import { useRouter } from "next/navigation"
-
-
-
-
-
 
 export default function FormularioLogin({
   handleLogin,
@@ -291,88 +366,37 @@ export default function FormularioLogin({
     }
   }
 
-
- 
-
-  const handleFormSubmit = async (formData: FormData) => {
+  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault(); // Prevenir el envío tradicional del formulario
+    
+    const formData = new FormData(event.currentTarget);
+    
     setIsLoading(true);
     try {
       const result = await handleLogin(formData);
-      
-      // TypeScript ahora sabe que result puede ser:
-      // 1. { error?: string } | null | void
-      // 2. undefined (porque puede ser void)
       
       if (result && 'error' in result && result.error) {
         toast.error("Error de inicio de sesión", { 
           description: result.error 
         });
+        // Importante: resetear el estado de carga si hay error
+        setIsLoading(false);
       } else {
         console.log("no hay error");
         // Si no hay error, redirigimos manualmente
         router.push("/");
         router.refresh();
+        // No resetear isLoading aquí porque vamos a redirigir
       }
     } catch (error) {
       console.error(error);
       toast.error("Error", { 
         description: "Ha ocurrido un error inesperado"
       });
-    } finally {
+      // Resetear el estado de carga en caso de error
       setIsLoading(false);
     }
   }
-
-// const handleFormSubmit = async (formData: FormData) => {
-//   setIsLoading(true);
-//   try {
-//     const result = await handleLogin(formData);
-    
-//     if (result && result.error) {
-//       toast.error("Error de inicio de sesión", { 
-//         description: result.error 
-//       });
-//     } else {
-//       // Si no hay error, redirigimos desde el cliente
-//       toast.success("¡Inicio de sesión exitoso!");
-//       router.push("/");
-//       router.refresh();
-//     }
-//   } catch (error) {
-//     console.error(error);
-//     toast.error("Error", { 
-//       description: "Ha ocurrido un error inesperado"
-//     });
-//   } finally {
-//     setIsLoading(false);
-//   }
-// }
-
-  // const handleFormSubmit = async (formData: FormData) => {
-  //   setIsLoading(true)
-  //   try {
-  //     const result = await handleLogin(formData)
-      
-  //     // Si hay un error, lo mostramos
-  //     if (result!=null) {
-  //       toast.error("Error de inicio de sesión", { 
-  //         description: result.error 
-  //       })
-  //     } else {
-  //       console.log("no hay error")
-  //       // Si no hay error, redirigimos manualmente
-  //       router.push("/")
-  //       router.refresh() // Para actualizar el estado de autenticación
-  //     }
-  //   } catch (error) {
-  //     console.error(error)
-  //     toast.error("Error", { 
-  //       description: "Ha ocurrido un error inesperado"
-  //     })
-  //   } finally {
-  //     setIsLoading(false)
-  //   }
-  // }
 
   return (
     <div className={cn("flex flex-col gap-6")}>
@@ -431,7 +455,7 @@ export default function FormularioLogin({
               </div>
             </form>
           ) : (
-            <form action={handleFormSubmit}>
+            <form onSubmit={handleFormSubmit}>
               <div className="flex flex-col gap-6">
                 {/* Campo de Email */}
                 <div className="grid gap-3">
@@ -490,9 +514,9 @@ export default function FormularioLogin({
 
                 {/* Botones de Acción */}
                 <div className="flex flex-col gap-3">
-                  <Button 
+                      <Button 
+                      className=" bg-sage-600 hover:bg-sage-700 text-white px-5 py-2 rounded-md transition-colors w-full"
                     type="submit" 
-                    className="w-full"
                     disabled={isLoading}
                   >
                     {isLoading ? (
@@ -504,14 +528,14 @@ export default function FormularioLogin({
                       "Iniciar Sesión"
                     )}
                   </Button>
-                  <Button 
+                  {/* <Button 
                     variant="outline" 
                     className="w-full"
                     type="button"
                     disabled={isLoading}
                   >
                     Continuar con Google
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
 
@@ -523,7 +547,10 @@ export default function FormularioLogin({
                   className="underline underline-offset-4"
                   onClick={(e) => isLoading && e.preventDefault()}
                 >
+                       <Button className=" bg-sage-600 hover:bg-sage-700 text-white px-5 py-2 rounded-md transition-colors">
                   Regístrate
+
+                  </Button>
                 </Link>
               </div>
             </form>
