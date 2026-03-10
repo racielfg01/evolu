@@ -1,19 +1,30 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { CheckCircle, CalendarIcon, Clock, User, Mail, Phone, MessageSquare, Loader2 } from "lucide-react"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  CheckCircle,
+  CalendarIcon,
+  Clock,
+  User,
+  Mail,
+  Phone,
+  MessageSquare,
+  Loader2,
+} from "lucide-react";
 // import { useBooking } from "./booking-context"
 import { v4 as uuidv4 } from "uuid";
 // import prisma from "@/lib/prisma"
-import { useEnhancedBooking } from "./enhanced-booking-context"
-import { createAppointment } from "@/lib/actions/appointment.actions"
-import { calculateEndDateTime, calculateTotalDuration } from "@/lib/utils/booking-utils"
-
+import { useEnhancedBooking } from "./enhanced-booking-context";
+import { createAppointment } from "@/lib/actions/appointment.actions";
+import {
+  calculateEndDateTime,
+  calculateTotalDuration,
+} from "@/lib/utils/booking-utils";
 
 interface ConfirmationProps {
   onViewChange: (view: string) => void;
@@ -22,29 +33,92 @@ interface ConfirmationProps {
 // Función para normalizar fechas a UTC manteniendo el día correcto
 function normalizeToUTC(date: Date): Date {
   // Crear una nueva fecha con los mismos componentes pero en UTC
-  const utcDate = new Date(Date.UTC(
-    date.getFullYear(),
-    date.getMonth(),
-    date.getDate(),
-    date.getHours(),
-    date.getMinutes(),
-    date.getSeconds()
-  ));
+  const utcDate = new Date(
+    Date.UTC(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      date.getHours(),
+      date.getMinutes(),
+      date.getSeconds(),
+    ),
+  );
   return utcDate;
 }
 
+export function Confirmation({ onViewChange }: ConfirmationProps) {
+  const { state, dispatch } = useEnhancedBooking();
+  const [isConfirmed, setIsConfirmed] = useState(false);
 
+  const totalDuration = calculateTotalDuration(state.selectedServices);
 
-export function Confirmation({onViewChange}:ConfirmationProps) {
-  const { state, dispatch } = useEnhancedBooking()
-  const [isConfirmed, setIsConfirmed] = useState(false)
+  // const handleConfirmBooking = async () => {
+  //   dispatch({ type: "SET_LOADING", payload: true });
 
+  //   try {
+  //     // Validaciones previas
+  //     if (!state.selectedDate || !state.selectedTime || !state.userInfo.id) {
+  //       throw new Error("Faltan datos requeridos para la reserva");
+  //     }
 
-   const totalDuration = calculateTotalDuration(state.selectedServices);
-  
+  //     // Calcular fecha y hora final
+  //     const startDateTime = new Date(state.selectedDate);
+  //     const [hours, minutes] = state.selectedTime.split(":").map(Number);
+  //     startDateTime.setHours(hours, minutes, 0, 0);
+
+  //     // const totalDuration = state.selectedServices.reduce(
+  //     //   (total, service) => total + service.duration, 0
+  //     // );
+
+  //     // const endDateTime = new Date(startDateTime.getTime() + totalDuration * 60000);
+
+  //     const endDateTime = calculateEndDateTime(
+  //       startDateTime,
+  //       state.selectedServices,
+  //     );
+
+  //     // Generar CUID único para la cita
+  //     const appointmentCuid = uuidv4();
+  //     console.log("note", state.userInfo.notes);
+  //     const data = {
+  //       cuid: appointmentCuid,
+  //       date: normalizeToUTC(startDateTime),
+  //       endDate: normalizeToUTC(endDateTime),
+  //       duration: totalDuration,
+  //       note: state.userInfo.notes || "",
+  //       total_price: state.selectedServices.reduce(
+  //         (total, service) => total + service.price,
+  //         0,
+  //       ),
+  //       user_id: state.userInfo.id,
+  //       services: {
+  //         create: state.selectedServices.map((service) => ({
+  //           service_id: service.id,
+  //           quantity: 1,
+  //         })),
+  //       },
+  //     };
+
+  //     await createAppointment(data);
+
+  //     setIsConfirmed(true);
+  //   } catch (error) {
+  //     console.error("Error al confirmar reserva:", error);
+  //     dispatch({
+  //       type: "SET_ERROR",
+  //       payload:
+  //         error instanceof Error
+  //           ? error.message
+  //           : "Error al confirmar la reserva. Por favor intenta de nuevo.",
+  //     });
+  //   } finally {
+  //     dispatch({ type: "SET_LOADING", payload: false });
+  //   }
+  // };
+
 const handleConfirmBooking = async () => {
-  
   dispatch({ type: "SET_LOADING", payload: true });
+  dispatch({ type: "SET_ERROR", payload: null }); // Limpiar errores anteriores
   
   try {
     // Validaciones previas
@@ -52,73 +126,74 @@ const handleConfirmBooking = async () => {
       throw new Error("Faltan datos requeridos para la reserva");
     }
 
-    // Calcular fecha y hora final
     const startDateTime = new Date(state.selectedDate);
     const [hours, minutes] = state.selectedTime.split(":").map(Number);
     startDateTime.setHours(hours, minutes, 0, 0);
     
-    // const totalDuration = state.selectedServices.reduce(
-    //   (total, service) => total + service.duration, 0
-    // );
+    const endDateTime = calculateEndDateTime(startDateTime, state.selectedServices);
     
-    // const endDateTime = new Date(startDateTime.getTime() + totalDuration * 60000);
-
-          const endDateTime = calculateEndDateTime(startDateTime, state.selectedServices);
-    
-    // Generar CUID único para la cita
     const appointmentCuid = uuidv4();
-console.log("note",state.userInfo.notes)
+
     const data = {
-        cuid: appointmentCuid,
-        date: normalizeToUTC(startDateTime),
-        endDate: normalizeToUTC(endDateTime),
-        duration: totalDuration,
-        note:state.userInfo.notes||"",
-        total_price: state.selectedServices.reduce(
-          (total, service) => total + service.price, 0
-        ),
-        user_id: state.userInfo.id,
-        services: {
-          create: state.selectedServices.map(service => ({
-            service_id: service.id,
-            quantity: 1
-          }))
-        }
+      cuid: appointmentCuid,
+      date: normalizeToUTC(startDateTime),
+      endDate: normalizeToUTC(endDateTime),
+      duration: calculateTotalDuration(state.selectedServices),
+      note: state.userInfo.notes || "",
+      total_price: state.selectedServices.reduce(
+        (total, service) => total + service.price, 0
+      ),
+      user_id: state.userInfo.id,
+      services: {
+        create: state.selectedServices.map(service => ({
+          service_id: service.id,
+          quantity: 1
+        }))
       }
+    };
 
-    await createAppointment(data)
-
-    
-    
-    
+    await createAppointment(data);
     setIsConfirmed(true);
+    
   } catch (error) {
     console.error("Error al confirmar reserva:", error);
-    dispatch({ 
-      type: "SET_ERROR", 
-      payload: error instanceof Error 
-        ? error.message 
-        : "Error al confirmar la reserva. Por favor intenta de nuevo." 
-    });
+    
+    // Mensaje amigable para el usuario
+    let errorMessage = "Error al confirmar la reserva. Por favor intenta de nuevo.";
+    
+    if (error instanceof Error) {
+      if (error.message.includes("ya está ocupado")) {
+        errorMessage = error.message;
+      } else {
+        errorMessage = error.message;
+      }
+    }
+    
+    dispatch({ type: "SET_ERROR", payload: errorMessage });
+    
+    // Opcional: Resetear la hora seleccionada para forzar al usuario a elegir otra
+    // dispatch({ type: "SET_TIME", payload: null });
+    // dispatch({ type: "SET_START_DATE_TIME", payload: null });
+    // dispatch({ type: "SET_END_DATE_TIME", payload: null });
+    
   } finally {
     dispatch({ type: "SET_LOADING", payload: false });
   }
 };
 
   const handleBack = () => {
-    dispatch({ type: "SET_STEP", payload: 3 })
-  }
+    dispatch({ type: "SET_STEP", payload: 3 });
+  };
 
   const handleNewBooking = () => {
-    dispatch({ type: "RESET_BOOKING" })
-    setIsConfirmed(true)
-  }
-    const handleMysBookings = () => {
-    dispatch({ type: "RESET_BOOKING" })
-   onViewChange("bookings")
-    setIsConfirmed(true)
-  }
-  
+    dispatch({ type: "RESET_BOOKING" });
+    setIsConfirmed(true);
+  };
+  const handleMysBookings = () => {
+    dispatch({ type: "RESET_BOOKING" });
+    onViewChange("bookings");
+    setIsConfirmed(true);
+  };
 
   if (isConfirmed) {
     return (
@@ -132,7 +207,8 @@ console.log("note",state.userInfo.notes)
         <div>
           <h2 className="text-2xl font-bold mb-2">¡Reserva Confirmada!</h2>
           <p className="text-muted-foreground">
-            Tu cita ha sido reservada exitosamente. Hemos enviado un correo de confirmación a {state.userInfo.email}.
+            Tu cita ha sido reservada exitosamente. Hemos enviado un correo de
+            confirmación a {state.userInfo.email}.
           </p>
         </div>
 
@@ -152,7 +228,9 @@ console.log("note",state.userInfo.notes)
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-sm">
                     <CalendarIcon className="h-4 w-4" />
-                    <span>{state.selectedDate?.toLocaleDateString("es-ES")}</span>
+                    <span>
+                      {state.selectedDate?.toLocaleDateString("es-ES")}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2 text-sm">
                     <Clock className="h-4 w-4" />
@@ -177,17 +255,21 @@ console.log("note",state.userInfo.notes)
 
         <div className="flex gap-4 justify-center">
           <Button onClick={handleNewBooking}>Reservar Otra Cita</Button>
-          <Button variant="outline" onClick={handleMysBookings}>Ver Mis Reservas</Button>
+          <Button variant="outline" onClick={handleMysBookings}>
+            Ver Mis Reservas
+          </Button>
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <div className="space-y-6">
       <div className="text-center">
         <h2 className="text-2xl font-bold mb-2">Revisar tu Reserva</h2>
-        <p className="text-muted-foreground">Por favor revisa todos los detalles antes de confirmar tu cita</p>
+        <p className="text-muted-foreground">
+          Por favor revisa todos los detalles antes de confirmar tu cita
+        </p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -204,10 +286,15 @@ console.log("note",state.userInfo.notes)
                 <h4 className="font-medium mb-2">Servicios Seleccionados</h4>
                 <div className="space-y-2">
                   {state.selectedServices.map((service) => (
-                    <div key={service.id} className="flex justify-between items-start">
+                    <div
+                      key={service.id}
+                      className="flex justify-between items-start"
+                    >
                       <div>
                         <p className="font-medium">{service.name}</p>
-                        <p className="text-sm text-muted-foreground">{service.duration} min</p>
+                        <p className="text-sm text-muted-foreground">
+                          {service.duration} min
+                        </p>
                       </div>
                       <p className="font-medium">${service.price}</p>
                     </div>
@@ -221,12 +308,16 @@ console.log("note",state.userInfo.notes)
                 <div>
                   <p className="font-medium">Fecha y Hora</p>
                   <div className="flex gap-2 mt-1">
-                    <Badge variant="secondary">{state.selectedDate?.toLocaleDateString("es-ES")}</Badge>
+                    <Badge variant="secondary">
+                      {state.selectedDate?.toLocaleDateString("es-ES")}
+                    </Badge>
                     <Badge variant="secondary">{state.selectedTime}</Badge>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-muted-foreground">Duración Total</p>
+                  <p className="text-sm text-muted-foreground">
+                    Duración Total
+                  </p>
                   <p className="font-medium">{state.totalDuration} min</p>
                 </div>
               </div>
@@ -271,9 +362,13 @@ console.log("note",state.userInfo.notes)
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                      <span className="font-medium">Solicitudes Especiales</span>
+                      <span className="font-medium">
+                        Solicitudes Especiales
+                      </span>
                     </div>
-                    <p className="text-sm text-muted-foreground pl-6">{state.userInfo.notes}</p>
+                    <p className="text-sm text-muted-foreground pl-6">
+                      {state.userInfo.notes}
+                    </p>
                   </div>
                 </>
               )}
@@ -291,17 +386,24 @@ console.log("note",state.userInfo.notes)
       <Alert>
         <CheckCircle className="h-4 w-4" />
         <AlertDescription>
-          Al confirmar esta reserva, aceptas nuestra política de cancelación. Puedes cancelar o reprogramar hasta 24
-          horas antes de tu cita.
+          Al confirmar esta reserva, aceptas nuestra política de cancelación.
+          Puedes cancelar o reprogramar hasta 24 horas antes de tu cita.
         </AlertDescription>
       </Alert>
 
       <div className="flex justify-between">
-        <Button variant="outline" onClick={handleBack} disabled={state.isLoading}>
+        <Button
+          variant="outline"
+          onClick={handleBack}
+          disabled={state.isLoading}
+        >
           Volver a Detalles
         </Button>
-        <Button onClick={handleConfirmBooking} disabled={state.isLoading} size="lg"
-         className="bg-sage-600 hover:bg-sage-700"
+        <Button
+          onClick={handleConfirmBooking}
+          disabled={state.isLoading}
+          size="lg"
+          className="bg-sage-600 hover:bg-sage-700"
         >
           {state.isLoading ? (
             <>
@@ -314,5 +416,5 @@ console.log("note",state.userInfo.notes)
         </Button>
       </div>
     </div>
-  )
+  );
 }
