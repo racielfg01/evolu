@@ -79,7 +79,7 @@ export function UnifiedServicesComponent({
     useState<ServiceWithRelations | null>(null);
 
   useEffect(() => {
-    setUsdValue(500);
+    setUsdValue(600);
   }, []);
 
   // Efectos para calcular duración y precio total (solo en modo selección)
