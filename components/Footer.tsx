@@ -1,14 +1,16 @@
-import { Leaf } from "lucide-react";
-import React from "react";
+// import Image from "next/image";
+// import { Logo } from "./Logo";
 
 const Footer = () => {
+  
   return (
     <footer className="bg-sage-800 text-white py-12">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-8">
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2 mb-4">
-              <Leaf className="h-6 w-6" />
+            <div className="flex items-center ">
+              {/* <Image src={logo} alt="logo" className="h-6 w-6" fill /> */}
+              {/* <Logo width={100} height={100}/> */}
               <span className="text-xl font-semibold">Evolu</span>
             </div>
             <p className="text-sage-200">
@@ -74,7 +76,7 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">Contacto</h3>
             <address className="not-italic text-sage-200 space-y-2">
-              <p>Calle 7 entre 1ra y 2da #32</p>
+              {/* <p>Calle 7 entre 1ra y 2da #32</p> */}
               <p>+53 59088538</p>
               {/* <p>info@evoluspa.com</p> */}
             </address>
@@ -84,7 +86,7 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Horario</h3>
             <div className="text-sage-200 space-y-2">
               <p>Lunes - Viernes: 9am - 4pm</p>
-              <p>Sábado: 8am - 4pm</p>
+              <p>Sábado: 8am - 12pm</p>
               {/* <p>Domingo: 10am - 4pm</p> */}
             </div>
           </div>

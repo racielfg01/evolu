@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React from "react";
-import img1 from "@/assest/INjLRUqf.png";
+import img1 from "@/assest/mujer_soriendo.webp";
 // import Link from "next/link";
 import { Button } from "./ui/button";
 import { Sparkles } from "lucide-react";
@@ -87,7 +87,7 @@ export default function Hero({  onViewServices }: HeroProps) {
               height={600}
               alt="Woman in spa robe relaxing"
               className="relative z-10 mx-auto "
-              style={{ clipPath: "circle(50% at 50% 50%)" }}
+              style={{ clipPath: "circle(41% at 50% 56%)" }}
               priority
             />
           </div>

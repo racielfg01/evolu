@@ -6,10 +6,8 @@ import type {
   SystemConfig,
 } from "./types";
 
-// import img1 from "@/assest/Massage-Therapy.jpg";
-// import img2 from "@/assest/Desertika_Faciales_HidratacionProfunda.jpg";
-// import img3 from "@/assest/tratamientos-corporales.webp";
-import img4 from "@/assest/podologia.jpg";
+
+import img4 from  "@/assest/basileiro.jpg";
 import img5 from "@/assest/depilacion_axila.jpeg";
 import img6 from "@/assest/masaje_relajante.jpeg";
 import img7 from "@/assest/quiro_masaje.jpeg";
