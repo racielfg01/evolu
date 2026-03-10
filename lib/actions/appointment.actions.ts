@@ -6,7 +6,6 @@ import { Appointment, User, Service,
     AppointmentService
     // , $Enums 
   } from '@prisma/client';
-import { revalidatePath } from 'next/cache';
 
 export type FullAppointment = Appointment & {
   user: User;

@@ -50,7 +50,7 @@ export function Confirmation({ onViewChange }: ConfirmationProps) {
   const { state, dispatch } = useEnhancedBooking();
   const [isConfirmed, setIsConfirmed] = useState(false);
 
-  const totalDuration = calculateTotalDuration(state.selectedServices);
+  // const totalDuration = calculateTotalDuration(state.selectedServices);
 
   // const handleConfirmBooking = async () => {
   //   dispatch({ type: "SET_LOADING", payload: true });
