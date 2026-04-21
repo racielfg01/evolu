@@ -1,7 +1,6 @@
 // "use client";
 
 // import type React from "react";
-
 // import { useState } from "react";
 // import { Button } from "@/components/ui/button";
 // import { Edit, Trash } from "lucide-react";
@@ -16,7 +15,7 @@
 // import {
 //   useDeleteService,
 //   useEditService,
-//   useAddService,
+//   // useAddService,
 //   useGetAllServices,
 // } from "@/lib/hooks/service.hooks";
 // import { IconPlus } from "@tabler/icons-react";
@@ -25,63 +24,136 @@
 // import { Skeleton } from "../ui/skeleton";
 // import { ReusableDataTable } from "../comun/ReusableDataTable";
 // import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-// import { RolManagment } from "./RolManagment";
-// import { SexManagment } from "./SexManagment";
-// import { AddServiceModal } from "../comun/AddServiceModal";
-// import {  FullService, ServiceInput } from "@/lib/actions/services.actions";
+// import { AddServiceModal, UploadedImage } from "../comun/AddServiceModal";
+// import { ServiceWithRelations } from "@/lib/actions/services.actions";
+// import { useQueryClient } from "@tanstack/react-query";
+// import { AvailabilityConfigurator } from "../booking/availability-configurator";
+// import { BusinessConfiguration } from "@/lib/actions/config.actions";
 
-// export function ServiceManagment(
-//   // {services}:{services:FullService[]}
-// ) {
+
+// // Configuración por defecto (debería venir de un contexto o API)
+// const defaultBusinessConfig: BusinessConfiguration = {
+//   weekAvailability: {
+//     "1": {
+//       available: true,
+//       hours: {
+//         morning: { start: "09:00", end: "12:00" },
+//         afternoon: { start: "13:00", end: "17:00" },
+//       },
+//     }, // Lunes
+//     "2": {
+//       available: true,
+//       hours: {
+//          morning: { start: "09:00", end: "12:00" },
+//         afternoon: { start: "13:00", end: "17:00" },
+//       },
+//     }, // Martes
+//     "3": {
+//       available: true,
+//       hours: {
+//             morning: { start: "09:00", end: "12:00" },
+//         afternoon: { start: "13:00", end: "17:00" },
+//       },
+//     }, // Miércoles
+//     "4": {
+//       available: true,
+//       hours: {
+//          morning: { start: "09:00", end: "12:00" },
+//         afternoon: { start: "13:00", end: "17:00" },
+//       },
+//     }, // Jueves
+//     "5": {
+//       available: true,
+//       hours: {
+//            morning: { start: "09:00", end: "12:00" },
+//         afternoon: { start: "13:00", end: "17:00" },
+//       },
+//     }, // Viernes
+//     "6": {
+//       available: true,
+//       // hours: { morning: { start: "10:00", end: "14:00" }, afternoon: null },
+//         hours: {
+//            morning: { start: "09:00", end: "12:00" },
+//         afternoon: { start: "13:00", end: "17:00" },
+//       },
+//     }, // Sábado (solo mañana)
+//     "0": { available: false, hours: { morning: null, afternoon: null } }, // Domingo
+//   },
+//   specificDateOverrides: [
+//     // Ejemplo: día festivo
+//     { date: "2024-12-25", available: false },
+//     // Ejemplo: medio día especial
+//     {
+//       date: "2024-12-24",
+//       available: true,
+//       hours: { morning: { start: "09:00", end: "13:00" }, afternoon: null },
+//     },
+//   ],
+//   minBookingNotice: 24, // Reservar con 24 horas de anticipación
+// };
+
+// export interface ServiceForm {
+//   id: string;
+//   name: string;
+//   description: string;
+//   cuid: string;
+//   duration: number;
+//   createdAt: Date;
+//   updatedAt: Date;
+//   isActive: boolean;
+//   detailedDescription: string;
+//   price: number;
+//   benefits: string[];
+//   preparation: string[];
+//   category_id: string;
+
+//   images?: UploadedImage[];
+//   imagesToDelete?: string[];
+// }
+
+// export function ServiceManagment() {
+//   const queryClient = useQueryClient();
+
 //   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 //   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 //   const [selectedService, setSelectedService] = useState<Service | null>(null);
+//   const [businessConfig, setBusinessConfig] = useState<BusinessConfiguration>(
+//     defaultBusinessConfig
+//   );
 
 //   // Obtener todos los Servicios
-//  const { data: services, isLoading, error   } = useGetAllServices();
-
-// //  const [services, setServices] = useState<FullService[]>(dataInit||[]);
-//  // const router=useRouter()
-//  console.log(services)
+//   const { data: services, isLoading, error } = useGetAllServices();
 
 //   // Crear un nuevo rol
-//   // const { mutate: createService } = useAddService();
 
-//   // const handleCreate = () => {
-//   //   console.log("handleCreate")
-//   //   // createService();
-//   //   setSelectedService(null);
-//   // };
+//   const handleCreate = () => {
+//     console.log("handleCreate");
+//     // createService({ data });
+//     handleClose();
+//   };
 
 //   // Actualizar rol existente
 //   const { mutate: updateService } = useEditService();
-//   const handleUpdate = (data:Partial<ServiceInput>) => {
-//     updateService({data});
-//     setSelectedService(null);
+
+//   const handleUpdate = (data: Partial<ServiceForm>) => {
+//     updateService({ data });
+//     handleClose();
 //   };
 
 //   // Eliminar
 //   const { mutate: deleteService } = useDeleteService();
 //   const handleDelete = () => {
-//     console.log("Eliminar")
 //     deleteService(selectedService?.id as string);
-
-//     // deleteService(selectedService?.id as string)
 //     setIsDeleteModalOpen(false);
-//      setSelectedService(null);
+//     setSelectedService(null);
 //   };
 
 //   const handleClose = () => {
+//     queryClient.invalidateQueries({ queryKey: ["services"] });
 //     setIsAddModalOpen(false);
 //     setSelectedService(null);
 //   };
 
-//  // Función para manejar cambios en los datos
-//   // const handleDataChange = (newData: FullService[]) => {
-//   //   setServices(newData);
-//   // };
-
-//   // if (!services)
 //   if (isLoading)
 //     return (
 //       <div className="flex flex-col justify-centerspace-y-3">
@@ -95,7 +167,7 @@
 
 //   if (error) return <div>Error: {error.message}</div>;
 
-//   const rolColumns: TanstackColumnDef<FullService>[] = [
+//   const rolColumns: TanstackColumnDef<ServiceWithRelations>[] = [
 //     { id: "name", accessorKey: "name", header: "Nombre" },
 //     { id: "description", accessorKey: "description", header: "Descripción" },
 //     {
@@ -110,6 +182,13 @@
 //       id: "duration",
 //       accessorKey: "duration",
 //       header: "Duración",
+//       cell: ({ row }) => {
+//         return <p>{row.original.duration} min</p>;
+//       },
+//     },   {
+//       id: "enable",
+//       accessorKey: "enable",
+//       header: "Habilitado",
 //       cell: ({ row }) => {
 //         return <p>{row.original.duration} min</p>;
 //       },
@@ -159,95 +238,124 @@
 
 //   return (
 //     <>
-//       <div className="flex flex-1 flex-col">
-//         <div className="@container/main flex flex-1 flex-col gap-2 mx-4 my-4">
-//           <div className="flex flex-col mx-8">
-//             <h2 className="text-xl font-bold">Servicios</h2>
-//             <p className="text-muted-foreground text-md">
-//               Gestiona servicios y horarios
-//             </p>
-//           </div>
+    
+
+//       <div className="flex  flex-col">
+//         <div className="@container/main flex flex-1 flex-col gap-2 mx-1 md:mx-4 my-4">
+   
 
 //           <Tabs defaultValue="servicios" className="w-full">
-//             <TabsList className="grid w-full grid-cols-3">
-//               <TabsTrigger value="servicios">Servicios</TabsTrigger>
-//               <TabsTrigger value="time_slot">Rangos horarios</TabsTrigger>
-//               <TabsTrigger value="day_schedules">Fechas de Agendar</TabsTrigger>
-
+//             <TabsList className="grid w-full grid-cols-2">
+//               <TabsTrigger value="servicios" className="text-xs sm:text-sm">
+//                 Servicios
+//               </TabsTrigger>
+//               <TabsTrigger value="time_slot" className="text-xs sm:text-sm">
+//                 Horarios
+//               </TabsTrigger>
 //             </TabsList>
 //             <TabsContent value="servicios" className="space-y-6">
-//               <div className="flex flex-1 flex-col">
-//                 <div className="@container/main flex flex-1 flex-col gap-2 mx-4 my-4">
-//                   <div className="flex flex-col gap-2 py-4 md:gap-4 md:py-6">
-//                     <div className="flex justify-between mx-8">
+//               <div className="flex flex-col  ">
+              
+//                     {/* Header with Add Button */}
+//                     <div className="flex justify-around lg:justify-between gap-4 mx-4 lg:mx-6 mb-4 ">
 //                       <div className="flex flex-col">
 //                         <h2 className="text-md font-bold">Mis servicios</h2>
 //                         <p className="text-muted-foreground text-sm">
 //                           Gestiona tus servicios
 //                         </p>
 //                       </div>
-//                     </div>
-//                     <ReusableDataTable<FullService>
-//                       data={services|| []}
-//                       columns={rolColumns}
-//                       // onDataChange={refre}  // Pasar la función, no los datos
-//                       renderSubComponent={(row) => (
-//                         <div>Detalles para {row.original.name}</div>
-//                       )}
-//                       toolbar={
-//                         <Button
-//                           variant="outline"
-//                           size="sm"
-//                           onClick={() => setIsAddModalOpen(true)}
-//                         >
-//                           <IconPlus />
-//                           <span className="hidden lg:inline">
-//                             Agregar Servicio
-//                           </span>
-//                         </Button>
-//                       }
-//                     />
 
-//                     {isAddModalOpen && (
-//                       <AddServiceModal
-//                         isOpen={isAddModalOpen}
-//                         onClose={handleClose}
-//                         service={selectedService}
-//                         // onSubmit={() => handleCreate()}
-//                         onSubmitEdit={(data) => handleUpdate(data)}
-//                         // title="Servicio"
-//                         // description="un servicio del sistema"
-//                         // label="Nombre del servicio"
-//                         // placeholder="Ej: Masaje relajante"
+//                       {/* Add Service Button - Responsive */}
+//                       <div>
+
+//                       <Button
+//                         variant="outline"
+//                         size="sm"
+//                         onClick={() => setIsAddModalOpen(true)}
+//                         className="mt-2 sm:mt-0"
+//                         >
+//                         <IconPlus className="h-4 w-4" />
+//                         <span className="ml-1 hidden sm:inline">
+//                           Agregar Servicio
+//                         </span>
+//                         <span className="ml-1 sm:hidden">Agregar</span>
+//                       </Button>
+//                         </div>
+//                     </div>
+
+//                     {/* Data Table */}
+//                     <div className="overflow-x-auto">
+//                       <ReusableDataTable<ServiceWithRelations>
+//                         data={services || []}
+//                         columns={rolColumns}
+//                         renderSubComponent={(row) => (
+//                           <div className="p-3 text-sm bg-muted/50 rounded-md">
+//                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+//                               <div>
+//                                 <strong>Descripción:</strong>
+//                                 <p className="truncate">
+//                                   {row.original.description}
+//                                 </p>
+//                               </div>
+//                               <div>
+//                                 <strong>Precio:</strong>
+//                                 <p>${row.original.price}</p>
+//                               </div>
+//                               <div>
+//                                 <strong>Duración:</strong>
+//                                 <p>{row.original.duration} minutos</p>
+//                               </div>
+//                               <div>
+//                                 <strong>Estado:</strong>
+//                                 <p>
+//                                   {row.original.isActive
+//                                     ? "Activo"
+//                                     : "Inactivo"}
+//                                 </p>
+//                               </div>
+//                             </div>
+//                           </div>
+//                         )}
+//                         // toolbar={null} // Moved the button outside for better responsive layout
 //                       />
-//                     )}
-//                     {isDeleteModalOpen && selectedService && (
-//                       <DeleteConfirmationModal
-//                         isOpen={isDeleteModalOpen}
-//                         onClose={() => {
-//                           setSelectedService(null);
-//                           setIsDeleteModalOpen(false);
-//                         }}
-//                         onConfirm={() => handleDelete()}
-//                         workerName={`el rol ${selectedService.name}`}
-//                       />
-//                     )}
-//                   </div>
-//                 </div>
+//                     </div>
 //               </div>
 //             </TabsContent>
-
-//             <TabsContent value="time_slot" className="space-y-6">
-//               {/* <RolManagment /> */}
+//             <TabsContent value="time_slot" className="space-y-4">
+//               <div className="p-2 sm:p-4">
+//                 <AvailabilityConfigurator
+//                   onConfigChange={setBusinessConfig}
+//                   initialConfig={businessConfig}
+//                 />
+//               </div>
 //             </TabsContent>
-
-//             <TabsContent value="day_schedules" className="space-y-6">
-//               {/* <SexManagment /> */}
-//             </TabsContent>
-
 //           </Tabs>
 //         </div>
 //       </div>
+
+//       {/* Modals */}
+//       {isAddModalOpen && (
+//         <AddServiceModal
+//           isOpen={isAddModalOpen}
+//           onClose={handleClose}
+//           service={selectedService}
+//           onSubmitEdit={(data) => handleUpdate(data)}
+//           onSubmit={() => handleCreate()}
+//         />
+//       )}
+//       {isDeleteModalOpen && selectedService && (
+//         <DeleteConfirmationModal
+//           isOpen={isDeleteModalOpen}
+//           onClose={() => {
+//             setSelectedService(null);
+//             setIsDeleteModalOpen(false);
+//           }}
+//           onConfirm={() => handleDelete()}
+//           workerName={`el servicio ${selectedService.name}`}
+//         />
+//       )}
+
+//       <div className="flex flex-1 flex-col"></div>
 //     </>
 //   );
 // }
@@ -283,33 +391,6 @@ import { ServiceWithRelations } from "@/lib/actions/services.actions";
 import { useQueryClient } from "@tanstack/react-query";
 import { AvailabilityConfigurator } from "../booking/availability-configurator";
 import { BusinessConfiguration } from "@/lib/actions/config.actions";
-
-// // Tipos para la configuración de disponibilidad
-// interface BusinessHours {
-//   morning: { start: string; end: string } | null;
-//   afternoon: { start: string; end: string } | null;
-// }
-
-// interface DayAvailability {
-//   available: boolean;
-//   hours: BusinessHours;
-// }
-
-// interface WeekAvailability {
-//   [key: string]: DayAvailability; // key: day of week (0-6 where 0 is Sunday)
-// }
-
-// interface SpecificDateOverride {
-//   date: string; // YYYY-MM-DD
-//   available: boolean;
-//   hours?: BusinessHours;
-// }
-
-// interface BusinessConfiguration {
-//   weekAvailability: WeekAvailability;
-//   specificDateOverrides?: SpecificDateOverride[];
-//   minBookingNotice?: number; // horas de anticipación mínima para reservar
-// }
 
 // Configuración por defecto (debería venir de un contexto o API)
 const defaultBusinessConfig: BusinessConfiguration = {
@@ -351,25 +432,22 @@ const defaultBusinessConfig: BusinessConfiguration = {
     }, // Viernes
     "6": {
       available: true,
-      // hours: { morning: { start: "10:00", end: "14:00" }, afternoon: null },
         hours: {
            morning: { start: "09:00", end: "12:00" },
         afternoon: { start: "13:00", end: "17:00" },
       },
-    }, // Sábado (solo mañana)
+    }, // Sábado
     "0": { available: false, hours: { morning: null, afternoon: null } }, // Domingo
   },
   specificDateOverrides: [
-    // Ejemplo: día festivo
     { date: "2024-12-25", available: false },
-    // Ejemplo: medio día especial
     {
       date: "2024-12-24",
       available: true,
       hours: { morning: { start: "09:00", end: "13:00" }, afternoon: null },
     },
   ],
-  minBookingNotice: 24, // Reservar con 24 horas de anticipación
+  minBookingNotice: 24,
 };
 
 export interface ServiceForm {
@@ -404,11 +482,8 @@ export function ServiceManagment() {
   // Obtener todos los Servicios
   const { data: services, isLoading, error } = useGetAllServices();
 
-  // Crear un nuevo rol
-
   const handleCreate = () => {
     console.log("handleCreate");
-    // createService({ data });
     handleClose();
   };
 
@@ -467,6 +542,30 @@ export function ServiceManagment() {
       },
     },
     {
+      id: "isActive",
+      accessorKey: "isActive",
+      header: "Habilitado",
+      cell: ({ row }) => {
+        const isActive = row.original.isActive;
+        return (
+          <div className="flex items-center gap-2">
+            <div
+              className={`h-2 w-2 rounded-full ${
+                isActive ? "bg-green-500" : "bg-red-500"
+              }`}
+            />
+            <span
+              className={`text-sm font-medium ${
+                isActive ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {isActive ? "Sí" : "No"}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
       id: "actions",
       accessorKey: "actions",
       header: "Acciones",
@@ -511,97 +610,8 @@ export function ServiceManagment() {
 
   return (
     <>
-      {/* <div className="flex flex-1 flex-col">
-        <div className="@container/main flex flex-1 flex-col gap-2 mx-4 my-4">
-          <div className="flex flex-col mx-8">
-            <h2 className="text-xl font-bold">Servicios</h2>
-            <p className="text-muted-foreground text-md">
-              Gestiona servicios y horarios
-            </p>
-          </div>
-
-          <Tabs defaultValue="servicios" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="servicios">Servicios</TabsTrigger>
-              <TabsTrigger value="time_slot">Horarios</TabsTrigger>
-            </TabsList>
-            <TabsContent value="servicios" className="space-y-6">
-              <div className="flex flex-1 flex-col">
-                <div className="@container/main flex flex-1 flex-col gap-2 mx-4 my-4">
-                  <div className="flex flex-col gap-2 py-4 md:gap-4 md:py-6">
-                    <div className="flex justify-between mx-8">
-                      <div className="flex flex-col">
-                        <h2 className="text-md font-bold">Mis servicios</h2>
-                        <p className="text-muted-foreground text-sm">
-                          Gestiona tus servicios
-                        </p>
-                      </div>
-                    </div>
-                    <ReusableDataTable<ServiceWithRelations>
-                      data={services || []}
-                      columns={rolColumns}
-                      renderSubComponent={(row) => (
-                        <div>Detalles para {row.original.name}</div>
-                      )}
-                      toolbar={
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setIsAddModalOpen(true)}
-                        >
-                          <IconPlus />
-                          <span className="hidden lg:inline">
-                            Agregar Servicio
-                          </span>
-                        </Button>
-                      }
-                    />
-
-                    {isAddModalOpen && (
-                      <AddServiceModal
-                        isOpen={isAddModalOpen}
-                        onClose={handleClose}
-                        service={selectedService}
-                        onSubmitEdit={(data) => handleUpdate(data)}
-                        onSubmit={() => handleCreate()}
-                      />
-                    )}
-                    {isDeleteModalOpen && selectedService && (
-                      <DeleteConfirmationModal
-                        isOpen={isDeleteModalOpen}
-                        onClose={() => {
-                          setSelectedService(null);
-                          setIsDeleteModalOpen(false);
-                        }}
-                        onConfirm={() => handleDelete()}
-                        workerName={`el rol ${selectedService.name}`}
-                      />
-                    )}
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="time_slot" className="space-y-6">
-              <AvailabilityConfigurator
-                onConfigChange={setBusinessConfig}
-                initialConfig={businessConfig}
-              />
-            </TabsContent>
-
-          </Tabs>
-        </div>
-      </div> */}
-
-      <div className="flex  flex-col">
+      <div className="flex flex-col">
         <div className="@container/main flex flex-1 flex-col gap-2 mx-1 md:mx-4 my-4">
-          {/* <div className="flex flex-col mx-8">
-            <h2 className="text-xl font-bold">Configuración</h2>
-            <p className="text-muted-foreground text-md">
-              Gestiona servicios, citas y visualiza estadísticas
-            </p>
-          </div> */}
-
           <Tabs defaultValue="servicios" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="servicios" className="text-xs sm:text-sm">
@@ -612,71 +622,72 @@ export function ServiceManagment() {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="servicios" className="space-y-6">
-              <div className="flex flex-col  ">
-              
-                    {/* Header with Add Button */}
-                    <div className="flex justify-around lg:justify-between gap-4 mx-4 lg:mx-6 mb-4 ">
-                      <div className="flex flex-col">
-                        <h2 className="text-md font-bold">Mis servicios</h2>
-                        <p className="text-muted-foreground text-sm">
-                          Gestiona tus servicios
-                        </p>
-                      </div>
+              <div className="flex flex-col">
+                {/* Header with Add Button */}
+                <div className="flex justify-around lg:justify-between gap-4 mx-4 lg:mx-6 mb-4">
+                  <div className="flex flex-col">
+                    <h2 className="text-md font-bold">Mis servicios</h2>
+                    <p className="text-muted-foreground text-sm">
+                      Gestiona tus servicios
+                    </p>
+                  </div>
 
-                      {/* Add Service Button - Responsive */}
-                      <div>
+                  {/* Add Service Button - Responsive */}
+                  <div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setIsAddModalOpen(true)}
+                      className="mt-2 sm:mt-0"
+                    >
+                      <IconPlus className="h-4 w-4" />
+                      <span className="ml-1 hidden sm:inline">
+                        Agregar Servicio
+                      </span>
+                      <span className="ml-1 sm:hidden">Agregar</span>
+                    </Button>
+                  </div>
+                </div>
 
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setIsAddModalOpen(true)}
-                        className="mt-2 sm:mt-0"
-                        >
-                        <IconPlus className="h-4 w-4" />
-                        <span className="ml-1 hidden sm:inline">
-                          Agregar Servicio
-                        </span>
-                        <span className="ml-1 sm:hidden">Agregar</span>
-                      </Button>
-                        </div>
-                    </div>
-
-                    {/* Data Table */}
-                    <div className="overflow-x-auto">
-                      <ReusableDataTable<ServiceWithRelations>
-                        data={services || []}
-                        columns={rolColumns}
-                        renderSubComponent={(row) => (
-                          <div className="p-3 text-sm bg-muted/50 rounded-md">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                              <div>
-                                <strong>Descripción:</strong>
-                                <p className="truncate">
-                                  {row.original.description}
-                                </p>
-                              </div>
-                              <div>
-                                <strong>Precio:</strong>
-                                <p>${row.original.price}</p>
-                              </div>
-                              <div>
-                                <strong>Duración:</strong>
-                                <p>{row.original.duration} minutos</p>
-                              </div>
-                              <div>
-                                <strong>Estado:</strong>
-                                <p>
-                                  {row.original.isActive
-                                    ? "Activo"
-                                    : "Inactivo"}
-                                </p>
-                              </div>
-                            </div>
+                {/* Data Table */}
+                <div className="overflow-x-auto">
+                  <ReusableDataTable<ServiceWithRelations>
+                    data={services || []}
+                    columns={rolColumns}
+                    renderSubComponent={(row) => (
+                      <div className="p-3 text-sm bg-muted/50 rounded-md">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          <div>
+                            <strong>Descripción:</strong>
+                            <p className="truncate">
+                              {row.original.description}
+                            </p>
                           </div>
-                        )}
-                        // toolbar={null} // Moved the button outside for better responsive layout
-                      />
-                    </div>
+                          <div>
+                            <strong>Precio:</strong>
+                            <p>${row.original.price}</p>
+                          </div>
+                          <div>
+                            <strong>Duración:</strong>
+                            <p>{row.original.duration} minutos</p>
+                          </div>
+                          <div>
+                            <strong>Estado:</strong>
+                            <p
+                              className={`font-medium ${
+                                row.original.isActive
+                                  ? "text-green-600"
+                                  : "text-red-600"
+                              }`}
+                            >
+                              {row.original.isActive ? "Activo" : "Inactivo"}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  />
+                </div>
               </div>
             </TabsContent>
             <TabsContent value="time_slot" className="space-y-4">

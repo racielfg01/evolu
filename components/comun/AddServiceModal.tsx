@@ -15,7 +15,7 @@
 // import { Button } from "../ui/button";
 // import ImageUploader from "@/components/ImageUploader";
 // import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-// import { useGetAllCategorys } from "@/lib/hooks/category.hooks";
+// import { useGetAllCategories } from "@/lib/hooks/category.hooks";
 // import { addService, editService } from "@/lib/actions/services.actions";
 // import { uploadImages } from "@/lib/supabase/storage";
 
@@ -31,7 +31,7 @@
 //   category_id: string;
 //   isActive: boolean;
 //   images?: ServiceFile[];
-//     cuid?: string;
+//   cuid?: string;
 //   createdAt?: Date;
 //   updatedAt?: Date;
 // }
@@ -106,7 +106,7 @@
 //         }
 //   );
   
-//   const { data: categories } = useGetAllCategorys();
+//   const { data: categories } = useGetAllCategories();
 
 //   // Resetear estado cuando se abre/cierra el modal o cambia el servicio
 //   useEffect(() => {
@@ -129,10 +129,10 @@
 //           isActive: service.isActive,
 //           images: service.images,
 //         });
-//         const def_bene= service.benefits.join(',')
-//         const def_pre= service.preparation.join(',')
-//         setBeneficios(def_bene)
-//         setPreparaciones(def_pre)
+//         const def_bene = service.benefits.join(', ');
+//         const def_pre = service.preparation.join(', ');
+//         setBeneficios(def_bene);
+//         setPreparaciones(def_pre);
 //         setExistingImages(service.images || []);
 //       } else {
 //         setFormData({
@@ -146,6 +146,8 @@
 //           category_id: categories?.[0]?.id || "depilación",
 //           isActive: true,
 //         });
+//         setBeneficios("");
+//         setPreparaciones("");
 //         setExistingImages([]);
 //       }
 //     }
@@ -162,15 +164,15 @@
 //     e.preventDefault();
 //     setIsSending(true);
 
-//      formData.benefits=beneficios 
-//         .split(",")
-//         .map(b => b.trim())
-//         .filter(b => b)
+//     formData.benefits = beneficios 
+//       .split(",")
+//       .map(b => b.trim())
+//       .filter(b => b);
 
-//       formData.preparation=preparaciones
-//         .split(",")
-//         .map(p => p.trim())
-//         .filter(p => p)
+//     formData.preparation = preparaciones
+//       .split(",")
+//       .map(p => p.trim())
+//       .filter(p => p);
 
 //     try {
 //       if (service && service.id) {
@@ -239,9 +241,9 @@
 //           ...formData,
 //           price: Number(formData.price),
 //           duration: Number(formData.duration),
-//            cuid: "", 
-//         createdAt: new Date(), 
-//         updatedAt: new Date(), 
+//           cuid: "", 
+//           createdAt: new Date(), 
+//           updatedAt: new Date(), 
 //         };
 
 //         // Crear servicio primero
@@ -299,8 +301,7 @@
 //   }, []);
 
 //   const removeNewImage = useCallback((index: number) => {
-//     // const imageToRemove = selectedImages.find(img => img.id === imageId);
-//     const imageToRemove = selectedImages[index]
+//     const imageToRemove = selectedImages[index];
 //     if (imageToRemove) {
 //       URL.revokeObjectURL(imageToRemove.preview);
 //     }
@@ -328,8 +329,8 @@
 //     switch (currentStep) {
 //       case 0: // Información básica
 //         return (
-//           <div className="flex flex-col gap-8">
-//             <div className="grid grid-cols-2 gap-4">
+//           <div className="flex flex-col gap-6">
+//             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 //               <div className="space-y-2">
 //                 <Label htmlFor="name">Nombre del Servicio</Label>
 //                 <Input
@@ -400,10 +401,10 @@
 //           </div>
 //         );
 
-//       case 1: // Descripción y detalles
+//       case 1: // Precio y duración
 //         return (
-//           <div className="flex flex-col gap-8">
-//             <div className="grid gap-4 md:grid-cols-2">
+//           <div className="flex flex-col gap-6">
+//             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 //               <div className="space-y-2">
 //                 <Label htmlFor="duration">Duración (minutos)</Label>
 //                 <Input
@@ -439,78 +440,30 @@
 //           </div>
 //         );
 
-//       // case 2: // Beneficios y preparación
-//       //   return (
-//       //     <div className="space-y-4">
-//       //       <div className="space-y-2">
-//       //         <Label htmlFor="benefits">Beneficios (separados por coma)</Label>
-//       //         <Textarea
-//       //           id="benefits"
-//       //           value={formData.benefits}
-//       //           onChange={(e) =>
-//       //             setFormData({
-//       //               ...formData,
-//       //               benefits: e.target.value.split(",").map(b => b.trim()).filter(b => b),
-//       //             })
-//       //           }
-//       //           placeholder="Beneficio 1, Beneficio 2, Beneficio 3"
-//       //         />
-//       //       </div>
+//       case 2: // Beneficios y preparación
+//         return (
+//           <div className="space-y-4">
+//             <div className="space-y-2">
+//               <Label htmlFor="benefits">Beneficios (separados por coma)</Label>
+//               <Textarea
+//                 id="benefits"
+//                 value={beneficios}
+//                 onChange={(e) => setBeneficios(e.target.value)}
+//                 placeholder="Beneficio 1, Beneficio 2, Beneficio 3"
+//               />
+//             </div>
 
-//       //       <div className="space-y-2">
-//       //         <Label htmlFor="preparation">Preparación (separada por coma)</Label>
-//       //         <Textarea
-//       //           id="preparation"
-//       //           value={formData.preparation.join(", ")}
-//       //           onChange={(e) =>
-//       //             setFormData({
-//       //               ...formData,
-//       //               preparation: e.target.value.split(",").map(p => p.trim()).filter(p => p),
-//       //             })
-//       //           }
-//       //           placeholder="Preparación 1, Preparación 2, Preparación 3"
-//       //         />
-//       //       </div>
-//       //     </div>
-//       //   );
-
-// case 2: // Beneficios y preparación
-//   return (
-//     <div className="space-y-4">
-//       <div className="space-y-2">
-//         <Label htmlFor="benefits">Beneficios (separados por coma)</Label>
-//         <Textarea
-//           id="benefits"
-//           value={beneficios} // Ahora es un string, no un array
-//           onChange={(e) =>setBeneficios( e.target.value  )}
-//             // setFormData({
-//             //   ...formData,
-//             //   benefits: e.target.value, // Guardamos el texto directamente
-//             // })
-          
-//           placeholder="Beneficio 1, Beneficio 2, Beneficio 3"
-//         />
-     
-//       </div>
-
-//       <div className="space-y-2">
-//         <Label htmlFor="preparation">Preparación (separada por coma)</Label>
-//         <Textarea
-//           id="preparation"
-//           value={preparaciones} // Ahora es un string, no un array
-//            onChange={(e) =>setPreparaciones( e.target.value  )}
-//           // onChange={(e) =>
-//           //   setFormData({
-//           //     ...formData,
-//           //     preparation: e.target.value, // Guardamos el texto directamente
-//           //   })
-//           // }
-//           placeholder="Preparación 1, Preparación 2, Preparación 3"
-//         />
-     
-//       </div>
-//     </div>
-//   );
+//             <div className="space-y-2">
+//               <Label htmlFor="preparation">Preparación (separada por coma)</Label>
+//               <Textarea
+//                 id="preparation"
+//                 value={preparaciones}
+//                 onChange={(e) => setPreparaciones(e.target.value)}
+//                 placeholder="Preparación 1, Preparación 2, Preparación 3"
+//               />
+//             </div>
+//           </div>
+//         );
 
 //       case 3: // Imágenes
 //         return (
@@ -529,14 +482,14 @@
             
 //             <div className="space-y-2">
 //               <h3 className="font-medium">Resumen del servicio</h3>
-//               <div className="grid grid-cols-2 gap-4">
+//               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 //                 <div>
 //                   <p className="text-sm text-muted-foreground">Nombre:</p>
-//                   <p>{formData.name}</p>
+//                   <p className="truncate">{formData.name}</p>
 //                 </div>
 //                 <div>
 //                   <p className="text-sm text-muted-foreground">Categoría:</p>
-//                   <p>{categories?.find(c => c.id === formData.category_id)?.name || formData.category_id}</p>
+//                   <p className="truncate">{categories?.find(c => c.id === formData.category_id)?.name || formData.category_id}</p>
 //                 </div>
 //                 <div>
 //                   <p className="text-sm text-muted-foreground">Duración:</p>
@@ -546,11 +499,11 @@
 //                   <p className="text-sm text-muted-foreground">Precio:</p>
 //                   <p>${formData.price}</p>
 //                 </div>
-//                 <div className="col-span-2">
+//                 <div className="md:col-span-2">
 //                   <p className="text-sm text-muted-foreground">Descripción breve:</p>
-//                   <p>{formData.description}</p>
+//                   <p className="text-sm line-clamp-2">{formData.description}</p>
 //                 </div>
-//                 <div className="col-span-2">
+//                 <div className="md:col-span-2">
 //                   <p className="text-sm text-muted-foreground">Estado:</p>
 //                   <div className="flex items-center gap-2">
 //                     <Switch
@@ -560,7 +513,7 @@
 //                         setFormData({ ...formData, isActive: checked })
 //                       }
 //                     />
-//                     <Label htmlFor="isActive">
+//                     <Label htmlFor="isActive" className="text-sm">
 //                       {formData.isActive ? "Activo" : "Inactivo"}
 //                     </Label>
 //                   </div>
@@ -577,66 +530,81 @@
 
 //   return (
 //     <Dialog open={isOpen} onOpenChange={onClose}>
-//       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-//         <DialogHeader>
-//           <DialogTitle>
+//       <DialogContent className="max-w-full sm:max-w-2xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+//         <DialogHeader className="px-2 sm:px-0">
+//           <DialogTitle className="text-lg sm:text-xl">
 //             {service ? "Editar Servicio" : "Nuevo Servicio"}
 //           </DialogTitle>
 //         </DialogHeader>
 
 //         <div className="space-y-6">
-//           <div className="flex items-center justify-between">
+//           {/* Barra de progreso - Mobile First */}
+//           <div className="flex items-center justify-between px-2 sm:px-0">
 //             {steps.map((step, index) => (
-//               <div key={step} className="flex items-center">
+//               <div key={step} className="flex items-center flex-1">
 //                 <button
 //                   type="button"
 //                   onClick={() => setCurrentStep(index)}
-//                   className={`flex items-center justify-center w-8 h-8 rounded-full ${currentStep >= index ? "bg-primary text-primary-foreground" : "bg-muted"}`}
+//                   className={`flex items-center justify-center w-8 h-8 rounded-full text-sm ${currentStep >= index ? "bg-primary text-primary-foreground" : "bg-muted"}`}
 //                 >
 //                   {index + 1}
 //                 </button>
 //                 {index < steps.length - 1 && (
-//                   <div className={`w-40 h-1 ${currentStep > index ? "bg-primary" : "bg-muted"}`} />
+//                   <div className={`flex-1 mx-1 h-1 ${currentStep > index ? "bg-primary" : "bg-muted"}`} />
 //                 )}
 //               </div>
 //             ))}
 //           </div>
+          
+//           {/* Indicador de paso actual para móviles */}
+//           <div className="block sm:hidden text-center text-sm font-medium text-muted-foreground">
+//             Paso {currentStep + 1} de {steps.length}: {steps[currentStep]}
+//           </div>
 
-//           <form onSubmit={handleSubmit} className="space-y-4">
+//           <form onSubmit={handleSubmit} className="space-y-4 px-2 sm:px-0">
 //             {renderStep()}
 
-//             <DialogFooter>
-//               {currentStep > 0 && (
-//                 <Button
-//                   type="button"
-//                   variant="outline"
-//                   onClick={prevStep}
-//                 >
-//                   Anterior
-//                 </Button>
-//               )}
-              
-//               {currentStep < steps.length - 1 ? (
-//                 <Button
-//                   type="button"
-//                   onClick={nextStep}
-//                 >
-//                   Siguiente
-//                 </Button>
-//               ) : (
-//                 <>
+//             <DialogFooter className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-0 pt-4">
+//               <div className="flex w-full sm:w-auto gap-2">
+//                 {currentStep > 0 && (
 //                   <Button
 //                     type="button"
 //                     variant="outline"
-//                     onClick={onClose}
+//                     onClick={prevStep}
+//                     className="flex-1 sm:flex-none"
 //                   >
-//                     Cancelar
+//                     Anterior
 //                   </Button>
-//                   <Button type="submit" disabled={isSending}>
-//                     {isSending ? "Procesando..." : service ? "Actualizar" : "Crear"} Servicio
+//                 )}
+                
+//                 {currentStep < steps.length - 1 ? (
+//                   <Button
+//                     type="button"
+//                     onClick={nextStep}
+//                     className="flex-1 sm:flex-none"
+//                   >
+//                     Siguiente
 //                   </Button>
-//                 </>
-//               )}
+//                 ) : (
+//                   <>
+//                     <Button
+//                       type="button"
+//                       variant="outline"
+//                       onClick={onClose}
+//                       className="flex-1 sm:flex-none"
+//                     >
+//                       Cancelar
+//                     </Button>
+//                     <Button 
+//                       type="submit" 
+//                       disabled={isSending}
+//                       className="flex-1 sm:flex-none"
+//                     >
+//                       {isSending ? "Procesando..." : service ? "Actualizar" : "Crear"} Servicio
+//                     </Button>
+//                   </>
+//                 )}
+//               </div>
 //             </DialogFooter>
 //           </form>
 //         </div>
@@ -644,7 +612,6 @@
 //     </Dialog>
 //   );
 // }
-
 
 "use client"
 import { Service, ServiceFile } from "@prisma/client";
@@ -659,13 +626,14 @@ import {
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import { Switch } from "@radix-ui/react-switch";
+// import { Switch } from "../ui/switch";
 import { Button } from "../ui/button";
 import ImageUploader from "@/components/ImageUploader";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { useGetAllCategories } from "@/lib/hooks/category.hooks";
 import { addService, editService } from "@/lib/actions/services.actions";
 import { uploadImages } from "@/lib/supabase/storage";
+import { Power, PowerOff } from "lucide-react";
 
 export interface ServiceFormData {
   id?: string;
@@ -687,7 +655,7 @@ export interface ServiceFormData {
 interface ImageFile {
   file: File;
   preview: string;
-  id: string; // Identificador único para cada imagen
+  id: string;
 }
 
 export interface UploadedImage {
@@ -942,7 +910,7 @@ export function AddServiceModal({
     const newImages: ImageFile[] = files.map(file => ({
       file,
       preview: URL.createObjectURL(file),
-      id: `new-${Date.now()}-${Math.random().toString(36).substr(2, 9)}` // ID único
+      id: `new-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
     }));
     
     setSelectedImages(prev => [...prev, ...newImages]);
@@ -973,11 +941,55 @@ export function AddServiceModal({
     }
   };
 
+  const toggleServiceStatus = () => {
+    setFormData({ ...formData, isActive: !formData.isActive });
+  };
+
   const renderStep = () => {
     switch (currentStep) {
       case 0: // Información básica
         return (
           <div className="flex flex-col gap-6">
+            {/* Toggle Button para estado del servicio */}
+            <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg border">
+              <div className="flex items-center gap-3">
+                {formData.isActive ? (
+                  <Power className="h-5 w-5 text-green-500" />
+                ) : (
+                  <PowerOff className="h-5 w-5 text-red-500" />
+                )}
+                <div>
+                  <p className="font-medium">Estado del Servicio</p>
+                  <p className="text-sm text-muted-foreground">
+                    {formData.isActive 
+                      ? "El servicio está activo y visible para los clientes" 
+                      : "El servicio está desactivado y no será visible"}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className={`text-sm ${!formData.isActive ? "text-muted-foreground" : ""}`}>
+                  {formData.isActive ? "Activo" : "Inactivo"}
+                </span>
+                <button
+                  type="button"
+                  onClick={toggleServiceStatus}
+                  className={`
+                    relative inline-flex h-6 w-11 items-center rounded-full transition-colors
+                    focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
+                    ${formData.isActive ? "bg-primary" : "bg-muted-foreground"}
+                  `}
+                >
+                  <span
+                    className={`
+                      inline-block h-4 w-4 transform rounded-full bg-white transition-transform
+                      ${formData.isActive ? "translate-x-6" : "translate-x-1"}
+                    `}
+                  />
+                </button>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Nombre del Servicio</Label>
@@ -1150,21 +1162,6 @@ export function AddServiceModal({
                 <div className="md:col-span-2">
                   <p className="text-sm text-muted-foreground">Descripción breve:</p>
                   <p className="text-sm line-clamp-2">{formData.description}</p>
-                </div>
-                <div className="md:col-span-2">
-                  <p className="text-sm text-muted-foreground">Estado:</p>
-                  <div className="flex items-center gap-2">
-                    <Switch
-                      id="isActive"
-                      checked={formData.isActive}
-                      onCheckedChange={(checked) =>
-                        setFormData({ ...formData, isActive: checked })
-                      }
-                    />
-                    <Label htmlFor="isActive" className="text-sm">
-                      {formData.isActive ? "Activo" : "Inactivo"}
-                    </Label>
-                  </div>
                 </div>
               </div>
             </div>
