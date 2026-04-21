@@ -1,20 +1,20 @@
 // import Image from "next/image";
 // import { Logo } from "./Logo";
 
+import Logo from "./new-bookings/Logo";
+
 const Footer = () => {
-  
   return (
     <footer className="bg-sage-800 text-white py-12">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-8">
           <div className="flex flex-col gap-2">
-            <div className="flex items-center ">
-              {/* <Image src={logo} alt="logo" className="h-6 w-6" fill /> */}
-              {/* <Logo width={100} height={100}/> */}
-              <span className="text-xl font-semibold">Evolu</span>
+            <div className="flex justify-start gap-2">
+              <Logo theme={false}/>
             </div>
             <p className="text-sage-200">
-           El lugar donde siempre querrás regresar, porque siempre regresas donde fuiste feliz.
+              El lugar donde siempre querrás regresar, porque siempre regresas
+              donde fuiste feliz.
             </p>
             <div className="flex flex-col gap-2 mt-2">
               <div className="text-xl font-semibold">Redes Sociales</div>
