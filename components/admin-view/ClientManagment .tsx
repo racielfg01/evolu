@@ -16,23 +16,26 @@ import {
 import {
   useDeleteUser,
   useUpdateUser,
-  useCreateUser,
+  // useCreateUser,
   useGetAllUsers,
 } from "@/lib/hooks/user.hooks";
 import { IconPlus } from "@tabler/icons-react";
 import DeleteConfirmationModal from "../comun/DeleteConfirmationModal";
 import { User } from "@prisma/client";
 import { Skeleton } from "../ui/skeleton";
-import GenericModal from "../comun/AddGenericModal";
 import { ReusableDataTable } from "../comun/ReusableDataTable";
+import { useGetAllSexs } from "@/lib/hooks/sex.hooks";
+// import { useGetAllRoles } from "@/lib/hooks/role.hooks";
+import EditUserModal from "./UserModal";
 
 export function ClientManagment() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const { data: sexos } = useGetAllSexs();
 
   // Crear un nuevo rol
-  const { mutate: createUser } = useCreateUser();
+  // const { mutate: createUser } = useCreateUser();
 
   // Actualizar rol existente
   const { mutate: updateUser } = useUpdateUser();
@@ -52,7 +55,6 @@ export function ClientManagment() {
     setIsAddModalOpen(false);
     setSelectedUser(null);
   };
-
 
   // Obtener todos los Sexs
   const { data: users, isLoading, error } = useGetAllUsers();
@@ -120,7 +122,9 @@ export function ClientManagment() {
       <div className="flex justify-between mx-8">
         <div className="flex flex-col">
           <h2 className="text-md font-bold">Usuarios</h2>
-          <p className="text-muted-foreground text-sm">Gestiona todos los usuarios</p>
+          <p className="text-muted-foreground text-sm">
+            Gestiona todos los usuarios
+          </p>
         </div>
       </div>
       <ReusableDataTable<User>
@@ -142,19 +146,15 @@ export function ClientManagment() {
         }
       />
 
-      {isAddModalOpen && (
-        <GenericModal<User>
-          isOpen={isAddModalOpen}
-          onClose={handleClose}
-          selectedItem={selectedUser}
-          onSubmit={(data) => createUser(data)}
-          onSubmitEdit={(data) => handleUpdate(data)}
-          title="Usuario"
-          description="un Usero del sistema"
-          label="Nombre del Usuario"
-          placeholder="Ej: Femenino"
-        />
-      )}
+      {isAddModalOpen && selectedUser && (
+  <EditUserModal
+    isOpen={isAddModalOpen}
+    onClose={handleClose}
+    selectedItem={selectedUser}
+    onSubmitEdit={(data) => handleUpdate(data)}
+    sexOptions={sexos || []}
+  />
+)}
       {isDeleteModalOpen && selectedUser && (
         <DeleteConfirmationModal
           isOpen={isDeleteModalOpen}
