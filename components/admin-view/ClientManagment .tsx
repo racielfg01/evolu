@@ -4,7 +4,7 @@ import type React from "react";
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Edit, Trash } from "lucide-react";
+import { Edit, Trash, Download } from "lucide-react";
 
 import { ColumnDef as TanstackColumnDef } from "@tanstack/react-table";
 import {
@@ -16,7 +16,6 @@ import {
 import {
   useDeleteUser,
   useUpdateUser,
-  // useCreateUser,
   useGetAllUsers,
 } from "@/lib/hooks/user.hooks";
 import { IconPlus } from "@tabler/icons-react";
@@ -25,17 +24,16 @@ import { User } from "@prisma/client";
 import { Skeleton } from "../ui/skeleton";
 import { ReusableDataTable } from "../comun/ReusableDataTable";
 import { useGetAllSexs } from "@/lib/hooks/sex.hooks";
-// import { useGetAllRoles } from "@/lib/hooks/role.hooks";
+import { useGetAllRoles } from "@/lib/hooks/role.hooks";
 import EditUserModal from "./UserModal";
+import { toast } from "sonner";
 
 export function ClientManagment() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const { data: sexos } = useGetAllSexs();
-
-  // Crear un nuevo rol
-  // const { mutate: createUser } = useCreateUser();
+  const { data: roles } = useGetAllRoles();
 
   // Actualizar rol existente
   const { mutate: updateUser } = useUpdateUser();
@@ -56,8 +54,72 @@ export function ClientManagment() {
     setSelectedUser(null);
   };
 
-  // Obtener todos los Sexs
+  // Obtener todos los usuarios
   const { data: users, isLoading, error } = useGetAllUsers();
+
+  // Función para descargar usuarios como JSON con nombres de rol y sexo
+  const handleDownloadJSON = () => {
+    if (!users || users.length === 0) {
+      toast.error("No hay usuarios para descargar");
+      return;
+    }
+
+    try {
+      // Crear mapas para búsqueda rápida de nombres
+      const rolesMap = new Map(roles?.map(role => [role.id, role.name]) || []);
+      const sexosMap = new Map(sexos?.map(sexo => [sexo.id, sexo.name]) || []);
+
+      // Crear un objeto con metadata y los datos
+      const exportData = {
+        exportDate: new Date().toISOString(),
+        totalUsers: users.length,
+        users: users.map(user => ({
+          id: user.id,
+          cuid: user.cuid,
+          name: user.name,
+          email: user.email,
+          phone: user.phone || null,
+          role: {
+            id: user.role_id,
+            name: rolesMap.get(user.role_id) || "Desconocido"
+          },
+          sex: {
+            id: user.sex_id,
+            name: sexosMap.get(user.sex_id) || "Desconocido"
+          },
+          image: user.image || null,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        })),
+      };
+
+      // Convertir a JSON string con formato legible
+      const jsonString = JSON.stringify(exportData, null, 2);
+      
+      // Crear blob y descargar
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      
+      // Nombre del archivo con fecha
+      const date = new Date().toISOString().split('T')[0];
+      link.download = `usuarios_${date}.json`;
+      
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+      
+      // Limpiar
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      toast.success(`Descargados ${users.length} usuarios correctamente`);
+    } catch (err) {
+      console.error('Error al descargar JSON:', err);
+      toast.error('Error al generar el archivo JSON');
+    }
+  };
 
   if (isLoading)
     return (
@@ -74,6 +136,40 @@ export function ClientManagment() {
 
   const rolColumns: TanstackColumnDef<User>[] = [
     { id: "name", accessorKey: "name", header: "Nombre" },
+    { id: "email", accessorKey: "email", header: "Email" },
+    {
+      id: "phone",
+      accessorKey: "phone",
+      header: "Teléfono",
+      cell: ({ row }) => row.original.phone || "N/A",
+    },
+    {
+      id: "role",
+      accessorKey: "role_id",
+      header: "Rol",
+      cell: ({ row }) => {
+        const role = roles?.find(r => r.id === row.original.role_id);
+        return role?.name || "N/A";
+      },
+    },
+    {
+      id: "sex",
+      accessorKey: "sex_id",
+      header: "Sexo",
+      cell: ({ row }) => {
+        const sexo = sexos?.find(s => s.id === row.original.sex_id);
+        return sexo?.name || "N/A";
+      },
+    },
+    {
+      id: "createdAt",
+      accessorKey: "createdAt",
+      header: "Creado",
+      cell: ({ row }) => {
+        const date = new Date(row.original.createdAt);
+        return date.toLocaleDateString("es-ES");
+      },
+    },
     {
       id: "actions",
       accessorKey: "actions",
@@ -126,6 +222,16 @@ export function ClientManagment() {
             Gestiona todos los usuarios
           </p>
         </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleDownloadJSON}
+          disabled={!users || users.length === 0}
+          className="gap-2"
+        >
+          <Download className="h-4 w-4" />
+          <span className="hidden lg:inline">Descargar JSON</span>
+        </Button>
       </div>
       <ReusableDataTable<User>
         data={users as User[]}
@@ -147,14 +253,14 @@ export function ClientManagment() {
       />
 
       {isAddModalOpen && selectedUser && (
-  <EditUserModal
-    isOpen={isAddModalOpen}
-    onClose={handleClose}
-    selectedItem={selectedUser}
-    onSubmitEdit={(data) => handleUpdate(data)}
-    sexOptions={sexos || []}
-  />
-)}
+        <EditUserModal
+          isOpen={isAddModalOpen}
+          onClose={handleClose}
+          selectedItem={selectedUser}
+          onSubmitEdit={(data) => handleUpdate(data)}
+          sexOptions={sexos || []}
+        />
+      )}
       {isDeleteModalOpen && selectedUser && (
         <DeleteConfirmationModal
           isOpen={isDeleteModalOpen}
@@ -163,7 +269,7 @@ export function ClientManagment() {
             setIsDeleteModalOpen(false);
           }}
           onConfirm={() => handleDelete()}
-          workerName={`el rol ${selectedUser.name}`}
+          workerName={`el usuario ${selectedUser.name}`}
         />
       )}
     </div>
