@@ -49,7 +49,7 @@ import { cn } from "@/lib/utils";
 import { FullAppointment } from "@/lib/actions/appointment.actions";
 import { AppointmentStatus } from "@prisma/client";
 import { normalizeToLocal } from "./ApoimentsManagment";
-import { AppointmentSearch } from "./SearchAppointments";
+import { AppointmentSearch } from "../SearchAppointments";
 
 export type ViewMode = "day" | "week" | "month" | "agenda" | "search";
 

@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils"
 import { FullAppointment } from "@/lib/actions/appointment.actions"
 import { AppointmentStatus } from "@prisma/client"
-import { normalizeToLocal } from "./ApoimentsManagment"
+import { normalizeToLocal } from "./appoinment/ApoimentsManagment"
 
 interface SearchResultsViewProps {
   appointments: FullAppointment[]

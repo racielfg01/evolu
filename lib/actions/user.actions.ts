@@ -38,6 +38,21 @@ export const fetchUserById = async (id: string): Promise<User> => {
 };
 
 
+export const fetchUserByRoleId = async (role_id: string): Promise<User[]> => {
+  try {
+    const users = await prisma.user.findMany({
+      where: { role_id },
+      orderBy: { name: 'asc' } // Orden alfabético para mejor UX
+    });
+    // findMany siempre retorna un array (vacío si no hay resultados)
+    return users;
+  } catch (error) {
+    console.error(`Error fetching users with role_id ${role_id}:`, error);
+    // En lugar de lanzar error, retornamos array vacío para evitar crashes
+    return [];
+  }
+};
+
 export const createUser = async (data:Omit<User,"id">): Promise<User> => {
 
   try {

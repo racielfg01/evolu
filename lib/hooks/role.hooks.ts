@@ -5,6 +5,8 @@ import {
   createRole,
   updateRole,
   deleteRole,
+  fetchRoleById,
+  fetchRoleByName,
 } from "@/lib/actions/role.actions";
 import { toast } from "sonner";
 
@@ -15,6 +17,25 @@ export const useGetAllRoles = () => {
     queryFn: fetchAllRoles,
   });
 };
+
+// Hook para obtener un rol por ID
+export const useGetRoleById = (id: string) => {
+  return useQuery({
+    queryKey: ["roles", id],
+    queryFn: () => fetchRoleById(id),
+    enabled: !!id, // Solo ejecutar la consulta si hay un ID válido
+  });
+};
+
+// Hook para obtener un rol por ID
+export const useGetRoleByName = (name: string) => {
+  return useQuery({
+    queryKey: ["roles", name],
+    queryFn: () => fetchRoleByName(name),
+    enabled: !!name, 
+  });
+};
+
 
 // Hook para crear un nuevo rol
 export const useCreateRole = () => {

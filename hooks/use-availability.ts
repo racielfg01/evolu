@@ -34,7 +34,7 @@ import { BUFFER_TIME } from "@/lib/utils/booking-utils";
 //   });
 // }
 
-export function useAvailableSlots(selectedServices: ServiceWithRelations[], selectedDate: Date | null) {
+export function useAvailableSlots(selectedServices: ServiceWithRelations[], selectedDate: Date | undefined| null) {
   return useQuery({
     queryKey: ["availableSlots", selectedDate?.toISOString(), selectedServices.map(s => s.id)],
     queryFn: async () => {

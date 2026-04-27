@@ -1,9 +1,10 @@
 // lib/utils/booking-utils.ts
+import { SelectedService } from "@/components/admin-view/appoinment/CreateAppointmentModal";
 import { ServiceWithRelations } from "@/lib/actions/services.actions";
 
 export const BUFFER_TIME = 20; // 20 minutos de buffer entre servicios
 
-export function calculateTotalDuration(services: ServiceWithRelations[]): number {
+export function calculateTotalDuration(services: ServiceWithRelations[] |SelectedService[]): number {
   if (!services || services.length === 0) return 0;
   
   const servicesDuration = services.reduce(

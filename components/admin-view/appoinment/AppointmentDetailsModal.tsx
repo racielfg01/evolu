@@ -5,9 +5,9 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "../ui/dialog";
-import { Button } from "../ui/button";
-import { Badge } from "../ui/badge";
+} from "../../ui/dialog";
+import { Button } from "../../ui/button";
+import { Badge } from "../../ui/badge";
 import { Calendar, Clock, User, Mail, Phone, CreditCard, Scissors, NotebookPen } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";

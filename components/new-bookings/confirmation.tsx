@@ -31,7 +31,7 @@ interface ConfirmationProps {
 }
 
 // Función para normalizar fechas a UTC manteniendo el día correcto
-function normalizeToUTC(date: Date): Date {
+export function normalizeToUTC(date: Date): Date {
   // Crear una nueva fecha con los mismos componentes pero en UTC
   const utcDate = new Date(
     Date.UTC(

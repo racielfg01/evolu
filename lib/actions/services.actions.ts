@@ -53,7 +53,7 @@ export type ServiceWithRelations = {
   category: {
     id: string;
     name: string;
-  };
+  }|null;
   images: {
     id: string;
     name: string;

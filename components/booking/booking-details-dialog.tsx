@@ -22,7 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { FullAppointment } from "@/lib/actions/appointment.actions";
 import { ReactElement } from "react";
-import { normalizeToLocal } from "../admin-view/ApoimentsManagment";
+import { normalizeToLocal } from "../admin-view/appoinment/ApoimentsManagment";
 
 interface BookingDetailsDialogPros{
     booking:FullAppointment,

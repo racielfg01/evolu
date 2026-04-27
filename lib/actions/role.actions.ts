@@ -15,6 +15,42 @@ export const fetchAllRoles = async (): Promise<Role[]> => {
   }
 };
 
+// Obtener un rol por ID
+export async function fetchRoleById(id: string) {
+  try {
+    const role = await prisma.role.findUnique({
+      where: { id },
+    });
+    
+    if (!role) {
+      throw new Error("Rol no encontrado");
+    }
+    
+    return role;
+  } catch (error) {
+    console.error("Error fetching role by id:", error);
+    throw new Error("Error al obtener el rol");
+  }
+}
+
+// Obtener un rol por Name
+export async function fetchRoleByName(name: string) {
+  try {
+    const role = await prisma.role.findUnique({
+      where: { name },
+    });
+    
+    if (!role) {
+      throw new Error("Rol no encontrado");
+    }
+    
+    return role;
+  } catch (error) {
+    console.error("Error fetching role by id:", error);
+    throw new Error("Error al obtener el rol");
+  }
+}
+
 export const createRole = async (name: string): Promise<Role> => {
 
   try {

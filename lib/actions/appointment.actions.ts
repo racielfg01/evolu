@@ -188,24 +188,7 @@ export const fetchAppointmentByRangDay = async (startOfDay:Date,endOfDay:Date)=>
       return appointments
     };
     
-    
-    
-    // export const createAppointment = async (data: AppointmentData): Promise<FullAppointmentData> => {
-    //  // Crear la cita en la base de datos
-    //     const appointment = await prisma.appointment.create({
-    //       data,
-    //       include: {
-    //         services: {
-    //           include: {
-    //             service: true
-    //           }
-    //         },
-    //         user: true
-    //       }
-    //     });
-    
-    //     return appointment
-    // };
+
 
 
 export const createAppointment = async (data: AppointmentData): Promise<FullAppointmentData> => {

@@ -1,4 +1,4 @@
-import { ApoimentsManagment } from "@/components/admin-view/ApoimentsManagment";
+import { ApoimentsManagment } from "@/components/admin-view/appoinment/ApoimentsManagment";
 
 export default async function AdminUsersPage() {
   // const users = await fetchAllUsers()
