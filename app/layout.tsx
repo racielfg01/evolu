@@ -10,7 +10,7 @@ import { Toaster } from "@/components/ui/sonner"
 
 export const metadata = {
     icons: {
-    icon: '/evolu-logo.png',      // ruta desde /public
+    icon: '/evolu-logo.png',      
     shortcut: '/evolu-logo.png',
     apple: '/evolu-logo.png',
   },
