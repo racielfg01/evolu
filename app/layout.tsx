@@ -4,17 +4,9 @@ import "./globals.css";
 
 import Providers from "../lib/providers/Provider";
 
-import { Toaster } from "@/components/ui/sonner"
-
-
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata = {
-    icons: {
-    icon: '/evolu-logo.png',      
-    shortcut: '/evolu-logo.png',
-    apple: '/evolu-logo.png',
-  },
-  
   title: "Evolu",
   description: `¿Buscas los mejores centros de depilación, masajes profesionales, podólogos cualificados o servicios de belleza cerca de ti? Belleza & Bienestar es la app que conecta tu necesidad de cuidado personal con los profesionales mejor valorados de tu ciudad.
 
@@ -74,9 +66,13 @@ Desde depilación con cera, láser diodo, luz pulsada hasta técnicas indoloras.
 📍 Cobertura: Disponible en [Ciudad/País] y en expansión. Si no encuentras un servicio, solicítalo dentro de la app.
 
 📲 DESCÁRGALA AHORA y empieza a disfrutar de una experiencia de bienestar sin complicaciones. Porque cuidarte nunca fue tan fácil.
-,`
+,`,
+  icons: {
+    icon: "/evolu-logo.png",
+    shortcut: "/evolu-logo.png",
+    apple: "/evolu-logo.png",
+  },
 };
-
 
 export default function RootLayout({
   children,
@@ -86,18 +82,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-    
-
         <Providers>
-             
           <div className="min-h-screen flex flex-col bg-sage-50">
-          {/* <Navbar/> */}
-          
+            {/* <Navbar/> */}
+
             <main className="flex-1">{children}</main>
-          <Toaster />
+            <Toaster />
           </div>
         </Providers>
-             
       </body>
     </html>
   );
