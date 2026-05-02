@@ -2,6 +2,7 @@
   "name": "evolu-app",
   "version": "0.1.0",
   "private": true,
+  "description": "Evolu - Centro de belleza y bienestar. Reserva servicios de depilación, masajes, podología y estética en minutos.",
   "scripts": {
     "dev-turbo": "next dev --turbopack",
     "dev": "next dev",
