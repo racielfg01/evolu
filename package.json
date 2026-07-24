@@ -6,7 +6,7 @@
   "scripts": {
     "dev-turbo": "next dev --turbopack",
     "dev": "next dev",
-    "build": " next build",
+    "build": "prisma generate && next build",
     "build-full": "npx prisma migrate deploy || [ \"$DATABASE_URL\" = \"prisma+postgres://accelerate.prisma-data.net/?api_key=API_KEY\" ] && next build",
     "start": "next start",
     "lint": "next lint",
