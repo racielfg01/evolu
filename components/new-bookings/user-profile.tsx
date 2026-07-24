@@ -62,8 +62,6 @@ export function UserProfile({ initTag = "profile" }: { initTag?: string }) {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case "CONFIRMED":
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
       case "COMPLETED":
         return <CheckCircle className="h-4 w-4 text-blue-600" />;
       case "PENDING":
@@ -77,8 +75,6 @@ export function UserProfile({ initTag = "profile" }: { initTag?: string }) {
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case "CONFIRMED":
-        return "Confirmada";
       case "COMPLETED":
         return "Completada";
       case "PENDING":
@@ -94,8 +90,6 @@ export function UserProfile({ initTag = "profile" }: { initTag?: string }) {
     status: string
   ): "default" | "secondary" | "destructive" | "outline" => {
     switch (status) {
-      case "CONFIRMED":
-        return "default";
       case "COMPLETED":
         return "secondary";
       case "PENDING":

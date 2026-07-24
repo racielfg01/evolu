@@ -111,11 +111,9 @@ export function SearchResultsView({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all" className="text-xs">Todos</SelectItem>
-                <SelectItem value="CONFIRMED" className="text-xs">Confirmadas</SelectItem>
                 <SelectItem value="PENDING" className="text-xs">Pendientes</SelectItem>
-                <SelectItem value="CANCELLED" className="text-xs">Canceladas</SelectItem>
                 <SelectItem value="COMPLETED" className="text-xs">Completadas</SelectItem>
-                <SelectItem value="NO_SHOW" className="text-xs">No Presentado</SelectItem>
+                <SelectItem value="CANCELLED" className="text-xs">Canceladas</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -316,11 +314,9 @@ export function AppointmentSearch({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all" className="text-xs">Todos</SelectItem>
-              <SelectItem value="CONFIRMED" className="text-xs">Confirmadas</SelectItem>
               <SelectItem value="PENDING" className="text-xs">Pendientes</SelectItem>
-              <SelectItem value="CANCELLED" className="text-xs">Canceladas</SelectItem>
               <SelectItem value="COMPLETED" className="text-xs">Completadas</SelectItem>
-              <SelectItem value="NO_SHOW" className="text-xs">No Presentado</SelectItem>
+              <SelectItem value="CANCELLED" className="text-xs">Canceladas</SelectItem>
             </SelectContent>
           </Select>
         </div>

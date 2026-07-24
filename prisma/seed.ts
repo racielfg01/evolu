@@ -365,7 +365,7 @@ async function main() {
       user_id: admin.id,
       duration: massage.duration,
       total_price: massage.price,
-      status: "CONFIRMED",
+      status: "PENDING",
       services: {
         create: [{ service_id: massage.id, quantity: 1 }],
       },

@@ -529,7 +529,7 @@ export async function deleteService(serviceId: string) {
         service_id: serviceId,
         appointment: {
           status: {
-            in: ["PENDING", "CONFIRMED"],
+            in: ["PENDING"],
           },
         },
       },

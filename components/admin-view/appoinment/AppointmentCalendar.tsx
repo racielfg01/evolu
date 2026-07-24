@@ -176,10 +176,6 @@ useEffect(() => {
   // Get status color
   const getStatusColor = (status: AppointmentStatus) => {
     switch (status) {
-      case "NO_SHOW":
-        return "bg-gray-100 text-gray-800 border-gray-200";
-      case "CONFIRMED":
-        return "bg-green-100 text-green-800 border-green-200";
       case "PENDING":
         return "bg-yellow-100 text-yellow-800 border-yellow-200";
       case "CANCELLED":
@@ -193,13 +189,11 @@ useEffect(() => {
 
   const getStatusLabel = (status: AppointmentStatus) => {
     const labels = {
-      CONFIRMED: "Confirmada",
       PENDING: "Pendiente",
       CANCELLED: "Cancelada",
       COMPLETED: "Completada",
-      NO_SHOW: "No Presentado",
-    };
-    return labels[status];
+    } as Record<string, string>;
+    return labels[status] || status;
   };
 
   // Contador de resultados para mostrar feedback al usuario
@@ -309,11 +303,9 @@ useEffect(() => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all" className="text-xs">Todos</SelectItem>
-              <SelectItem value="CONFIRMED" className="text-xs">Confirmadas</SelectItem>
               <SelectItem value="PENDING" className="text-xs">Pendientes</SelectItem>
-              <SelectItem value="CANCELLED" className="text-xs">Canceladas</SelectItem>
               <SelectItem value="COMPLETED" className="text-xs">Completadas</SelectItem>
-              <SelectItem value="NO_SHOW" className="text-xs">No Presentado</SelectItem>
+              <SelectItem value="CANCELLED" className="text-xs">Canceladas</SelectItem>
             </SelectContent>
           </Select>
         </div>

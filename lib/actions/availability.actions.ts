@@ -106,7 +106,7 @@ export async function getDayAvailablePeriods(date: Date): Promise<string> {
 //           lte: endOfDay,
 //         },
 //         status: {
-//           in: ["PENDING", "CONFIRMED"],
+//           in: ["PENDING"],
 //         },
 //       },
 //       include: {
@@ -194,7 +194,7 @@ export async function getAvailableSlots(date: Date, totalDuration: number) {
           lte: endOfDay,
         },
         status: {
-          in: ["PENDING", "CONFIRMED"],
+          in: ["PENDING"],
         },
       },
       include: {

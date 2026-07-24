@@ -371,7 +371,7 @@ export const autoCompletePastAppointments = async (clientNow: Date): Promise<num
   try {
     const result = await prisma.appointment.updateMany({
       where: {
-        status: 'CONFIRMED',
+        status: 'PENDING',
         endDate: { lt: clientNow },
       },
       data: { status: 'COMPLETED' },

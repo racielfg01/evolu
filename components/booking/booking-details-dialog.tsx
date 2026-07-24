@@ -45,12 +45,6 @@ export function BookingDetailsDialog({ booking, children }:BookingDetailsDialogP
   // Determinar variante y icono según estado
   const getStatusDetails = (status:string) => {
     switch (status) {
-      case "CONFIRMED":
-        return { 
-          variant: "default" as const, 
-          icon: <CheckCircle className="h-4 w-4" />, 
-          text: "Confirmada" 
-        };
       case "CANCELLED":
         return { 
           variant: "destructive" as const, 
@@ -68,12 +62,6 @@ export function BookingDetailsDialog({ booking, children }:BookingDetailsDialogP
           variant: "default" as const, 
           icon: <CheckCircle className="h-4 w-4" />, 
           text: "Completada" 
-        };
-      case "NO_SHOW":
-        return { 
-          variant: "destructive" as const, 
-          icon: <XCircle className="h-4 w-4" />, 
-          text: "No asistió" 
         };
       default:
         return { 

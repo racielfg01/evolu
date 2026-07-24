@@ -109,7 +109,7 @@ model Appointment {
   note        String?  
   cancellationReason String?
   createdById String?
-  status      AppointmentStatus    @default(CONFIRMED)
+  status      AppointmentStatus    @default(PENDING)
   createdAt   DateTime             @default(now())
   updatedAt   DateTime             @updatedAt
   services    AppointmentService[]
@@ -223,8 +223,6 @@ model VerificationToken {
 
 enum AppointmentStatus {
   PENDING
-  CONFIRMED
   COMPLETED
   CANCELLED
-  NO_SHOW
 }
