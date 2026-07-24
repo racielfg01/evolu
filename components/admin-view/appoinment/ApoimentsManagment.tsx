@@ -49,7 +49,7 @@ export function ApoimentsManagment() {
   // Auto-completar citas pasadas al cargar la página
   useEffect(() => {
     autoCompletePastAppointments(normalizeToUTC(new Date())).then(() => refetch());
-  }, []);
+  }, [refetch]);
 
   if (isLoading)
     return (

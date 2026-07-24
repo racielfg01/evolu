@@ -6,9 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Calendar, DollarSign, Users, Scissors, TrendingUp, Activity } from "lucide-react";
-import { Area, AreaChart, CartesianGrid, XAxis, Bar, BarChart, YAxis } from "recharts";
+import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { es } from "date-fns/locale";
 
 const statusLabels: Record<string, string> = {
   PENDING: "Pendientes",
