@@ -107,6 +107,8 @@ model Appointment {
   duration    Int
   total_price Float
   note        String?  
+  cancellationReason String?
+  createdById String?
   status      AppointmentStatus    @default(CONFIRMED)
   createdAt   DateTime             @default(now())
   updatedAt   DateTime             @updatedAt

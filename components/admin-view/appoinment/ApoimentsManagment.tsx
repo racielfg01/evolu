@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useGetAllAppointments } from "@/lib/hooks/appointment.hooks";
 import { Skeleton } from "../../ui/skeleton";
-import { FullAppointment } from "@/lib/actions/appointment.actions";
+import { FullAppointment, autoCompletePastAppointments } from "@/lib/actions/appointment.actions";
 import AppointmentDetailsModal from "./AppointmentDetailsModal";
 import { AppointmentCalendar } from "./AppointmentCalendar";
 import { CreateAppointmentModal } from "./CreateAppointmentModal";
@@ -44,6 +44,11 @@ export function ApoimentsManagment() {
 
   // Obtener todas las citas
   const { data: appointments, isLoading, error, refetch } = useGetAllAppointments();
+
+  // Auto-completar citas pasadas al cargar la página
+  useEffect(() => {
+    autoCompletePastAppointments().then(() => refetch());
+  }, []);
 
   if (isLoading)
     return (

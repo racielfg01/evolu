@@ -1,11 +1,8 @@
 "use server"
 // lib/actions/appointment.actions.ts
 import prisma from '@/lib/prisma';
-import { Appointment, User, Service,
-  //  TimeSlot,
-    AppointmentService
-    // , $Enums 
-  } from '@prisma/client';
+import { Appointment, User, Service, AppointmentService } from '@prisma/client';
+import { getCurrentUser } from '@/lib/supabase/auth';
 
 export type FullAppointment = Appointment & {
   user: User;
@@ -193,6 +190,9 @@ export const fetchAppointmentByRangDay = async (startOfDay:Date,endOfDay:Date)=>
 
 export const createAppointment = async (data: AppointmentData): Promise<FullAppointmentData> => {
   try {
+    const currentUser = await getCurrentUser();
+    const createData = currentUser ? { ...data, createdById: currentUser.id } : data;
+
     // Usar transacción para evitar condiciones de carrera
     const appointment = await prisma.$transaction(async (tx) => {
       // 1. Verificar si existe alguna cita que se superponga con el nuevo horario
@@ -225,7 +225,7 @@ export const createAppointment = async (data: AppointmentData): Promise<FullAppo
 
       // 2. Si no hay superposición, crear la cita
       return await tx.appointment.create({
-        data,
+        data: createData,
         include: {
           services: {
             include: {
@@ -324,6 +324,30 @@ export const updateAppointment = async (
   }
 };
 
+export const cancelAppointment = async (id: string, reason?: string): Promise<FullAppointment> => {
+  try {
+    if (!id) throw new Error('Appointment ID is required');
+
+    const appointment = await prisma.appointment.findUnique({ where: { id } });
+    if (!appointment) throw new Error('Appointment not found');
+    if (appointment.status === 'CANCELLED' || appointment.status === 'COMPLETED') {
+      throw new Error(`Cannot cancel an appointment with status ${appointment.status}`);
+    }
+
+    return await prisma.appointment.update({
+      where: { id },
+      data: { status: 'CANCELLED', cancellationReason: reason || null },
+      include: {
+        user: true,
+        services: { include: { service: true } },
+      },
+    }) as FullAppointment;
+  } catch (error) {
+    console.error(`Error cancelling appointment ${id}:`, error);
+    throw new Error(error instanceof Error ? error.message : 'Failed to cancel appointment');
+  }
+};
+
 export const deleteAppointment = async (id: string): Promise<void> => {
   try {
     if (!id) throw new Error('Appointment ID is required');
@@ -340,5 +364,31 @@ export const deleteAppointment = async (id: string): Promise<void> => {
   } catch (error) {
     console.error(`Error deleting appointment ${id}:`, error);
     throw new Error(error instanceof Error ? error.message : 'Failed to delete appointment');
+  }
+};
+
+export const autoCompletePastAppointments = async (): Promise<number> => {
+  try {
+    // Las fechas se guardan con normalizeToUTC (componentes local como UTC),
+    // así que necesitamos la misma transformación para comparar
+    const raw = new Date();
+    const now = new Date(Date.UTC(
+      raw.getFullYear(), raw.getMonth(), raw.getDate(),
+      raw.getHours(), raw.getMinutes(), raw.getSeconds(),
+    ));
+    const result = await prisma.appointment.updateMany({
+      where: {
+        status: 'CONFIRMED',
+        endDate: { lt: now },
+      },
+      data: { status: 'COMPLETED' },
+    });
+    if (result.count > 0) {
+      console.log(`Auto-completed ${result.count} past appointments`);
+    }
+    return result.count;
+  } catch (error) {
+    console.error('Error auto-completing past appointments:', error);
+    return 0;
   }
 };

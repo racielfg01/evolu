@@ -12,6 +12,7 @@ import {
   createAppointment,
   updateAppointment,
   deleteAppointment,
+  cancelAppointment,
   FullAppointment
 } from '@/lib/actions/appointment.actions';
 
@@ -79,5 +80,16 @@ export const useDeleteAppointment = () => {
     onSuccess: () => {
            queryClient.invalidateQueries({ queryKey: ["appointments"] });
     }
+  });
+};
+
+export const useCancelAppointment = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: string; reason?: string }) => cancelAppointment(id, reason),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+    },
   });
 };

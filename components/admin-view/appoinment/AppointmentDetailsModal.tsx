@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -13,6 +13,8 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { FullAppointment } from "@/lib/actions/appointment.actions";
 import { normalizeToLocal } from "./ApoimentsManagment";
+import { useCancelAppointment } from "@/lib/hooks/appointment.hooks";
+import { toast } from "sonner";
 
 interface AppointmentDetailsModalProps {
   isOpen: boolean;
@@ -25,7 +27,23 @@ const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = ({
   onClose,
   appointment,
 }) => {
+  const [confirmCancel, setConfirmCancel] = useState(false);
+  const [cancelReason, setCancelReason] = useState("");
+  const cancelMutation = useCancelAppointment();
+
   if (!appointment) return null;
+
+  const handleCancel = async () => {
+    try {
+      await cancelMutation.mutateAsync({ id: appointment.id, reason: cancelReason || undefined });
+      toast.success("Cita cancelada correctamente");
+      onClose();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Error al cancelar la cita");
+    }
+    setConfirmCancel(false);
+    setCancelReason("");
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -148,7 +166,15 @@ const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = ({
                 </div>
               )}
 
-             
+                {appointment.status === "CANCELLED" && appointment.cancellationReason && (
+             <div>
+                  <p className="flex items-center gap-1 text-red-600">
+                    <NotebookPen className="h-4 w-4" />
+                    Motivo: {appointment.cancellationReason}
+                  </p>
+                </div>
+              )}
+
             </div>
           </div>
 
@@ -232,6 +258,35 @@ const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = ({
           )}
           {appointment.status === "CONFIRMED" && (
             <Button variant="secondary">Marcar como Completada</Button>
+          )}
+          {(appointment.status === "PENDING" || appointment.status === "CONFIRMED") && (
+            confirmCancel ? (
+              <div className="flex flex-col gap-3 w-full">
+                <textarea
+                  className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  placeholder="Motivo de cancelación (opcional)"
+                  value={cancelReason}
+                  onChange={(e) => setCancelReason(e.target.value)}
+                />
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" size="sm" onClick={() => { setConfirmCancel(false); setCancelReason(""); }}>
+                    Volver
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={handleCancel}
+                    disabled={cancelMutation.isPending}
+                  >
+                    {cancelMutation.isPending ? "Cancelando..." : "Confirmar Cancelación"}
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <Button variant="destructive" onClick={() => setConfirmCancel(true)}>
+                Cancelar Cita
+              </Button>
+            )
           )}
         </div>
       </DialogContent>
