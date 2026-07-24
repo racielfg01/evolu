@@ -6,6 +6,7 @@ import { Plus } from "lucide-react";
 import { useGetAllAppointments } from "@/lib/hooks/appointment.hooks";
 import { Skeleton } from "../../ui/skeleton";
 import { FullAppointment, autoCompletePastAppointments } from "@/lib/actions/appointment.actions";
+import { normalizeToUTC } from "@/components/new-bookings/confirmation";
 import AppointmentDetailsModal from "./AppointmentDetailsModal";
 import { AppointmentCalendar } from "./AppointmentCalendar";
 import { CreateAppointmentModal } from "./CreateAppointmentModal";
@@ -47,7 +48,7 @@ export function ApoimentsManagment() {
 
   // Auto-completar citas pasadas al cargar la página
   useEffect(() => {
-    autoCompletePastAppointments().then(() => refetch());
+    autoCompletePastAppointments(normalizeToUTC(new Date())).then(() => refetch());
   }, []);
 
   if (isLoading)

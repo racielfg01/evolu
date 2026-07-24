@@ -367,19 +367,12 @@ export const deleteAppointment = async (id: string): Promise<void> => {
   }
 };
 
-export const autoCompletePastAppointments = async (): Promise<number> => {
+export const autoCompletePastAppointments = async (clientNow: Date): Promise<number> => {
   try {
-    // Las fechas se guardan con normalizeToUTC (componentes local como UTC),
-    // así que necesitamos la misma transformación para comparar
-    const raw = new Date();
-    const now = new Date(Date.UTC(
-      raw.getFullYear(), raw.getMonth(), raw.getDate(),
-      raw.getHours(), raw.getMinutes(), raw.getSeconds(),
-    ));
     const result = await prisma.appointment.updateMany({
       where: {
         status: 'CONFIRMED',
-        endDate: { lt: now },
+        endDate: { lt: clientNow },
       },
       data: { status: 'COMPLETED' },
     });
