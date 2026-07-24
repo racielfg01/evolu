@@ -854,6 +854,8 @@ import { useGetAllServices } from "@/lib/hooks/service.hooks";
 import { useAddAppointment } from "@/lib/hooks/appointment.hooks";
 import { useAvailableSlots } from "@/hooks/use-availability";
 import { getDayAvailablePeriods } from "@/lib/actions/availability.actions";
+import { getBusinessConfig } from "@/lib/actions/config.actions";
+import type { BusinessConfiguration } from "@/lib/actions/config.actions";
 import { toast } from "sonner";
 import { ScrollArea } from "../../ui/scroll-area";
 import {
@@ -903,10 +905,20 @@ export function CreateAppointmentModal({
   const [isClientOpen, setIsClientOpen] = useState(false);
   const [isServiceOpen, setIsServiceOpen] = useState(false);
 
+  // Configuración de disponibilidad
+  const [businessConfig, setBusinessConfig] = useState<BusinessConfiguration | null>(null);
+
   // Hooks de datos
   const { data: clientsData = [], isLoading: usersLoading, error: usersError } = useGetClients();
   const { data: services, isLoading: servicesLoading } = useGetAllServices();
   const createAppointment = useAddAppointment();
+
+  // Cargar configuración de disponibilidad al abrir el modal
+  useEffect(() => {
+    if (isOpen) {
+      getBusinessConfig().then(setBusinessConfig);
+    }
+  }, [isOpen]);
 
   // Duración total (servicios + buffer)
   const totalDuration = calculateTotalDuration(selectedServices);
@@ -1044,12 +1056,14 @@ export function CreateAppointmentModal({
     setIsClientOpen(false);
   };
 
-  // Función para deshabilitar fines de semana y fechas pasadas
+  // Función para deshabilitar fechas según configuración de disponibilidad
   const isDateDisabled = (date: Date) => {
     const today = startOfToday();
     if (isBefore(date, today)) return true;
     const day = date.getDay();
-    return day === 0 || day === 6;
+    const dayConfig = businessConfig?.weekAvailability[day.toString()];
+    if (!dayConfig) return true;
+    return !dayConfig.available;
   };
 
   const formatTimeToAMPM = (time24: string): string => {
@@ -1434,7 +1448,7 @@ export function CreateAppointmentModal({
                   className="rounded-md border w-full"
                 />
                 <div className="mt-4 text-sm text-muted-foreground">
-                  <p>• Citas disponibles de Lunes a Viernes</p>
+                  <p>• Selecciona una fecha disponible en el calendario</p>
                   <p>• Selecciona una fecha para ver los horarios</p>
                 </div>
               </CardContent>

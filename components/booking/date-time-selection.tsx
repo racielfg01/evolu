@@ -57,12 +57,11 @@ export function DateTimeSelection() {
     return state.selectedServices.reduce((total, service) => total + service.duration, 0)
   }
 
-  // Deshabilitar fechas pasadas y fines de semana para la demo
+  // Deshabilitar solo fechas pasadas
   const isDateDisabled = (date: Date) => {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
-    const dayOfWeek = date.getDay()
-    return date < today || dayOfWeek === 0 || dayOfWeek === 6
+    return date < today
   }
 
   return (
@@ -89,8 +88,8 @@ export function DateTimeSelection() {
               className="rounded-md border"
             />
             <div className="mt-4 text-sm text-muted-foreground">
-              <p>• Citas disponibles de Lunes a Viernes</p>
-              <p>• Citas de fin de semana próximamente</p>
+              <p>• Selecciona una fecha disponible en el calendario</p>
+              <p>• Los horarios disponibles dependen de la configuración</p>
             </div>
           </CardContent>
         </Card>
