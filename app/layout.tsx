@@ -5,6 +5,7 @@ import "./globals.css";
 import Providers from "../lib/providers/Provider";
 
 import { Toaster } from "@/components/ui/sonner";
+import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 
 export const metadata = {
   title: "Evolu",
@@ -82,6 +83,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <ServiceWorkerRegister />
+        <link rel="manifest" href="/manifest.json" />
         <Providers>
           <div className="min-h-screen flex flex-col bg-sage-50">
             {/* <Navbar/> */}

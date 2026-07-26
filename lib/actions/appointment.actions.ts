@@ -195,13 +195,14 @@ export const createAppointment = async (data: AppointmentData): Promise<FullAppo
 
     // Usar transacción para evitar condiciones de carrera
     const appointment = await prisma.$transaction(async (tx) => {
-      // 1. Verificar si existe alguna cita que se superponga con el nuevo horario
+      // 1. Verificar si existe alguna cita activa que se superponga con el nuevo horario
       const overlappingAppointment = await tx.appointment.findFirst({
         where: {
           AND: [
-            { date: { lt: data.endDate } }, // La cita existente empieza ANTES de que termine la nueva
-            { endDate: { gt: data.date } }, // La cita existente termina DESPUÉS de que empieza la nueva
+            { date: { lt: data.endDate } },
+            { endDate: { gt: data.date } },
           ],
+          status: { in: ["PENDING"] },
         },
       });
 

@@ -6,6 +6,7 @@ import {
   // EnhancedBookingProvider,
   useEnhancedBooking,
 } from "@/components/new-bookings/enhanced-booking-context";
+import { useOnlineStatus } from "@/hooks/use-online-status";
 import { Navigation } from "@/components/new-bookings/navigation";
 import { HomePage } from "@/components/new-bookings/home-page";
 // import { ServicesCatalog } from "@/components/new-bookings/services-catalog";
@@ -38,6 +39,7 @@ export function BookingContent({ user,categories,services }:BookingContentProps)
 
   
   const { state, dispatch } = useEnhancedBooking();
+  const isOnline = useOnlineStatus();
   const {push}= useRouter()
   const [isAdmin, setIsAdmin] = useState(false)
   
@@ -60,6 +62,7 @@ export function BookingContent({ user,categories,services }:BookingContentProps)
   const [currentView, setCurrentView] = useState("home");
 
   const handleViewChange = (view: string) => {
+    if (view === "booking" && !isOnline) return;
     setCurrentView(view);
     if (view === "booking") {
       dispatch({ type: "RESET_BOOKING" });
@@ -141,7 +144,7 @@ export function BookingContent({ user,categories,services }:BookingContentProps)
           <UnifiedServicesComponent
             mode="catalog"
             onServiceSelect={handleServiceSelect}
-            onBookNow={() => setCurrentView("booking")}
+            onBookNow={() => handleViewChange("booking")}
             services={services}
             // isLoadingService={isLoadingService}
             // errorServices={errorServices}
@@ -160,6 +163,10 @@ export function BookingContent({ user,categories,services }:BookingContentProps)
         return <UserProfile initTag={"bookings"} />;
       
       case "booking":
+        if (!isOnline) {
+          setCurrentView("services");
+          return null;
+        }
         return (
           <div className="space-y-6">
             <ProgressIndicator />
@@ -223,6 +230,11 @@ export function BookingContent({ user,categories,services }:BookingContentProps)
 
   return (
     <div className="min-h-screen ">
+      {!isOnline && (
+        <div className="bg-yellow-100 text-yellow-800 text-center text-sm py-2 px-4">
+          Estás offline — puedes ver nuestros servicios, pero para reservar necesitas conexión a internet.
+        </div>
+      )}
       <Navigation currentView={currentView} onViewChange={handleViewChange} isAdmin={isAdmin} />
 
       <div

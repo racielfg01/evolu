@@ -249,9 +249,9 @@ const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = ({
           <Button variant="outline" onClick={onClose}>
             Cerrar
           </Button>
-          {appointment.status === "PENDING" && (
+          {/* {appointment.status === "PENDING" && (
             <Button variant="secondary">Marcar como Completada</Button>
-          )}
+          )} */}
           {(appointment.status === "PENDING") && (
             confirmCancel ? (
               <div className="flex flex-col gap-3 w-full">
