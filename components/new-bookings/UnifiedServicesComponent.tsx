@@ -27,6 +27,7 @@ import Image from "next/image";
 import { ServiceWithRelations } from "@/lib/actions/services.actions";
 import { useEnhancedBooking } from "@/components/new-bookings/enhanced-booking-context";
 import { useRouter } from "next/navigation";
+import { useOnlineStatus } from "@/hooks/use-online-status";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import {
   Carousel,
@@ -69,6 +70,7 @@ export function UnifiedServicesComponent({
 }: UnifiedServicesComponentProps) {
   const { push } = useRouter();
   const { state, dispatch } = useEnhancedBooking();
+  const isOnline = useOnlineStatus();
   const [selectedCategory, setSelectedCategory] = useState({
     id: "todos",
     name: "Todos",
@@ -343,6 +345,7 @@ export function UnifiedServicesComponent({
 
             {/* Botón de acción */}
             <Button
+              disabled={!isOnline && mode === "catalog"}
               onClick={() => {
                 handleServiceAction(detailService);
                 setDetailService(null);
@@ -528,6 +531,7 @@ export function UnifiedServicesComponent({
                   <Button
                     variant={isSelected ? "destructive" : "default"}
                     size="sm"
+                    disabled={!isOnline && mode === "catalog" && !isSelected}
                     onClick={() => handleServiceAction(service)}
                     className={`text-xs sm:text-sm py-1.5 ${
                       isSelected
