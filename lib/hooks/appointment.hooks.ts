@@ -5,6 +5,7 @@ import {
   useQueryClient,
   UseQueryOptions
 } from '@tanstack/react-query';
+import { AppointmentStatus } from '@prisma/client';
 import {
   fetchAllAppointments,
   fetchAppointmentsByUser,
@@ -100,7 +101,7 @@ export const useUpdateAppointmentStatus = () => {
 
   return useMutation({
     mutationFn: ({ id, status }: { id: string; status: string }) =>
-      updateAppointmentStatus(id, status as any),
+      updateAppointmentStatus(id, status as AppointmentStatus),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["appointments"] });
     },

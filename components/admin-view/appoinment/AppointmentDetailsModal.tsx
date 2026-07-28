@@ -51,7 +51,7 @@ const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = ({
       await updateStatus.mutateAsync({ id: appointment.id, status });
       toast.success(`Estado cambiado a ${status === "PENDING" ? "Pendiente" : status === "COMPLETED" ? "Completada" : "Cancelada"}`);
       onClose();
-    } catch (error) {
+    } catch {
       toast.error("Error al cambiar el estado");
     }
   };
