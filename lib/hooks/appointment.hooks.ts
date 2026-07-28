@@ -13,6 +13,7 @@ import {
   updateAppointment,
   deleteAppointment,
   cancelAppointment,
+  updateAppointmentStatus,
   FullAppointment
 } from '@/lib/actions/appointment.actions';
 
@@ -88,6 +89,18 @@ export const useCancelAppointment = () => {
 
   return useMutation({
     mutationFn: ({ id, reason }: { id: string; reason?: string }) => cancelAppointment(id, reason),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+    },
+  });
+};
+
+export const useUpdateAppointmentStatus = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, status }: { id: string; status: string }) =>
+      updateAppointmentStatus(id, status as any),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["appointments"] });
     },

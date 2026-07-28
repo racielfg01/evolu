@@ -13,7 +13,7 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { FullAppointment } from "@/lib/actions/appointment.actions";
 import { normalizeToLocal } from "./ApoimentsManagment";
-import { useCancelAppointment } from "@/lib/hooks/appointment.hooks";
+import { useCancelAppointment, useUpdateAppointmentStatus } from "@/lib/hooks/appointment.hooks";
 import { toast } from "sonner";
 
 interface AppointmentDetailsModalProps {
@@ -30,6 +30,7 @@ const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = ({
   const [confirmCancel, setConfirmCancel] = useState(false);
   const [cancelReason, setCancelReason] = useState("");
   const cancelMutation = useCancelAppointment();
+  const updateStatus = useUpdateAppointmentStatus();
 
   if (!appointment) return null;
 
@@ -43,6 +44,16 @@ const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = ({
     }
     setConfirmCancel(false);
     setCancelReason("");
+  };
+
+  const changeStatus = async (status: string) => {
+    try {
+      await updateStatus.mutateAsync({ id: appointment.id, status });
+      toast.success(`Estado cambiado a ${status === "PENDING" ? "Pendiente" : status === "COMPLETED" ? "Completada" : "Cancelada"}`);
+      onClose();
+    } catch (error) {
+      toast.error("Error al cambiar el estado");
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -249,12 +260,9 @@ const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = ({
           <Button variant="outline" onClick={onClose}>
             Cerrar
           </Button>
-          {/* {appointment.status === "PENDING" && (
-            <Button variant="secondary">Marcar como Completada</Button>
-          )} */}
-          {(appointment.status === "PENDING") && (
-            confirmCancel ? (
-              <div className="flex flex-col gap-3 w-full">
+          <div className="flex gap-2">
+            {confirmCancel ? (
+              <div className="flex flex-col gap-3">
                 <textarea
                   className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                   placeholder="Motivo de cancelación (opcional)"
@@ -276,11 +284,40 @@ const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = ({
                 </div>
               </div>
             ) : (
-              <Button variant="destructive" onClick={() => setConfirmCancel(true)}>
-                Cancelar Cita
-              </Button>
-            )
-          )}
+              <>
+                {appointment.status === "PENDING" && (
+                  <>
+                    <Button variant="secondary" onClick={() => changeStatus("COMPLETED")} disabled={updateStatus.isPending}>
+                      Marcar Completada
+                    </Button>
+                    <Button variant="destructive" onClick={() => setConfirmCancel(true)}>
+                      Cancelar Cita
+                    </Button>
+                  </>
+                )}
+                {appointment.status === "COMPLETED" && (
+                  <>
+                    <Button variant="outline" onClick={() => changeStatus("PENDING")} disabled={updateStatus.isPending}>
+                      Revertir a Pendiente
+                    </Button>
+                    <Button variant="destructive" onClick={() => setConfirmCancel(true)}>
+                      Cancelar Cita
+                    </Button>
+                  </>
+                )}
+                {appointment.status === "CANCELLED" && (
+                  <>
+                    <Button variant="outline" onClick={() => changeStatus("PENDING")} disabled={updateStatus.isPending}>
+                      Restaurar Pendiente
+                    </Button>
+                    <Button variant="secondary" onClick={() => changeStatus("COMPLETED")} disabled={updateStatus.isPending}>
+                      Marcar Completada
+                    </Button>
+                  </>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </DialogContent>
     </Dialog>

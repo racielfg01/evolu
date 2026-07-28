@@ -1,7 +1,7 @@
 "use server"
 // lib/actions/appointment.actions.ts
 import prisma from '@/lib/prisma';
-import { Appointment, User, Service, AppointmentService } from '@prisma/client';
+import { Appointment, User, Service, AppointmentService, AppointmentStatus } from '@prisma/client';
 import { getCurrentUser } from '@/lib/supabase/auth';
 
 export type FullAppointment = Appointment & {
@@ -325,13 +325,30 @@ export const updateAppointment = async (
   }
 };
 
+export const updateAppointmentStatus = async (id: string, status: AppointmentStatus): Promise<FullAppointment> => {
+  try {
+    if (!id) throw new Error('Appointment ID is required');
+    return await prisma.appointment.update({
+      where: { id },
+      data: { status },
+      include: {
+        user: true,
+        services: { include: { service: true } },
+      },
+    }) as FullAppointment;
+  } catch (error) {
+    console.error(`Error updating status for appointment ${id}:`, error);
+    throw new Error(error instanceof Error ? error.message : 'Failed to update appointment status');
+  }
+};
+
 export const cancelAppointment = async (id: string, reason?: string): Promise<FullAppointment> => {
   try {
     if (!id) throw new Error('Appointment ID is required');
 
     const appointment = await prisma.appointment.findUnique({ where: { id } });
     if (!appointment) throw new Error('Appointment not found');
-    if (appointment.status === 'CANCELLED' || appointment.status === 'COMPLETED') {
+    if (appointment.status === 'CANCELLED') {
       throw new Error(`Cannot cancel an appointment with status ${appointment.status}`);
     }
 
