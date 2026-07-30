@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -14,6 +14,7 @@ import { es } from "date-fns/locale";
 import { FullAppointment } from "@/lib/actions/appointment.actions";
 import { normalizeToLocal } from "./ApoimentsManagment";
 import { useCancelAppointment, useUpdateAppointmentStatus } from "@/lib/hooks/appointment.hooks";
+import { getClientAdminProfile, upsertClientAdminProfile } from "@/lib/actions/client-profile.actions";
 import { toast } from "sonner";
 
 interface AppointmentDetailsModalProps {
@@ -29,10 +30,42 @@ const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = ({
 }) => {
   const [confirmCancel, setConfirmCancel] = useState(false);
   const [cancelReason, setCancelReason] = useState("");
+  const [adminNotes, setAdminNotes] = useState("");
+  const [adminTags, setAdminTags] = useState("");
+  const [profileLoaded, setProfileLoaded] = useState(false);
+  const [savingProfile, setSavingProfile] = useState(false);
   const cancelMutation = useCancelAppointment();
   const updateStatus = useUpdateAppointmentStatus();
 
   if (!appointment) return null;
+
+  useEffect(() => {
+    if (isOpen && appointment && !profileLoaded) {
+      getClientAdminProfile(appointment.user_id).then((p) => {
+        if (p) {
+          setAdminNotes(p.notes);
+          setAdminTags(p.tags);
+        }
+        setProfileLoaded(true);
+      });
+    }
+    if (!isOpen) {
+      setProfileLoaded(false);
+      setAdminNotes("");
+      setAdminTags("");
+    }
+  }, [isOpen, appointment, profileLoaded, appointment?.user_id]);
+
+  const handleSaveProfile = async () => {
+    setSavingProfile(true);
+    try {
+      await upsertClientAdminProfile(appointment.user_id, { notes: adminNotes, tags: adminTags });
+      toast.success("Perfil guardado");
+    } catch {
+      toast.error("Error al guardar");
+    }
+    setSavingProfile(false);
+  };
 
   const handleCancel = async () => {
     try {
@@ -94,7 +127,7 @@ const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
             <span>Detalles de la Cita</span>
@@ -252,6 +285,46 @@ const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = ({
                   <span>{formatCurrency(appointment.total_price)}</span>
                 </p>
               </div>
+            </div>
+          </div>
+
+          {/* Perfil del Cliente (solo admin) */}
+          <div className="p-4 bg-slate-50 rounded-lg">
+            <h3 className="font-semibold mb-3 flex items-center gap-2">
+              <NotebookPen className="h-4 w-4" />
+              Perfil del Cliente
+            </h3>
+            <div className="space-y-3">
+              <div>
+                <label className="text-xs text-muted-foreground block mb-1">Notas internas</label>
+                <textarea
+                  className="flex min-h-[80px] w-full rounded-md border border-input bg-white px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  placeholder="Notas visibles solo para administradores..."
+                  value={adminNotes}
+                  onChange={(e) => setAdminNotes(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground block mb-1">Etiquetas</label>
+                <input
+                  className="flex h-9 w-full rounded-md border border-input bg-white px-3 py-1 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  placeholder="Ej: VIP, frecuente, alergias"
+                  value={adminTags}
+                  onChange={(e) => setAdminTags(e.target.value)}
+                />
+                {adminTags && (
+                  <div className="flex gap-1 mt-2 flex-wrap">
+                    {adminTags.split(",").map((t, i) => (
+                      <span key={i} className="bg-primary/10 text-primary text-xs px-2 py-0.5 rounded-full">
+                        {t.trim()}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <Button size="sm" onClick={handleSaveProfile} disabled={savingProfile}>
+                {savingProfile ? "Guardando..." : "Guardar Perfil"}
+              </Button>
             </div>
           </div>
         </div>

@@ -221,6 +221,16 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+model ClientAdminProfile {
+  id        String   @id @default(cuid())
+  clientId  String   @unique
+  notes     String?
+  tags      String?
+  updatedAt DateTime @updatedAt
+
+  @@map("client_admin_profiles")
+}
+
 enum AppointmentStatus {
   PENDING
   COMPLETED
