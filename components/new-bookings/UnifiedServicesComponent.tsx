@@ -280,12 +280,12 @@ export function UnifiedServicesComponent({
                     {detailService.price} USD
                   </span>
                 </div>
-                <div className="flex items-center gap-2 text-sm sm:text-base">
+                {/* <div className="flex items-center gap-2 text-sm sm:text-base">
                   <DollarSign className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                   <span className="font-semibold">
                     {detailService.price * usdValue} cup
                   </span>
-                </div>
+                </div> */}
               </div>
               <Badge variant="secondary" className="text-xs sm:text-sm w-fit">
                 {categories?.find((c) => c.id === detailService.category_id)
