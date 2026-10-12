@@ -137,6 +137,7 @@ model AppointmentService {
 model BusinessConfig {
   id              String           @id @default(cuid())
   minBookingNotice Int              @default(24) // en horas
+  usdRate         Float            @default(0)
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
 

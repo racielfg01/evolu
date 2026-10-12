@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RolManagment } from "./RolManagment";
 import { SexManagment } from "./SexManagment";
 import { CategoryManagment } from "./CategoryManagment";
+import { UsdRateSettings } from "./UsdRateSettings";
 
 // const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];
 
@@ -31,11 +32,12 @@ export async function Configuration() {
         
 
           <Tabs defaultValue="general" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="general">General</TabsTrigger>
               <TabsTrigger value="roles">Roles</TabsTrigger>
               <TabsTrigger value="sex">Sexo</TabsTrigger>
               <TabsTrigger value="categories">Categorías</TabsTrigger>
+              <TabsTrigger value="moneda">Moneda</TabsTrigger>
            
             </TabsList>
             <TabsContent value="general" className="space-y-6">
@@ -52,6 +54,10 @@ export async function Configuration() {
 
             <TabsContent value="categories" className="space-y-6">
               <CategoryManagment/>
+            </TabsContent>
+
+            <TabsContent value="moneda" className="space-y-6">
+              <UsdRateSettings />
             </TabsContent>
           
          

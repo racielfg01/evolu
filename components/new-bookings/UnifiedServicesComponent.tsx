@@ -37,6 +37,7 @@ import {
   CarouselPrevious,
 } from "../ui/carousel";
 import { calculateTotalDuration } from "@/lib/utils/booking-utils";
+import { getUsdRate } from "@/lib/actions/config.actions";
 
 interface UnifiedServicesComponentProps {
   mode: "catalog" | "selection";
@@ -81,7 +82,7 @@ export function UnifiedServicesComponent({
     useState<ServiceWithRelations | null>(null);
 
   useEffect(() => {
-    setUsdValue(700);
+    getUsdRate().then((value) => setUsdValue(value));
   }, []);
 
   // Efectos para calcular duración y precio total (solo en modo selección)
@@ -280,12 +281,14 @@ export function UnifiedServicesComponent({
                     {detailService.price} USD
                   </span>
                 </div>
-                {/* <div className="flex items-center gap-2 text-sm sm:text-base">
-                  <DollarSign className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                  <span className="font-semibold">
-                    {detailService.price * usdValue} cup
-                  </span>
-                </div> */}
+                {usdValue > 0 && (
+                  <div className="flex items-center gap-2 text-sm sm:text-base">
+                    <DollarSign className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                    <span className="font-semibold">
+                      {(detailService.price * usdValue).toLocaleString()} CUP
+                    </span>
+                  </div>
+                )}
               </div>
               <Badge variant="secondary" className="text-xs sm:text-sm w-fit">
                 {categories?.find((c) => c.id === detailService.category_id)
@@ -496,12 +499,14 @@ export function UnifiedServicesComponent({
                 <div className="flex items-center justify-between">
                   <div className="flex flex-wrap gap-1.5 text-xs sm:text-sm">
                     {/* Precio CUP (destacado) */}
-                    {/* <div className="flex items-center gap-1 bg-gray-400 text-white px-2 py-1.5 rounded-lg">
-                      <DollarSign className="h-3 w-3 flex-shrink-0" />
-                      <span className="font-semibold">
-                        {(service.price * usdValue).toLocaleString()} CUP
-                      </span>
-                    </div> */}
+                    {usdValue > 0 && (
+                      <div className="flex items-center gap-1 bg-gray-400 text-white px-2 py-1.5 rounded-lg">
+                        <DollarSign className="h-3 w-3 flex-shrink-0" />
+                        <span className="font-semibold">
+                          {(service.price * usdValue).toLocaleString()} CUP
+                        </span>
+                      </div>
+                    )}
 
                     {/* Precio USD */}
                     <div className="flex items-center gap-1 bg-muted/40 px-1 py-1.5 rounded-lg">
@@ -636,22 +641,24 @@ export function UnifiedServicesComponent({
                 </div>
               </div>
               {/* Precios */}
-              <div className="flex justify-between gap-2">
-                <div className="">
-                  <span className="text-sm font-semibold">
-                    Total: ${state.totalPrice} USD
-                  </span>
-                </div>
-                {/* <Badge
-                  variant="outline"
-                  className="text-xs bg-green-50 text-green-700 border-green-200"
-                >
-                  ${(state.totalPrice * usdValue).toLocaleString()} CUP
-                </Badge> */}
+              <div className="flex justify-between items-center gap-2">
+                <span className="text-sm font-semibold">
+                  Total: ${state.totalPrice} USD
+                </span>
+                {usdValue > 0 && (
+                  <Badge
+                    variant="outline"
+                    className="text-xs bg-green-50 text-green-700 border-green-200"
+                  >
+                    ${(state.totalPrice * usdValue).toLocaleString()} CUP
+                  </Badge>
+                )}
               </div>
-              {/* <p className="text-xs text-muted-foreground mt-1">
-                Tipo de cambio: 1 USD = {usdValue} CUP
-              </p> */}
+              {usdValue > 0 && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  Tipo de cambio: 1 USD = {usdValue} CUP
+                </p>
+              )}
 
               {/* Resumen de precios y duración */}
               <div className="flex flex-col items-end gap-2 sm:gap-3 min-w-[140px]"></div>

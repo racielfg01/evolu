@@ -267,6 +267,42 @@ export async function getBusinessConfig(): Promise<BusinessConfiguration | null>
   }
 }
 
+export async function getUsdRate(): Promise<number> {
+  try {
+    const config = await prisma.businessConfig.findFirst({
+      orderBy: { createdAt: "asc" },
+    });
+    return config?.usdRate ?? 0;
+  } catch (error) {
+    console.error("Error getting USD rate:", error);
+    return 0;
+  }
+}
+
+export async function saveUsdRate(usdRate: number) {
+  try {
+    if (typeof usdRate !== "number" || usdRate < 0) {
+      throw new Error("Tasa de cambio inválida");
+    }
+
+    await prisma.businessConfig.upsert({
+      where: { id: "default-config" },
+      update: { usdRate },
+      create: { id: "default-config", minBookingNotice: 24, usdRate },
+    });
+
+    revalidatePath("/admin/settings");
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error saving USD rate:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Error al guardar la tasa",
+    };
+  }
+}
+
 export async function resetToDefaultConfig() {
   try {
     const defaultConfig: BusinessConfiguration = {

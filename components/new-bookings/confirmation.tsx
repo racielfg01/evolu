@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -25,6 +25,7 @@ import {
   calculateEndDateTime,
   calculateTotalDuration,
 } from "@/lib/utils/booking-utils";
+import { getUsdRate } from "@/lib/actions/config.actions";
 
 interface ConfirmationProps {
   onViewChange: (view: string) => void;
@@ -49,6 +50,11 @@ export function normalizeToUTC(date: Date): Date {
 export function Confirmation({ onViewChange }: ConfirmationProps) {
   const { state, dispatch } = useEnhancedBooking();
   const [isConfirmed, setIsConfirmed] = useState(false);
+  const [usdValue, setUsdValue] = useState(0);
+
+  useEffect(() => {
+    getUsdRate().then((value) => setUsdValue(value));
+  }, []);
 
   // const totalDuration = calculateTotalDuration(state.selectedServices);
 
@@ -296,7 +302,14 @@ const handleConfirmBooking = async () => {
                           {service.duration} min
                         </p>
                       </div>
-                      <p className="font-medium">${service.price}</p>
+                      <div className="text-right">
+                        <p className="font-medium">${service.price} USD</p>
+                        {usdValue > 0 && (
+                          <p className="text-sm text-muted-foreground">
+                            {(service.price * usdValue).toLocaleString()} CUP
+                          </p>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -326,7 +339,14 @@ const handleConfirmBooking = async () => {
 
               <div className="flex justify-between items-center text-lg font-semibold">
                 <span>Monto Total</span>
-                <span>${state.totalPrice}</span>
+                <div className="text-right">
+                  <span>${state.totalPrice} USD</span>
+                  {usdValue > 0 && (
+                    <p className="text-sm font-normal text-muted-foreground">
+                      {(state.totalPrice * usdValue).toLocaleString()} CUP
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           </CardContent>
