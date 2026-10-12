@@ -15,6 +15,7 @@ import { FullAppointment } from "@/lib/actions/appointment.actions";
 import { normalizeToLocal } from "./ApoimentsManagment";
 import { useCancelAppointment, useUpdateAppointmentStatus } from "@/lib/hooks/appointment.hooks";
 import { getClientAdminProfile, upsertClientAdminProfile } from "@/lib/actions/client-profile.actions";
+import { fetchUserById } from "@/lib/actions/user.actions";
 import { toast } from "sonner";
 
 interface AppointmentDetailsModalProps {
@@ -34,10 +35,9 @@ const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = ({
   const [adminTags, setAdminTags] = useState("");
   const [profileLoaded, setProfileLoaded] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
+  const [createdByName, setCreatedByName] = useState("");
   const cancelMutation = useCancelAppointment();
   const updateStatus = useUpdateAppointmentStatus();
-
-  if (!appointment) return null;
 
   useEffect(() => {
     if (isOpen && appointment && !profileLoaded) {
@@ -49,12 +49,18 @@ const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = ({
         setProfileLoaded(true);
       });
     }
+    if (isOpen && appointment?.createdById && !createdByName) {
+      fetchUserById(appointment.createdById).then((u) => setCreatedByName(u?.name || "")).catch(() => {});
+    }
     if (!isOpen) {
       setProfileLoaded(false);
       setAdminNotes("");
       setAdminTags("");
+      setCreatedByName("");
     }
-  }, [isOpen, appointment, profileLoaded, appointment?.user_id]);
+  }, [isOpen, appointment, profileLoaded, appointment?.user_id, createdByName]);
+
+  if (!appointment) return null;
 
   const handleSaveProfile = async () => {
     setSavingProfile(true);
@@ -267,6 +273,11 @@ const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = ({
                   <span className="font-medium">Actualizada:</span>{" "}
                   {format(appointment.updatedAt, "dd/MM/yyyy HH:mm", { locale: es })}
                 </p>
+                {createdByName && (
+                  <p>
+                    <span className="font-medium">Agendada por:</span> {createdByName}
+                  </p>
+                )}
                 <p>
                   <span className="font-medium">ID:</span> {appointment.id}
                 </p>
