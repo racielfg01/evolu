@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Edit, Trash } from "lucide-react";
 
@@ -28,7 +28,7 @@ import { AddServiceModal, UploadedImage } from "../comun/AddServiceModal";
 import { ServiceWithRelations } from "@/lib/actions/services.actions";
 import { useQueryClient } from "@tanstack/react-query";
 import { AvailabilityConfigurator } from "../booking/availability-configurator";
-import { BusinessConfiguration } from "@/lib/actions/config.actions";
+import { BusinessConfiguration, getUsdRate } from "@/lib/actions/config.actions";
 
 // Configuración por defecto (debería venir de un contexto o API)
 const defaultBusinessConfig: BusinessConfiguration = {
@@ -116,6 +116,11 @@ export function ServiceManagment() {
   const [businessConfig, setBusinessConfig] = useState<BusinessConfiguration>(
     defaultBusinessConfig
   );
+  const [usdRate, setUsdRate] = useState(0);
+
+  useEffect(() => {
+    getUsdRate().then(setUsdRate);
+  }, []);
 
   // Obtener todos los Servicios
   const { data: services, isLoading, error } = useGetAllServices();
@@ -168,7 +173,17 @@ export function ServiceManagment() {
       accessorKey: "price",
       header: "Precio",
       cell: ({ row }) => {
-        return <p>$ {row.original.price}</p>;
+        return (
+          <p>
+            $ {row.original.price}
+            {usdRate > 0 && (
+              <span className="text-muted-foreground">
+                {" "}
+                · {(row.original.price * usdRate).toLocaleString()} CUP
+              </span>
+            )}
+          </p>
+        );
       },
     },
     {
@@ -303,7 +318,11 @@ export function ServiceManagment() {
                           </div>
                           <div>
                             <strong>Precio:</strong>
-                            <p>${row.original.price}</p>
+                            <p>
+                              ${row.original.price}
+                              {usdRate > 0 &&
+                                ` · ${(row.original.price * usdRate).toLocaleString()} CUP`}
+                            </p>
                           </div>
                           <div>
                             <strong>Duración:</strong>

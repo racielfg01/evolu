@@ -269,9 +269,11 @@ export async function getBusinessConfig(): Promise<BusinessConfiguration | null>
 
 export async function getUsdRate(): Promise<number> {
   try {
-    const config = await prisma.businessConfig.findFirst({
-      orderBy: { createdAt: "asc" },
-    });
+    const config =
+      (await prisma.businessConfig.findUnique({
+        where: { id: "default-config" },
+      })) ??
+      (await prisma.businessConfig.findFirst({ orderBy: { createdAt: "asc" } }));
     return config?.usdRate ?? 0;
   } catch (error) {
     console.error("Error getting USD rate:", error);
