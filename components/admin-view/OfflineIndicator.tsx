@@ -16,7 +16,13 @@ export function OfflineIndicator() {
   const [savedAt, setSavedAt] = useState<number | null>(null);
 
   useEffect(() => {
-    const refresh = () => setSavedAt(getOfflineCacheSavedAt());
+    // Defer el setState para evitar el error de React 19 ("cannot update a
+    // component while rendering a different component") que ocurre cuando
+    // el evento se dispara de forma síncrona desde el ciclo de guardado de
+    // React Query durante un render.
+    const refresh = () => {
+      setTimeout(() => setSavedAt(getOfflineCacheSavedAt()), 0);
+    };
     refresh();
     window.addEventListener(OFFLINE_CACHE_SAVED_EVENT, refresh);
     window.addEventListener("storage", refresh);
