@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 import { Service, Category, ServiceFile } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { v4 as uuidv4 } from "uuid";
-import { StorageService } from "../supabase/storage";
+import { deleteStoredFiles } from "../uploadthing.server";
 
 export type FullService = Service & {
   category: Category;
@@ -317,8 +317,6 @@ export const editService = async (
 ): Promise<Service> => {
   console.log(serviceData);
 
-  const { deleteFile } = StorageService;
-
   try {
     if (!serviceData.id) throw new Error("Service ID is required");
 
@@ -343,6 +341,9 @@ export const editService = async (
       if (isNaN(updateData.duration)) throw new Error("Invalid duration");
     }
 
+    // Rutas de almacenamiento a borrar una vez confirmada la transacción
+    const storagePathsToDelete: string[] = [];
+
     // Usar una transacción para asegurar la consistencia
     const result = await prisma.$transaction(async (tx) => {
       // 1. Eliminar imágenes marcadas para eliminación
@@ -355,27 +356,7 @@ export const editService = async (
           },
         });
 
-        // Eliminar archivos del almacenamiento
-        const deletePromises = imagesToDelete.map(
-          async (image: UploadedImage) => {
-            try {
-              console.log("image", image);
-              // const { error } = await supabase.storage
-              //   .from(process.env.NEXT_PUBLIC_SUPABASE_BUCKET_NAME as string)
-              //   .remove([image.path]);
-
-              deleteFile(image.path);
-
-              // if (error) {
-              //   console.error(`Error deleting file ${image.path}:`, error);
-              // }
-            } catch (error) {
-              console.error(`Error deleting file ${image.path}:`, error);
-            }
-          }
-        );
-
-        await Promise.all(deletePromises);
+        storagePathsToDelete.push(...imagesToDelete.map((image) => image.path));
 
         // Eliminar registros de la base de datos
         await tx.serviceFile.deleteMany({
@@ -417,6 +398,9 @@ export const editService = async (
 
       return updatedService;
     });
+
+    // Borrar del almacenamiento solo cuando la base de datos ya confirmó
+    await deleteStoredFiles(storagePathsToDelete);
 
     // Revalidar la página de servicios
     revalidatePath("/admin/services");

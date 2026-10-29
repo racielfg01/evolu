@@ -15,6 +15,12 @@ protocol: "https",
 hostname: "supabase.com",
 port: "",
 pathname: "/**"
+},
+{
+protocol: "https",
+hostname: "kyw6bm6or8.ufs.sh",
+port: "",
+pathname: "/f/**"
 }],
 unoptimized: true
 },

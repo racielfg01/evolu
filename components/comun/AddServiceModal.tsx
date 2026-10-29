@@ -632,7 +632,7 @@ import ImageUploader from "@/components/ImageUploader";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { useGetAllCategories } from "@/lib/hooks/category.hooks";
 import { addService, editService } from "@/lib/actions/services.actions";
-import { uploadImages } from "@/lib/supabase/storage";
+import { uploadImages } from "@/lib/uploads-client";
 import { Power, PowerOff } from "lucide-react";
 
 export interface ServiceFormData {
