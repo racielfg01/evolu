@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Download, Plus } from "lucide-react";
 import { useGetAllAppointments } from "@/lib/hooks/appointment.hooks";
 import { Skeleton } from "../../ui/skeleton";
 import { FullAppointment, autoCompletePastAppointments } from "@/lib/actions/appointment.actions";
@@ -10,6 +10,7 @@ import { normalizeToUTC } from "@/components/new-bookings/confirmation";
 import AppointmentDetailsModal from "./AppointmentDetailsModal";
 import { AppointmentCalendar } from "./AppointmentCalendar";
 import { CreateAppointmentModal } from "./CreateAppointmentModal";
+import { AppointmentExportDialog } from "./AppointmentExportDialog";
 
 // Función para convertir UTC a fecha local manteniendo los mismos componentes
 export function normalizeToLocal(date: Date): Date {
@@ -27,6 +28,7 @@ export function normalizeToLocal(date: Date): Date {
 export function ApoimentsManagment() {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<FullAppointment | null>(null);
 
   const handleCloseDetails = () => {
@@ -46,9 +48,16 @@ export function ApoimentsManagment() {
   // Obtener todas las citas
   const { data: appointments, isLoading, error, refetch } = useGetAllAppointments();
 
-  // Auto-completar citas pasadas al cargar la página
+  // Auto-completar citas pasadas al cargar la página.
+  // Sin conexión no se intenta: se muestran los últimos datos guardados.
   useEffect(() => {
-    autoCompletePastAppointments(normalizeToUTC(new Date())).then(() => refetch());
+    if (typeof navigator !== "undefined" && !navigator.onLine) return;
+
+    autoCompletePastAppointments(normalizeToUTC(new Date()))
+      .then(() => refetch())
+      .catch((error) => {
+        console.warn("No se pudieron completar las citas pasadas:", error);
+      });
   }, [refetch]);
 
   if (isLoading)
@@ -62,7 +71,8 @@ export function ApoimentsManagment() {
       </div>
     );
 
-  if (error) return <div className="p-2 text-sm">Error: {error.message}</div>;
+  if (error && !appointments)
+    return <div className="p-2 text-sm">Error: {error.message}</div>;
 
   return (
     <div className="flex flex-1 flex-col">
@@ -79,13 +89,23 @@ export function ApoimentsManagment() {
                     Gestiona y visualiza tus citas de forma intuitiva
                   </p>
                 </div>
-                <Button
-                  onClick={() => setIsCreateModalOpen(true)}
-                  className="gap-2"
-                >
-                  <Plus className="h-4 w-4" />
-                  Nueva Cita
-                </Button>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsExportModalOpen(true)}
+                    className="gap-2"
+                  >
+                    <Download className="h-4 w-4" />
+                    Descargar
+                  </Button>
+                  <Button
+                    onClick={() => setIsCreateModalOpen(true)}
+                    className="gap-2"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Nueva Cita
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
@@ -113,6 +133,12 @@ export function ApoimentsManagment() {
               }}
             />
           )}
+
+          <AppointmentExportDialog
+            isOpen={isExportModalOpen}
+            onClose={() => setIsExportModalOpen(false)}
+            appointments={appointments ?? []}
+          />
         </div>
       </div>
     </div>

@@ -9,6 +9,7 @@ import { SiteHeader } from "@/components/admin-view/site-header";
 import { getCurrentUser } from "@/lib/supabase/auth";
 import { redirect } from "next/navigation";
 import Providers from "@/lib/providers/Provider";
+import { OfflineIndicator } from "@/components/admin-view/OfflineIndicator";
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -46,6 +47,7 @@ const currentUser =await getCurrentUser()
           />
         <SidebarInset>
           <SiteHeader />
+          <OfflineIndicator />
           <main className="flex-1 ">{children}</main>
         </SidebarInset>
       </SidebarProvider>

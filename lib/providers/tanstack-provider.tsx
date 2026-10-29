@@ -1,73 +1,74 @@
-// // lib/providers/
-// 'use client'
+// lib/providers/tanstack-provider.tsx
+"use client";
 
-// import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-// // import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-
-// export function TanstackProvider({ children }: { children: React.ReactNode }) {
-//   const queryClient = new QueryClient({
-//     defaultOptions: {
-//       queries: {
-//         staleTime: 5 * 60 * 1000 // 5 minutos
-//       }
-//     }
-//   })
-
-//   return (
-//     <QueryClientProvider client={queryClient}>
-//       {children}
-//       {/* <ReactQueryDevtools initialIsOpen={false} /> */}
-//     </QueryClientProvider>
-//   )
-// }
-
-
-// In Next.js, this file would be called: app/providers.tsx
-'use client'
-
-// Since QueryClientProvider relies on useContext under the hood, we have to put 'use client' on top
 import {
   isServer,
   QueryClient,
   QueryClientProvider,
-} from '@tanstack/react-query'
+} from "@tanstack/react-query";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import {
+  OFFLINE_CACHE_MAX_AGE,
+  offlineCachePersister,
+} from "@/lib/offline/query-cache";
+
+const SEVEN_DAYS = OFFLINE_CACHE_MAX_AGE;
 
 function makeQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        // With SSR, we usually want to set some default staleTime
-        // above 0 to avoid refetching immediately on the client
         staleTime: 60 * 1000,
+        // La caché debe sobrevivir lo suficiente para usarse sin conexión.
+        gcTime: SEVEN_DAYS,
+        // Sin conexión no lanzamos peticiones: se muestra lo último guardado.
+        networkMode: "online",
+      },
+      mutations: {
+        // Las escrituras deben fallar rápido (con aviso) en vez de quedar
+        // en cola y ejecutarse solas al recuperar la conexión.
+        networkMode: "always",
       },
     },
-  })
+  });
 }
 
-let browserQueryClient: QueryClient | undefined = undefined
+let browserQueryClient: QueryClient | undefined = undefined;
 
 function getQueryClient() {
   if (isServer) {
-    // Server: always make a new query client
-    return makeQueryClient()
-  } else {
-    // Browser: make a new query client if we don't already have one
-    // This is very important, so we don't re-make a new client if React
-    // suspends during the initial render. This may not be needed if we
-    // have a suspense boundary BELOW the creation of the query client
-    if (!browserQueryClient) browserQueryClient = makeQueryClient()
-    return browserQueryClient
+    return makeQueryClient();
   }
+
+  if (!browserQueryClient) browserQueryClient = makeQueryClient();
+  return browserQueryClient;
 }
 
-export default function TanstackProvider({ children }: { children: React.ReactNode }) {
-  // NOTE: Avoid useState when initializing the query client if you don't
-  //       have a suspense boundary between this and the code that may
-  //       suspend because React will throw away the client on the initial
-  //       render if it suspends and there is no boundary
-  const queryClient = getQueryClient()
+export default function TanstackProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const queryClient = getQueryClient();
+
+  if (isServer) {
+    return (
+      <QueryClientProvider client={queryClient}>
+        {children}
+      </QueryClientProvider>
+    );
+  }
 
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  )
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{
+        persister: offlineCachePersister,
+        maxAge: OFFLINE_CACHE_MAX_AGE,
+        buster: "admin-offline-v1",
+      }}
+    >
+      {children}
+    </PersistQueryClientProvider>
+  );
 }
