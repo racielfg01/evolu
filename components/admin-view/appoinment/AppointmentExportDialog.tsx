@@ -69,20 +69,27 @@ export function AppointmentExportDialog({
       return;
     }
 
-    if (exportFormat === "pdf") {
-      const pdf = appointmentsToPdf(selected, getExportLabel(mode, range));
-      downloadPdf(getExportFileName(mode, range, "pdf"), pdf);
-    } else {
-      downloadCsv(
-        getExportFileName(mode, range, "csv"),
-        appointmentsToCsv(selected)
+    try {
+      if (exportFormat === "pdf") {
+        const pdf = appointmentsToPdf(selected, getExportLabel(mode, range));
+        downloadPdf(getExportFileName(mode, range, "pdf"), pdf);
+      } else {
+        downloadCsv(
+          getExportFileName(mode, range, "csv"),
+          appointmentsToCsv(selected)
+        );
+      }
+      toast.success(
+        `${selected.length} ${selected.length === 1 ? "cita descargada" : "citas descargadas"}`
+      );
+      onClose();
+    } catch (error) {
+      console.error("Error downloading export:", error);
+      toast.error(
+        "Error al descargar el archivo: " +
+          (error instanceof Error ? error.message : "Error desconocido")
       );
     }
-
-    toast.success(
-      `${selected.length} ${selected.length === 1 ? "cita descargada" : "citas descargadas"}`
-    );
-    onClose();
   };
 
   return (
@@ -178,7 +185,7 @@ export function AppointmentExportDialog({
           </Button>
           <Button onClick={handleDownload} disabled={selected.length === 0}>
             <Download className="mr-2 h-4 w-4" />
-            Descargar CSV
+            Descargar
           </Button>
         </DialogFooter>
       </DialogContent>
