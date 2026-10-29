@@ -19,13 +19,15 @@ import { Label } from "@/components/ui/label";
 import type { FullAppointment } from "@/lib/actions/appointment.actions";
 import {
   appointmentsToCsv,
+  appointmentsToPdf,
   downloadCsv,
+  downloadPdf,
   filterAppointmentsByRange,
   getExportFileName,
   getExportLabel,
   getExportRange,
   type ExportMode,
-} from "@/lib/export/appointments-csv";
+} from "@/lib/export";
 
 interface AppointmentExportDialogProps {
   isOpen: boolean;
@@ -39,13 +41,15 @@ export function AppointmentExportDialog({
   appointments,
 }: AppointmentExportDialogProps) {
   const [mode, setMode] = useState<ExportMode>("day");
+  const [exportFormat, setExportFormat] = useState<"csv" | "pdf">("csv");
   const [date, setDate] = useState(() => format(new Date(), "yyyy-MM-dd"));
 
-  // Al abrir, partir del día de hoy.
+  // Al abrir, partir del día de hoy y formato CSV.
   useEffect(() => {
     if (isOpen) {
       setMode("day");
       setDate(format(new Date(), "yyyy-MM-dd"));
+      setExportFormat("csv");
     }
   }, [isOpen]);
 
@@ -65,10 +69,15 @@ export function AppointmentExportDialog({
       return;
     }
 
-    downloadCsv(
-      getExportFileName(mode, range),
-      appointmentsToCsv(selected)
-    );
+    if (exportFormat === "pdf") {
+      const pdf = appointmentsToPdf(selected, getExportLabel(mode, range));
+      downloadPdf(getExportFileName(mode, range, "pdf"), pdf);
+    } else {
+      downloadCsv(
+        getExportFileName(mode, range, "csv"),
+        appointmentsToCsv(selected)
+      );
+    }
 
     toast.success(
       `${selected.length} ${selected.length === 1 ? "cita descargada" : "citas descargadas"}`
@@ -82,9 +91,9 @@ export function AppointmentExportDialog({
         <DialogHeader>
           <DialogTitle>Descargar citas</DialogTitle>
           <DialogDescription>
-            Exporta las citas de un día o de una semana en formato CSV. El
-            archivo se genera en tu dispositivo, así que también funciona sin
-            conexión.
+            Exporta las citas de un día o de una semana en formato CSV o PDF.
+            El archivo se genera en tu dispositivo, así que también funciona
+            sin conexión.
           </DialogDescription>
         </DialogHeader>
 
@@ -113,6 +122,31 @@ export function AppointmentExportDialog({
                   className="h-4 w-4 border-primary text-primary focus:ring-ring"
                 />
                 Una semana (lunes a domingo)
+              </label>
+            </div>
+            <Label>Formato</Label>
+            <div className="flex gap-4">
+              <label className="flex items-center gap-2 text-sm font-normal cursor-pointer">
+                <input
+                  type="radio"
+                  name="export-format"
+                  value="csv"
+                  checked={exportFormat === "csv"}
+                  onChange={() => setExportFormat("csv")}
+                  className="h-4 w-4 border-primary text-primary focus:ring-ring"
+                />
+                CSV
+              </label>
+              <label className="flex items-center gap-2 text-sm font-normal cursor-pointer">
+                <input
+                  type="radio"
+                  name="export-format"
+                  value="pdf"
+                  checked={exportFormat === "pdf"}
+                  onChange={() => setExportFormat("pdf")}
+                  className="h-4 w-4 border-primary text-primary focus:ring-ring"
+                />
+                PDF
               </label>
             </div>
           </div>

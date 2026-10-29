@@ -367,25 +367,27 @@ export const editService = async (
         });
       }
 
-      // // 2. Agregar nuevas imágenes
-      // if (serviceData.images && serviceData.images.length > 0) {
-      //   console.log('images',serviceData.images)
-      //   // const fileName = `services/${serviceData.id}/${crypto.randomUUID()}.${fileExt}`;
-      //   // Insertar nuevas imágenes en la base de datos
-      //   await tx.serviceFile.createMany({
-      //     data: serviceData.images.map((img) => ({
-      //       id: uuidv4(),
-      //       name: img.name,
-      //       path: img.path+uuidv4(),
-      //       url: img.url,
-      //       size: img.size,
-      //       type: img.type,
-      //       serviceId: serviceData.id as string,
-      //       createdAt: new Date(),
-      //       updatedAt: new Date(),
-      //     })),
-      //   });
-      // }
+      // 2. Agregar nuevas imágenes (solo las que no existían en la BD)
+      if (serviceData.images && serviceData.images.length > 0) {
+        // Las imágenes ya existentes vienen con id; solo creamos ServiceFile para las nuevas.
+        const newImages = serviceData.images.filter(
+          (img) => !("id" in img && img.id)
+        );
+
+        if (newImages.length > 0) {
+          await tx.serviceFile.createMany({
+            data: newImages.map((img) => ({
+              id: uuidv4(),
+              name: img.name,
+              path: img.path,
+              url: img.url,
+              size: img.size,
+              type: img.type,
+              serviceId: serviceData.id as string,
+            })),
+          });
+        }
+      }
 
       // 3. Actualizar el servicio
       const updatedService = await tx.service.update({

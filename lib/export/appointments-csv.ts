@@ -114,15 +114,20 @@ export function appointmentsToCsv(appointments: FullAppointment[]): string {
     .join("\r\n");
 }
 
-export function getExportFileName(mode: ExportMode, range: ExportRange): string {
+export function getExportFileName(
+  mode: ExportMode,
+  range: ExportRange,
+  ext: "csv" | "pdf" = "csv"
+): string {
+  const suffix = ext === "pdf" ? "pdf" : "csv";
   if (mode === "day") {
-    return `citas-${format(range.start, "yyyy-MM-dd")}.csv`;
+    return `citas-${format(range.start, "yyyy-MM-dd")}.${suffix}`;
   }
 
   return `citas-semana-${format(range.start, "yyyy-MM-dd")}_a_${format(
     range.end,
     "yyyy-MM-dd"
-  )}.csv`;
+  )}.${suffix}`;
 }
 
 export function getExportLabel(mode: ExportMode, range: ExportRange): string {

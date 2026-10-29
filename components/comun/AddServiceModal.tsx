@@ -828,11 +828,13 @@ export function AddServiceModal({
           duration: Number(formData.duration),
         };
 
-        // Combinar imágenes existentes mantenidas con nuevas subidas
+        // Combinar imágenes existentes mantenidas con nuevas subidas.
+        // Las imágenes existentes conservan su id; las nuevas no.
         const keptExistingImages = existingImages.filter(img => !imagesToDelete.includes(img.id));
-        
+
         const allImages = [
           ...keptExistingImages.map(img => ({
+            id: img.id,
             name: img.name,
             path: img.path,
             url: img.url,
