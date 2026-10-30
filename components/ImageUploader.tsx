@@ -133,9 +133,11 @@ export default function ImageUploader({
                 height={128}
               />
               <Button
+                type="button"
                 variant="destructive"
                 size="sm"
                 className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity p-1 h-6 w-6"
+                aria-label={`Eliminar imagen ${image.name}`}
                 onClick={(e) => {
                   e.stopPropagation();
                   onRemoveExistingImage(image.id, index);
@@ -157,9 +159,11 @@ export default function ImageUploader({
                 height={128}
               />
               <Button
+                type="button"
                 variant="destructive"
                 size="sm"
                 className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity p-1 h-6 w-6"
+                aria-label={`Eliminar imagen nueva ${index + 1}`}
                 onClick={(e) => {
                   e.stopPropagation();
                   onRemoveNewImage(index);

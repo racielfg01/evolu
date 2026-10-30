@@ -136,10 +136,12 @@ export function ServiceManagment() {
   };
 
   // Actualizar rol existente
-  const { mutate: updateService } = useEditService();
+  const { mutateAsync: updateService } = useEditService();
 
-  const handleUpdate = (data: Partial<ServiceForm>) => {
-    updateService({ data });
+  // Se espera la mutación para cerrar el modal recién cuando el servidor
+  // confirmó: así la invalidación posterior trae los datos nuevos.
+  const handleUpdate = async (data: Partial<ServiceForm>) => {
+    await updateService({ data });
     handleClose();
   };
 

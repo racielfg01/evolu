@@ -681,8 +681,10 @@ export function AddServiceModal({
   isOpen,
 }: {
   service: (Service & { images?: ServiceFile[] }) | null;
-  onSubmitEdit: (data: Partial<Service> & { images?: UploadedImage[]; imagesToDelete?: string[] }) => void;
-  onSubmit: (data: Omit<Service, "id"> & { images?: UploadedImage[] }) => void;
+  onSubmitEdit: (
+    data: Partial<Service> & { images?: UploadedImage[]; imagesToDelete?: string[] }
+  ) => void | Promise<void>;
+  onSubmit: (data: Omit<Service, "id"> & { images?: UploadedImage[] }) => void | Promise<void>;
   onClose: () => void;
   isOpen: boolean;
 }) {
@@ -852,7 +854,7 @@ export function AddServiceModal({
           serviceData.imagesToDelete = imagesToDelete;
         }
 
-        onSubmitEdit(serviceData);
+        await onSubmitEdit(serviceData);
       } else {
         // Modo creación
         const serviceData: Omit<Service, "id"> & { images?: UploadedImage[] } = {
@@ -897,7 +899,7 @@ export function AddServiceModal({
           }
         }
 
-        onSubmit(serviceData);
+        await onSubmit(serviceData);
       }
 
       onClose();
