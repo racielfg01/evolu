@@ -2,8 +2,9 @@
 
 import type React from "react";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Edit, Trash } from "lucide-react";
+import { Edit, Eye, Trash } from "lucide-react";
 
 import { ColumnDef as TanstackColumnDef } from "@tanstack/react-table";
 import {
@@ -29,6 +30,7 @@ import { ServiceWithRelations } from "@/lib/actions/services.actions";
 import { useQueryClient } from "@tanstack/react-query";
 import { AvailabilityConfigurator } from "../booking/availability-configurator";
 import { BusinessConfiguration, getUsdRate } from "@/lib/actions/config.actions";
+import { ServiceDetailsModal } from "./ServiceDetailsModal";
 
 // Configuración por defecto (debería venir de un contexto o API)
 const defaultBusinessConfig: BusinessConfiguration = {
@@ -112,7 +114,10 @@ export function ServiceManagment() {
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [detailService, setDetailService] =
+    useState<ServiceWithRelations | null>(null);
   const [businessConfig, setBusinessConfig] = useState<BusinessConfiguration>(
     defaultBusinessConfig
   );
@@ -166,7 +171,28 @@ export function ServiceManagment() {
   if (error) return <div>Error: {error.message}</div>;
 
   const rolColumns: TanstackColumnDef<ServiceWithRelations>[] = [
-    { id: "name", accessorKey: "name", header: "Nombre" },
+    {
+      id: "name",
+      accessorKey: "name",
+      header: "Nombre",
+      cell: ({ row }) => {
+        const cover = row.original.images?.[0]?.url || "/placeholder.svg";
+        return (
+          <div className="flex items-center gap-2">
+            <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-md border bg-muted">
+              <Image
+                src={cover}
+                alt={row.original.name}
+                fill
+                sizes="36px"
+                className="object-cover"
+              />
+            </div>
+            <span className="font-medium">{row.original.name}</span>
+          </div>
+        );
+      },
+    },
     { id: "description", accessorKey: "description", header: "Descripción" },
     {
       id: "price",
@@ -227,6 +253,20 @@ export function ServiceManagment() {
         return (
           <TooltipProvider>
             <div className="flex space-x-2 gap-4">
+              <Tooltip>
+                <TooltipTrigger
+                  onClick={() => {
+                    setDetailService(row.original);
+                    setIsDetailsModalOpen(true);
+                  }}
+                >
+                  <Eye className="h-4 w-4" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Ver detalles</p>
+                </TooltipContent>
+              </Tooltip>
+
               <Tooltip>
                 <TooltipTrigger
                   onClick={() => {
@@ -378,6 +418,18 @@ export function ServiceManagment() {
           }}
           onConfirm={() => handleDelete()}
           workerName={`el servicio ${selectedService.name}`}
+        />
+      )}
+
+      {isDetailsModalOpen && detailService && (
+        <ServiceDetailsModal
+          isOpen={isDetailsModalOpen}
+          onClose={() => {
+            setIsDetailsModalOpen(false);
+            setDetailService(null);
+          }}
+          service={detailService}
+          usdRate={usdRate}
         />
       )}
 
