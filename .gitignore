@@ -107,3 +107,5 @@ next-env.d.ts
 .opencode/commands/specify.md
 .opencode/commands/tasks.md
 .opencode/commands/verify.md
+.opencode/rsc/design
+.opencode/rsc/ux
