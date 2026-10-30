@@ -1,19 +1,18 @@
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
-import { Award, Sparkles, Users } from 'lucide-react'
+import { Award, Calendar, Sparkles, Users } from 'lucide-react'
+import { Button } from './ui/button'
 
-const Booking = () => {
+interface BookingProps {
+  onViewServices: () => void
+}
+
+const Booking = ({ onViewServices }: BookingProps) => {
   return (
-      <section id="contact" className="py-16 md:py-24 bg-sage-100">
+      <section id="beneficios" className="py-16 md:py-24 bg-sage-100">
         <div className="container mx-auto px-4">
-          {/* <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-sage-900 mb-6 text-center">
-              Programa tu Cita Hoy
-            </h2>
-            <BookingForm />
-          </div> */}
                {/* Why Choose Us */}
-      <section className="space-y-6">
+      <div className="space-y-6">
         <div className="text-center">
           <h2 className="text-3xl font-bold mb-2">¿Por Qué Elegirnos?</h2>
           <p className="text-muted-foreground">Comprometidos con tu belleza y bienestar</p>
@@ -59,7 +58,17 @@ const Booking = () => {
             </CardContent>
           </Card>
         </div>
-      </section>
+
+        <div className="flex justify-center mt-8">
+          <Button
+            onClick={onViewServices}
+            className="bg-sage-600 hover:bg-sage-700 text-white px-6 py-3 rounded-md transition-colors font-medium"
+          >
+            <Calendar className="mr-2 h-5 w-5" />
+            Reservar cita
+          </Button>
+        </div>
+        </div>
         </div>
       </section>
   )

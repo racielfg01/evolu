@@ -31,17 +31,31 @@ import { Category } from "@prisma/client";
 interface BookingContentProps{
    user: UserAppMetadata | null,
    categories:Category[]|null ,
-  services:ServiceWithRelations[]|null
+  services:ServiceWithRelations[]|null,
+  popularServices?: ServiceWithRelations[] | null
 }
 
 
-export function BookingContent({ user,categories,services }:BookingContentProps) {
+export function BookingContent({ user,categories,services,popularServices }:BookingContentProps) {
 
   
   const { state, dispatch } = useEnhancedBooking();
   const isOnline = useOnlineStatus();
   const {push}= useRouter()
   const [isAdmin, setIsAdmin] = useState(false)
+  const [catalogCategoryId, setCatalogCategoryId] = useState<string | null>(
+    null
+  )
+
+  const openCatalog = () => {
+    setCatalogCategoryId(null)
+    setCurrentView("services")
+  }
+
+  const openCatalogCategory = (categoryId: string) => {
+    setCatalogCategoryId(categoryId)
+    setCurrentView("services")
+  }
   
 
   // const {
@@ -123,19 +137,31 @@ export function BookingContent({ user,categories,services }:BookingContentProps)
       case "home":
         return (
           <HomePage
-            onViewServices={() => setCurrentView("services")}
+            services={services}
+            categories={categories}
+            popularServices={popularServices}
+            onViewServices={openCatalog}
+            onSelectCategory={openCatalogCategory}
           />
         );
       case "home-about":
         return (
           <HomePage
-            onViewServices={() => setCurrentView("services")}
+            services={services}
+            categories={categories}
+            popularServices={popularServices}
+            onViewServices={openCatalog}
+            onSelectCategory={openCatalogCategory}
           />
         );
       case "home-reviews":
         return (
           <HomePage
-            onViewServices={() => setCurrentView("services")}
+            services={services}
+            categories={categories}
+            popularServices={popularServices}
+            onViewServices={openCatalog}
+            onSelectCategory={openCatalogCategory}
           />
         );
       case "services":
@@ -151,6 +177,7 @@ export function BookingContent({ user,categories,services }:BookingContentProps)
             categories={categories}
             // isLoadingCategories={isLoadingCategories}
             // errorCategories={errorCategories}
+            initialCategoryId={catalogCategoryId}
             title="Nuestros Servicios"
             description="Descubre nuestra amplia gama de servicios de belleza y bienestar"
             showFilters={true}
@@ -176,7 +203,11 @@ export function BookingContent({ user,categories,services }:BookingContentProps)
       default:
         return (
           <HomePage
-            onViewServices={() => setCurrentView("services")}
+            services={services}
+            categories={categories}
+            popularServices={popularServices}
+            onViewServices={openCatalog}
+            onSelectCategory={openCatalogCategory}
           />
         );
     }

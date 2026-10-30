@@ -53,6 +53,7 @@ interface UnifiedServicesComponentProps {
   description?: string;
   showFilters?: boolean;
   showSearch?: boolean;
+  initialCategoryId?: string | null;
 }
 
 export function UnifiedServicesComponent({
@@ -68,6 +69,7 @@ export function UnifiedServicesComponent({
 
   showFilters = true,
   showSearch = true,
+  initialCategoryId,
 }: UnifiedServicesComponentProps) {
   const { push } = useRouter();
   const { state, dispatch } = useEnhancedBooking();
@@ -84,6 +86,13 @@ export function UnifiedServicesComponent({
   useEffect(() => {
     getUsdRate().then((value) => setUsdValue(value));
   }, []);
+
+  // Llegada desde una categoría de la landing: abre el catálogo ya filtrado.
+  useEffect(() => {
+    if (!initialCategoryId || !categories) return;
+    const category = categories.find((item) => item.id === initialCategoryId);
+    if (category) setSelectedCategory({ id: category.id, name: category.name });
+  }, [initialCategoryId, categories]);
 
   // Efectos para calcular duración y precio total (solo en modo selección)
   useEffect(() => {

@@ -151,6 +151,57 @@ export const fetchAllServices = async (): Promise<ServiceWithRelations[]> => {
   }
 };
 
+// Los servicios más pedidos: se ordenan por cuántas citas tienen registradas.
+// Si aún no hay historial suficiente, se completan con los más recientes.
+export const fetchPopularServices = async (
+  limit = 4
+): Promise<ServiceWithRelations[]> => {
+  const include = {
+    category: { select: { id: true, name: true } },
+    images: { select: { id: true, url: true, name: true } },
+  } as const;
+
+  try {
+    const grouped = await prisma.appointmentService.groupBy({
+      by: ["service_id"],
+      _count: { service_id: true },
+      orderBy: { _count: { service_id: "desc" } },
+      take: limit * 2,
+    });
+
+    const ids = grouped.map((group) => group.service_id);
+    const popular: ServiceWithRelations[] = await prisma.service.findMany({
+      where: { id: { in: ids }, isActive: true },
+      include,
+    });
+
+    const byId = new Map(popular.map((service) => [service.id, service]));
+    const ordered: ServiceWithRelations[] = [];
+    for (const id of ids) {
+      const service = byId.get(id);
+      if (service) ordered.push(service);
+      if (ordered.length === limit) break;
+    }
+
+    if (ordered.length >= limit) return ordered;
+
+    const recent: ServiceWithRelations[] = await prisma.service.findMany({
+      where: {
+        isActive: true,
+        id: { notIn: ordered.map((service) => service.id) },
+      },
+      include,
+      orderBy: { createdAt: "desc" },
+      take: limit - ordered.length,
+    });
+
+    return [...ordered, ...recent];
+  } catch (error) {
+    console.error("Error fetching popular services:", error);
+    return [];
+  }
+};
+
 export const fetchServiceById = async (id: string): Promise<FullService> => {
   try {
     const service = await prisma.service.findUnique({
@@ -410,22 +461,6 @@ export const editService = async (
     return result;
   } catch (error) {
     console.error(`Error updating service ${serviceData.id}:`, error);
-    // TEMP-DIAG: vuelca el error a un archivo para diagnosticar desde fuera.
-    try {
-      const fs = await import("node:fs/promises");
-      const detail =
-        error instanceof Error
-          ? `${error.name}: ${error.message}\n${error.stack}\n${JSON.stringify(
-              (error as { meta?: unknown }).meta ?? null
-            )}`
-          : String(error);
-      await fs.appendFile(
-        "/tmp/edit-service-error.log",
-        `${new Date().toISOString()} id=${serviceData.id}\n${detail}\n---\n`
-      );
-    } catch {
-      // El diagnóstico nunca debe tapar el error real.
-    }
     throw new Error(
       error instanceof Error ? error.message : "Failed to update service"
     );

@@ -1,106 +1,99 @@
 "use client";
-import Link from "next/link";
+
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Clock } from "lucide-react";
-import { mockServices } from "@/lib/mock-data";
-import Image from "next/image";
+import type { ServiceWithRelations } from "@/lib/actions/services.actions";
 
 interface ServicesProps {
-  // onBookNow: () => void;
+  services: ServiceWithRelations[] | null;
   onViewServices: () => void;
 }
 
-export default function Services({  onViewServices}: ServicesProps) {
+export default function Services({ services, onViewServices }: ServicesProps) {
+  const featuredServices = (services ?? [])
+    .filter((service) => service.isActive)
+    .slice(0, 4);
 
-
-  const featuredServices = mockServices.filter((s) => s.isActive).slice(0, 4);
   return (
-    <>
-    
-      {/* Featured Services */}
-      <section className="py-16 md:py-24 bg-sage-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-sage-900 mb-4">
-              Los más Pedidos
-            </h2>
-            <p className="text-sage-700 max-w-2xl mx-auto">
-        ¿No sabes por donde empezar?. Entonces prueba los más pedidos de Evolu
-            </p>
-          </div>
-          <div className="grid gap-6 md:grid-cols-4">
-            {featuredServices.map((service) => (
-              <Card
-                key={service.id}
-                className="overflow-hidden hover:shadow-lg transition-transform hover:scale-105"
-              >
-                <div className="relative">
-                  <Image
-                    src={service.image || "/placeholder.svg"}
-                    alt={service.name}
-                    className="w-full h-48 object-cover"
-                    height={300}
-                    width={400}
-                  />
-                  <Badge className="absolute top-2 right-2" variant="secondary">
-                    Popular
-                  </Badge>
-                </div>
-
-                <CardHeader>
-                  <CardTitle className="text-lg">{service.name}</CardTitle>
-
-                  <div className="text-sm text-muted-foreground h-[72px]">
-                    <p className="line-clamp-3 mb-2">{service.description}</p>
-                    {service.description.length > 50 && (
-                      <Link
-                        href="#"
-                        onClick={onViewServices}
-                        className="text-sage-600 hover:text-sage-700 text-xs font-medium"
-                    
-                      >
-                        Leer más
-                      </Link>
-                    )}
-                  </div>
-                </CardHeader>
-
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Clock className="h-4 w-4" />
-                      <span>{service.duration} min</span>
-                    </div>
-                    {/* <span className="text-lg font-semibold">
-                      ${service.price}
-                    </span> */}
-                  </div>
-
-                  {/* <Button
-                    className="w-full bg-sage-600 hover:bg-sage-700 text-white px-6 py-3 rounded-md transition-colors font-medium"
-                    onClick={handleOnBook}
-                  >
-                    Reservar Ahora
-                  </Button> */}
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          <div className="flex justify-center mt-8">
-            {/* <Link href={"/services"}> */}
-            <Button
-              className="bg-sage-500 hover:bg-sage-700 text-white px-6 py-3 rounded-md transition-colors font-medium"
-              onClick={onViewServices}
-            >
-              Ver Todos los Servicios
-            </Button>
-             {/* </Link> */}
-          </div>
+    <section id="servicios" className="py-16 md:py-24 bg-sage-50">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-sage-900 mb-4">
+            Los más Pedidos
+          </h2>
+          <p className="text-sage-700 max-w-2xl mx-auto">
+            ¿No sabes por dónde empezar? Estos son los servicios que más
+            eligen nuestros clientes.
+          </p>
         </div>
-      </section>
-    </>
+
+        {featuredServices.length > 0 ? (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {featuredServices.map((service) => {
+              const cover = service.images?.[0]?.url || "/placeholder.svg";
+
+              return (
+                <Card
+                  key={service.id}
+                  className="flex flex-col overflow-hidden hover:shadow-lg transition-shadow"
+                >
+                  <div className="relative h-48 w-full bg-muted">
+                    <Image
+                      src={cover}
+                      alt={service.name}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      className="object-cover"
+                    />
+                  </div>
+
+                  <CardHeader className="flex-1">
+                    <CardTitle className="text-lg">{service.name}</CardTitle>
+                    <p className="line-clamp-3 text-sm text-muted-foreground">
+                      {service.description}
+                    </p>
+                  </CardHeader>
+
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between text-sm text-muted-foreground">
+                      <span className="flex items-center gap-2">
+                        <Clock className="h-4 w-4" />
+                        {service.duration} min
+                      </span>
+                      <span className="font-semibold text-sage-800">
+                        {service.price} USD
+                      </span>
+                    </div>
+
+                    <Button
+                      className="w-full bg-sage-600 hover:bg-sage-700 text-white"
+                      onClick={onViewServices}
+                    >
+                      Reservar
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="text-center text-sage-700">
+            Estamos actualizando el catálogo. Escríbenos por WhatsApp y te
+            ayudamos a elegir tu tratamiento.
+          </p>
+        )}
+
+        <div className="flex justify-center mt-8">
+          <Button
+            className="bg-sage-500 hover:bg-sage-700 text-white px-6 py-3 rounded-md transition-colors font-medium"
+            onClick={onViewServices}
+          >
+            Ver Todos los Servicios
+          </Button>
+        </div>
+      </div>
+    </section>
   );
 }

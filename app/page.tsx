@@ -1,6 +1,6 @@
 import { BookingContent } from "@/components/new-bookings/enhanced-beauty-booking";
 import { fetchAllCategories } from "@/lib/actions/category.actions";
-import { fetchAllServices } from "@/lib/actions/services.actions";
+import { fetchAllServices, fetchPopularServices } from "@/lib/actions/services.actions";
 import { getCurrentUser } from "@/lib/supabase/auth";
 
 export default async function Home() {
@@ -8,6 +8,7 @@ export default async function Home() {
 
   const fetchCategories = await fetchAllCategories();
   const fetchServices = await fetchAllServices();
+  const popularServices = await fetchPopularServices(4);
 
   // Determinar si el usuario tiene permisos
   const user = currentUser ? currentUser : null;
@@ -29,6 +30,7 @@ export default async function Home() {
       user={user} 
       categories={categories} 
       services={services}
+      popularServices={popularServices}
        />
     </>
   );

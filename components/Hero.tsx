@@ -3,7 +3,7 @@ import React from "react";
 import img1 from "@/assest/mujer_soriendo.webp";
 // import Link from "next/link";
 import { Button } from "./ui/button";
-import { Sparkles } from "lucide-react";
+import { Calendar, Sparkles } from "lucide-react";
 // import { Calendar, Sparkles } from "lucide-react";
 // import { Tangerine } from 'next/font/google'
 // import { cn } from "@/lib/utils";
@@ -52,27 +52,39 @@ export default function Hero({  onViewServices }: HeroProps) {
             El lugar donde siempre querrás regresar, porque siempre regresas donde fuiste feliz.
           </p>
         </div>
-        
-           
+
+            <ul className="space-y-2 text-sage-800">
+              <li className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 shrink-0 text-sage-600" />
+                Profesionales certificados
+              </li>
+              <li className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 shrink-0 text-sage-600" />
+                Productos premium
+              </li>
+              <li className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 shrink-0 text-sage-600" />
+                Atención personalizada
+              </li>
+            </ul>
 
             <div className="flex flex-col sm:flex-row gap-2 justify-start">
-              {/* <Button
-                size="lg"
-                onClick={onBookNow}
-                className="text-lg px-6 bg-sage-600 hover:bg-sage-700 text-white py-3 rounded-md transition-colors font-medium"
-              >
-                <Calendar className="mr-2 h-5 w-5" />
-                Reservar Cita
-              </Button> */}
               <Button
                 size="lg"
-                // variant="outline"
                 onClick={onViewServices}
                              className="text-lg px-6 bg-sage-600 hover:bg-sage-700 text-white py-3 rounded-md transition-colors font-medium"
 
               >
-                <Sparkles className="mr-2 h-5 w-5" />
-                Ver Servicios
+                <Calendar className="mr-2 h-5 w-5" />
+                Reservar cita
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                asChild
+                className="text-lg px-6 py-3 rounded-md transition-colors font-medium"
+              >
+                <a href="#servicios">Ver servicios</a>
               </Button>
             </div>
           </div>
