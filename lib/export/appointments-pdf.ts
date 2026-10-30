@@ -59,7 +59,7 @@ export function appointmentsToPdf(
 
   // ── Tabla resumen ──
   autoTable(doc, {
-    head: [["Fecha", "Hora", "Cliente", "Servicios", "Estado", "Total"]],
+    head: [["Fecha", "Hora", "Cliente", "Servicios", "Estado", "Registrado por", "Total"]],
     body: appointments.map((a) => {
       const start = toCalendarDate(new Date(a.date));
       const services = a.services.map((s) => `${s.service.name} x${s.quantity}`).join(", ");
@@ -69,12 +69,13 @@ export function appointmentsToPdf(
         a.user?.name || "Sin nombre",
         services,
         STATUS_LABELS[a.status] || a.status,
+        a.createdBy?.name || "Sistema",
         `$${servicesTotal(a.services).toFixed(2)}`,
       ];
     }),
     startY: 40,
     theme: "grid",
-    styles: { fontSize: 8 },
+    styles: { fontSize: 7.5, cellPadding: 1.5 },
     headStyles: { fontStyle: "bold", fillColor: [59, 130, 246], textColor: 255 },
   });
 
@@ -117,23 +118,26 @@ export function appointmentsToPdf(
       ["Servicios", services],
       ["Estado", STATUS_LABELS[appointment.status] || appointment.status],
       ["Duración", `${appointment.duration} min`],
+      ["Registrado por", appointment.createdBy?.name || "Sistema"],
       ["Total", `$${servicesTotal(appointment.services).toFixed(2)}`],
       ["Nota", appointment.note || "Sin notas"],
     ];
 
-    rows.forEach((row, i) => {
-      const rowY = yPos + 8 + i * 5;
+    let rowY = yPos + 8;
+    rows.forEach((row) => {
       if (rowY > 275) {
         doc.addPage();
-        yPos = 20;
+        rowY = 20;
       }
       doc.setFont("helvetica", "bold");
       doc.text(`${row[0]}:`, 16, rowY);
       doc.setFont("helvetica", "normal");
-      doc.text(row[1], 42, rowY);
+      const valueLines = doc.splitTextToSize(row[1], pageWidth - 56);
+      doc.text(valueLines, 42, rowY);
+      rowY += 5 * Math.max(1, valueLines.length);
     });
 
-    yPos += 48;
+    yPos = rowY + 3;
 
     // Línea separadora entre citas
     doc.setDrawColor(220);

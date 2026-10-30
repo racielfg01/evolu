@@ -6,6 +6,7 @@ import { getCurrentUser } from '@/lib/supabase/auth';
 
 export type FullAppointment = Appointment & {
   user: User;
+  createdBy: User | null;
   // timeSlot: TimeSlot;
   services: (AppointmentService & {
     service: Service;
@@ -75,6 +76,7 @@ export const fetchAllAppointments = async (): Promise<FullAppointment[]> => {
     return await prisma.appointment.findMany({
       include: {
         user: true,
+        createdBy: true,
         // timeSlot: true,
         services: {
           include: {
@@ -100,6 +102,7 @@ export const fetchAppointmentsByUser = async (userId: string): Promise<FullAppoi
       where: { user_id: userId },
       include: {
         user: true,
+        createdBy: true,
         // timeSlot: true,
         services: {
           include: {
@@ -125,6 +128,7 @@ export const fetchAppointmentById = async (id: string): Promise<FullAppointment>
       where: { id },
       include: {
         user: true,
+        createdBy: true,
         // timeSlot: true,
         services: {
           include: {
@@ -278,6 +282,7 @@ export const updateAppointment = async (
       },
       include: {
         user: true,
+        createdBy: true,
         // endDate: true,
         services: {
           include: {
@@ -308,6 +313,7 @@ export const updateAppointment = async (
         where: { id },
         include: {
           user: true,
+          createdBy: true,
           // timeSlot: true,
           services: {
             include: {
@@ -333,6 +339,7 @@ export const updateAppointmentStatus = async (id: string, status: AppointmentSta
       data: { status },
       include: {
         user: true,
+        createdBy: true,
         services: { include: { service: true } },
       },
     }) as FullAppointment;
@@ -357,6 +364,7 @@ export const cancelAppointment = async (id: string, reason?: string): Promise<Fu
       data: { status: 'CANCELLED', cancellationReason: reason || null },
       include: {
         user: true,
+        createdBy: true,
         services: { include: { service: true } },
       },
     }) as FullAppointment;

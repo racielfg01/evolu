@@ -75,6 +75,7 @@ const HEADERS = [
   "Duración (min)",
   "Total",
   "Nota",
+  "Registrado por",
 ];
 
 function escapeCell(value: string): string {
@@ -106,6 +107,7 @@ export function appointmentsToCsv(appointments: FullAppointment[]): string {
       String(appointment.duration),
       appointment.total_price.toFixed(2),
       appointment.note || "",
+      appointment.createdBy?.name || "Sistema",
     ].map((cell) => escapeCell(String(cell)));
   });
 
