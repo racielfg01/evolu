@@ -62,7 +62,14 @@ export function AppointmentCalendar({
   appointments,
   onAppointmentClick,
 }: AppointmentCalendarProps) {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState<Date>(() => new Date());
+  const [mounted, setMounted] = useState(false);
+
+  // El calendario depende de la fecha/hora actual: se renderiza solo después
+  // de hidratar para evitar mismatch entre servidor y cliente.
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const [viewMode, setViewMode] = useState<ViewMode>("week");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<AppointmentStatus | "all">(
@@ -199,6 +206,14 @@ useEffect(() => {
   // Contador de resultados para mostrar feedback al usuario
   const resultsCount = filteredAppointments.length;
   const totalAppointments = appointments?.length || 0;
+
+  if (!mounted) {
+    return (
+      <div className="flex flex-col gap-3 p-2 sm:p-4 md:p-6 w-full max-w-full mx-auto">
+        <div className="h-[600px] w-full animate-pulse rounded-lg bg-muted" />
+      </div>
+    );
+  }
 
   return (
     // <div className="flex flex-col gap-6 p-4 md:p-6 w-full max-w-full mx-auto">

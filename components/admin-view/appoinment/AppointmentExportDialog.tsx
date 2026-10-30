@@ -42,9 +42,9 @@ export function AppointmentExportDialog({
 }: AppointmentExportDialogProps) {
   const [mode, setMode] = useState<ExportMode>("day");
   const [exportFormat, setExportFormat] = useState<"csv" | "pdf">("csv");
-  const [date, setDate] = useState(() => format(new Date(), "yyyy-MM-dd"));
+  const [date, setDate] = useState<string>('');
 
-  // Al abrir, partir del día de hoy y formato CSV.
+  // Al abrir, partir del día de hoy y formato CSV (solo en el cliente).
   useEffect(() => {
     if (isOpen) {
       setMode("day");
@@ -54,7 +54,10 @@ export function AppointmentExportDialog({
   }, [isOpen]);
 
   const range = useMemo(
-    () => getExportRange(mode, new Date(`${date}T00:00:00`)),
+    () => {
+      const base = date ? new Date(`${date}T00:00:00`) : new Date();
+      return getExportRange(mode, base);
+    },
     [mode, date]
   );
 
