@@ -410,6 +410,22 @@ export const editService = async (
     return result;
   } catch (error) {
     console.error(`Error updating service ${serviceData.id}:`, error);
+    // TEMP-DIAG: vuelca el error a un archivo para diagnosticar desde fuera.
+    try {
+      const fs = await import("node:fs/promises");
+      const detail =
+        error instanceof Error
+          ? `${error.name}: ${error.message}\n${error.stack}\n${JSON.stringify(
+              (error as { meta?: unknown }).meta ?? null
+            )}`
+          : String(error);
+      await fs.appendFile(
+        "/tmp/edit-service-error.log",
+        `${new Date().toISOString()} id=${serviceData.id}\n${detail}\n---\n`
+      );
+    } catch {
+      // El diagnóstico nunca debe tapar el error real.
+    }
     throw new Error(
       error instanceof Error ? error.message : "Failed to update service"
     );
